@@ -256,25 +256,25 @@
   .timer-sub { font-size: 11px; color: var(--muted); }
 
   /* ── GLOBAL BUTTON VISIBILITY ── */
-  body:not(.win95-theme) .add-btn,
-  body:not(.win95-theme) .search-btn,
-  body:not(.win95-theme) .load-more-btn,
-  body:not(.win95-theme) .sidebar-add-btn,
-  body:not(.win95-theme) #sidebar-search-btn,
-  body:not(.win95-theme) .empty-cta,
-  body:not(.win95-theme) .done-back-btn {
+  body:not(.win95-theme):not(.xbox-theme) .add-btn,
+  body:not(.win95-theme):not(.xbox-theme) .search-btn,
+  body:not(.win95-theme):not(.xbox-theme) .load-more-btn,
+  body:not(.win95-theme):not(.xbox-theme) .sidebar-add-btn,
+  body:not(.win95-theme):not(.xbox-theme) #sidebar-search-btn,
+  body:not(.win95-theme):not(.xbox-theme) .empty-cta,
+  body:not(.win95-theme):not(.xbox-theme) .done-back-btn {
     background: rgba(255,255,255,0.92) !important;
     color: #111111 !important;
     border: 1.5px solid #111111 !important;
     border-radius: 6px !important;
   }
-  body:not(.win95-theme) .add-btn:hover,
-  body:not(.win95-theme) .search-btn:hover,
-  body:not(.win95-theme) .load-more-btn:hover,
-  body:not(.win95-theme) .sidebar-add-btn:hover,
-  body:not(.win95-theme) #sidebar-search-btn:hover,
-  body:not(.win95-theme) .empty-cta:hover,
-  body:not(.win95-theme) .done-back-btn:hover {
+  body:not(.win95-theme):not(.xbox-theme) .add-btn:hover,
+  body:not(.win95-theme):not(.xbox-theme) .search-btn:hover,
+  body:not(.win95-theme):not(.xbox-theme) .load-more-btn:hover,
+  body:not(.win95-theme):not(.xbox-theme) .sidebar-add-btn:hover,
+  body:not(.win95-theme):not(.xbox-theme) #sidebar-search-btn:hover,
+  body:not(.win95-theme):not(.xbox-theme) .empty-cta:hover,
+  body:not(.win95-theme):not(.xbox-theme) .done-back-btn:hover {
     background: rgba(255,255,255,1) !important;
     border-color: #000000 !important;
   }
@@ -518,11 +518,11 @@
   body.win95-theme .channel-meta { font-family: 'VT323',monospace !important; color: #444 !important; }
   /* Global white buttons */
   body:not(.win95-theme) .add-btn,body:not(.win95-theme) .search-btn,body:not(.win95-theme) .load-more-btn,body:not(.win95-theme) .sidebar-add-btn,body:not(.win95-theme) #sidebar-search-btn,body:not(.win95-theme) .empty-cta,body:not(.win95-theme) .done-back-btn,body:not(.win95-theme) #yourday-sidebar-btn { background: rgba(255,255,255,0.92) !important; color: #111 !important; border: 1.5px solid #111 !important; border-radius: 6px !important; }
-  body:not(.win95-theme) .sort-pill { background: rgba(255,255,255,0.85) !important; color: #111 !important; border: 1.5px solid #111 !important; border-radius: 20px !important; }
-  body:not(.win95-theme) .sort-pill.active { background: var(--accent) !important; color: var(--bg) !important; border-color: var(--accent) !important; }
-  body:not(.win95-theme) .settings-action-btn { background: rgba(255,255,255,0.92) !important; color: #111 !important; border: 1.5px solid #111 !important; border-radius: 6px !important; }
-  body:not(.win95-theme) .settings-danger-btn { color: #c0392b !important; border-color: #c0392b !important; }
-  body:not(.win95-theme) .api-save-btn { background: var(--accent) !important; color: var(--bg) !important; border: 1.5px solid var(--accent) !important; border-radius: 6px !important; }
+  body:not(.win95-theme):not(.xbox-theme) .sort-pill { background: rgba(255,255,255,0.85) !important; color: #111 !important; border: 1.5px solid #111 !important; border-radius: 20px !important; }
+  body:not(.win95-theme):not(.xbox-theme) .sort-pill.active { background: var(--accent) !important; color: var(--bg) !important; border-color: var(--accent) !important; }
+  body:not(.win95-theme):not(.xbox-theme) .settings-action-btn { background: rgba(255,255,255,0.92) !important; color: #111 !important; border: 1.5px solid #111 !important; border-radius: 6px !important; }
+  body:not(.win95-theme):not(.xbox-theme) .settings-danger-btn { color: #c0392b !important; border-color: #c0392b !important; }
+  body:not(.win95-theme):not(.xbox-theme) .api-save-btn { background: var(--accent) !important; color: var(--bg) !important; border: 1.5px solid var(--accent) !important; border-radius: 6px !important; }
   /* Feed rows */
   .feed-channel-section { margin-bottom: 28px; }
   .feed-channel-header { display: flex; align-items: center; gap: 10px; padding: 10px 20px; cursor: pointer; transition: opacity 0.15s; }
@@ -1372,6 +1372,16 @@ function showHome() {
   currentChannel = null;
   renderSidebar();
   renderChannels();
+  // If Xbox theme active and feed is cached, render dashboard immediately
+  if (document.body.classList.contains('xbox-theme') && typeof renderXboxDashboard === 'function') {
+    try {
+      const cached = JSON.parse(localStorage.getItem('ff_feed_cache'));
+      if (cached && cached.length > 0) {
+        xboxActiveChannel = 0;
+        renderXboxDashboard(cached);
+      }
+    } catch(e) {}
+  }
 }
 
 function showAdd() {
@@ -2391,7 +2401,16 @@ document.addEventListener('click',e=>{
   if(Object.keys(s).length===0)applyTheme(PRESETS[0]);else applyTheme(s);
   updateTimerDisplay();startTimer();updateQuotaDisplay();
   if(!getKey()){showScreen('setup-screen');}
-  else{renderSidebar();showScreen('home-screen');renderFeed(false);}
+  else{
+    renderSidebar();showScreen('home-screen');
+    if(document.body.classList.contains('xbox-theme')){
+      try{
+        const _xc=JSON.parse(localStorage.getItem('ff_feed_cache'));
+        if(_xc&&_xc.length>0&&typeof renderXboxDashboard==='function'){xboxActiveChannel=0;renderXboxDashboard(_xc);}
+        else{renderFeed(false);}
+      }catch(e){renderFeed(false);}
+    }else{renderFeed(false);}
+  }
 })();
 
 // ── XBOX 360 THEME — dashboard layout ──
