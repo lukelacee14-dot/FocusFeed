@@ -800,145 +800,265 @@
   }
 
   /* ── SPACE BUDDY ── */
-  .space-buddy-card {
-    margin-top: 28px;
+  .space-buddy-popout {
+    display: none;
+    margin: -6px 12px 14px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 16px;
+    padding: 12px;
   }
+  .space-buddy-popout.visible { display: block; animation: fadeIn 0.16s ease; }
   .space-buddy-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 14px;
+    gap: 10px;
+    margin-bottom: 10px;
   }
   .space-buddy-title {
     font-family: 'DM Serif Display', serif;
-    font-size: 18px;
+    font-size: 16px;
     color: var(--text);
   }
   .space-buddy-title em { color: var(--accent); font-style: italic; }
   .space-buddy-sub {
-    font-size: 10px;
+    font-size: 9px;
     color: var(--muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
   .space-buddy-stage {
-    min-height: 150px;
+    height: 142px;
     border: 1px solid var(--border);
     border-radius: 10px;
     background:
-      radial-gradient(circle at 25% 20%, rgba(200,184,154,0.12), transparent 24%),
-      radial-gradient(circle at 75% 12%, rgba(255,255,255,0.08), transparent 18%),
-      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.12));
-    display: flex;
-    align-items: center;
-    justify-content: center;
+      radial-gradient(circle at 16% 16%, rgba(255,255,255,0.95) 0 1px, transparent 2px),
+      radial-gradient(circle at 38% 23%, rgba(255,255,255,0.65) 0 1px, transparent 2px),
+      radial-gradient(circle at 78% 15%, rgba(255,255,255,0.85) 0 1px, transparent 2px),
+      radial-gradient(circle at 88% 42%, rgba(255,255,255,0.5) 0 1px, transparent 2px),
+      linear-gradient(180deg, #071126 0%, #101b38 55%, #1b1b29 56%, #2d2d37 100%);
     position: relative;
     overflow: hidden;
   }
-  .space-buddy-stage::before,
+  .space-buddy-stage::before {
+    content: '';
+    position: absolute;
+    left: -18px;
+    right: -18px;
+    bottom: -22px;
+    height: 58px;
+    border-radius: 50% 50% 0 0;
+    background:
+      radial-gradient(circle at 28% 44%, rgba(0,0,0,0.18) 0 7px, transparent 8px),
+      radial-gradient(circle at 70% 55%, rgba(0,0,0,0.14) 0 5px, transparent 6px),
+      linear-gradient(180deg, #d9d3c5, #a7a092);
+    border-top: 1px solid rgba(255,255,255,0.45);
+  }
   .space-buddy-stage::after {
     content: '';
     position: absolute;
+    top: 18px;
+    right: 22px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    background: rgba(232,228,220,0.45);
-    box-shadow: 42px 20px 0 rgba(232,228,220,0.2), 88px -12px 0 rgba(232,228,220,0.25), 126px 30px 0 rgba(232,228,220,0.18);
-    width: 3px;
-    height: 3px;
-    top: 28px;
-    left: 34px;
+    background: #e8e4dc;
+    box-shadow: 0 0 18px rgba(232,228,220,0.35), inset -6px -4px 0 rgba(0,0,0,0.1);
+    opacity: 0.88;
   }
-  .space-buddy-stage::after {
-    top: auto;
-    left: auto;
-    bottom: 26px;
-    right: 44px;
-    opacity: 0.6;
-  }
-  .space-buddy-pet {
-    width: 82px;
-    height: 82px;
-    border-radius: 44% 44% 50% 50%;
-    background: var(--accent);
-    border: 2px solid rgba(0,0,0,0.22);
-    position: relative;
-    box-shadow: 0 12px 35px rgba(0,0,0,0.28), inset 0 -10px 0 rgba(0,0,0,0.08);
-    animation: spaceBuddyFloat 3.2s ease-in-out infinite;
-  }
-  .space-buddy-pet::before,
-  .space-buddy-pet::after {
-    content: '';
-    position: absolute;
-    width: 10px;
-    height: 13px;
-    top: 30px;
-    border-radius: 50%;
-    background: #111;
-  }
-  .space-buddy-pet::before { left: 23px; }
-  .space-buddy-pet::after { right: 23px; }
-  .space-buddy-mouth {
+  .space-dog {
     position: absolute;
     left: 50%;
-    top: 50px;
+    bottom: 23px;
+    width: 78px;
+    height: 58px;
+    transform: translateX(-50%);
+    transform-origin: 50% 100%;
+    animation: dogBreathe 2.8s ease-in-out infinite;
+    z-index: 2;
+  }
+  .space-dog-body {
+    position: absolute;
+    left: 16px;
+    bottom: 5px;
+    width: 48px;
+    height: 25px;
+    border-radius: 48% 44% 42% 40%;
+    background: #c88443;
+    border: 2px solid rgba(0,0,0,0.28);
+    box-shadow: inset 0 -5px 0 rgba(0,0,0,0.12);
+  }
+  .space-dog-chest {
+    position: absolute;
+    left: 32px;
+    bottom: 7px;
     width: 18px;
-    height: 9px;
-    border-bottom: 2px solid #111;
-    border-radius: 0 0 18px 18px;
-    transform: translateX(-50%);
+    height: 18px;
+    border-radius: 45%;
+    background: #f2d2a7;
+    opacity: 0.95;
   }
-  .space-buddy-antenna {
+  .space-dog-head {
     position: absolute;
-    left: 50%;
-    top: -20px;
-    width: 2px;
-    height: 24px;
-    background: var(--accent2);
-    transform: translateX(-50%);
+    left: 23px;
+    bottom: 22px;
+    width: 36px;
+    height: 31px;
+    border-radius: 45% 45% 48% 48%;
+    background: #c88443;
+    border: 2px solid rgba(0,0,0,0.28);
+    z-index: 4;
   }
-  .space-buddy-antenna::after {
+  .space-dog-muzzle {
+    position: absolute;
+    left: 8px;
+    bottom: 4px;
+    width: 18px;
+    height: 12px;
+    border-radius: 50%;
+    background: #f2d2a7;
+  }
+  .space-dog-muzzle::before {
     content: '';
     position: absolute;
-    top: -5px;
-    left: 50%;
-    width: 10px;
-    height: 10px;
+    left: 7px;
+    top: 3px;
+    width: 4px;
+    height: 3px;
     border-radius: 50%;
-    background: var(--text);
-    transform: translateX(-50%);
-    box-shadow: 0 0 12px rgba(232,228,220,0.45);
+    background: #1a1512;
   }
-  @keyframes spaceBuddyFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+  .space-dog-eye {
+    position: absolute;
+    top: 11px;
+    width: 4px;
+    height: 5px;
+    border-radius: 50%;
+    background: #14110f;
   }
+  .space-dog-eye.left { left: 9px; }
+  .space-dog-eye.right { right: 9px; }
+  .space-dog-ear {
+    position: absolute;
+    top: -9px;
+    width: 13px;
+    height: 19px;
+    background: #b96f34;
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    z-index: 3;
+  }
+  .space-dog-ear.left { left: 4px; transform: rotate(-18deg); }
+  .space-dog-ear.right { right: 4px; transform: rotate(18deg); }
+  .space-dog-helmet {
+    position: absolute;
+    left: 16px;
+    bottom: 17px;
+    width: 51px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid rgba(232,228,220,0.92);
+    background: radial-gradient(circle at 36% 24%, rgba(255,255,255,0.42), rgba(135,180,255,0.12) 38%, rgba(255,255,255,0.04) 68%);
+    box-shadow: inset 0 0 14px rgba(255,255,255,0.18), 0 0 12px rgba(144,180,255,0.14);
+    z-index: 8;
+    pointer-events: none;
+  }
+  .space-dog-helmet::after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 7px;
+    width: 13px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.38);
+    transform: rotate(-24deg);
+  }
+  .space-dog-tail {
+    position: absolute;
+    right: 7px;
+    bottom: 22px;
+    width: 19px;
+    height: 8px;
+    border-radius: 999px;
+    background: #c88443;
+    border: 2px solid rgba(0,0,0,0.22);
+    transform-origin: left center;
+    animation: dogTailWag 0.55s ease-in-out infinite alternate;
+    z-index: 1;
+  }
+  .space-dog-leg {
+    position: absolute;
+    bottom: 0;
+    width: 8px;
+    height: 12px;
+    border-radius: 5px 5px 3px 3px;
+    background: #9d5d2c;
+    border: 1px solid rgba(0,0,0,0.2);
+  }
+  .space-dog-leg.l1 { left: 22px; }
+  .space-dog-leg.l2 { left: 44px; }
+  @keyframes dogBreathe { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-2px); } }
+  @keyframes dogTailWag { from { transform: rotate(-18deg); } to { transform: rotate(24deg); } }
+  .space-dog.run-left { animation: dogRunLeft 4.2s ease-in-out 1; }
+  .space-dog.run-left .space-dog-leg { animation: dogLegRun 0.22s steps(2) infinite; }
+  .space-dog.run-right { animation: dogRunRight 4.2s ease-in-out 1; }
+  .space-dog.run-right .space-dog-leg { animation: dogLegRun 0.22s steps(2) infinite; }
+  .space-dog.sleep { animation: dogSleep 4.2s ease-in-out 1; }
+  .space-dog.sleep .space-dog-eye { height: 2px; top: 13px; }
+  .space-dog.sleep::after {
+    content: 'z';
+    position: absolute;
+    left: 59px;
+    top: -8px;
+    font-family: 'DM Serif Display', serif;
+    color: rgba(232,228,220,0.8);
+    animation: dogZ 1.3s ease-in-out infinite;
+  }
+  .space-dog.tail-chase { animation: dogTailChase 3.2s ease-in-out 1; }
+  .space-dog.lookout { animation: dogLookout 4s ease-in-out 1; }
+  @keyframes dogRunLeft {
+    0% { transform: translateX(-50%) translateY(0) scaleX(1); }
+    30% { transform: translateX(-140px) translateY(-4px) scaleX(-1); }
+    56% { transform: translateX(-140px) translateY(-4px) scaleX(-1); }
+    100% { transform: translateX(-50%) translateY(0) scaleX(1); }
+  }
+  @keyframes dogRunRight {
+    0% { transform: translateX(-50%) translateY(0) scaleX(1); }
+    48% { transform: translateX(150px) translateY(-3px) scaleX(1); }
+    49% { opacity: 0; }
+    58% { transform: translateX(-160px) translateY(-3px) scaleX(1); opacity: 0; }
+    65% { opacity: 1; }
+    100% { transform: translateX(-50%) translateY(0) scaleX(1); }
+  }
+  @keyframes dogLegRun { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
+  @keyframes dogSleep { 0%,100% { transform: translateX(-50%) translateY(0) rotate(0); } 22%,78% { transform: translateX(-50%) translateY(10px) rotate(-7deg); } }
+  @keyframes dogZ { 0% { transform: translateY(8px) scale(0.8); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-10px) scale(1.1); opacity: 0; } }
+  @keyframes dogTailChase { 0%,100% { transform: translateX(-50%) rotate(0); } 45% { transform: translateX(-50%) rotate(360deg); } 70% { transform: translateX(-50%) rotate(360deg); } }
+  @keyframes dogLookout { 0%,100% { transform: translateX(-50%) translateY(0) scaleX(1); } 25%,65% { transform: translateX(-50%) translateY(-1px) scaleX(-1); } }
   .space-buddy-note {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--muted);
-    line-height: 1.5;
-    margin: 12px 0;
+    line-height: 1.45;
+    margin: 10px 0;
   }
   .space-buddy-stats {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   .space-buddy-pill {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text);
     border: 1px solid var(--border);
     border-radius: 999px;
-    padding: 5px 10px;
+    padding: 4px 8px;
     background: rgba(255,255,255,0.03);
   }
   .space-buddy-actions {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
   }
   .space-buddy-btn {
@@ -947,32 +1067,12 @@
     border: 1.5px solid #111;
     border-radius: 6px;
     font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    padding: 8px 12px;
+    font-size: 11px;
+    padding: 7px 10px;
     cursor: pointer;
   }
-  .space-buddy-btn:disabled {
-    opacity: 0.45;
-    cursor: default;
-  }
-  .space-buddy-mini {
-    margin-top: 12px;
-    display: none;
-    border-top: 1px solid var(--border);
-    padding-top: 12px;
-  }
-  .space-buddy-mini.visible { display: block; }
-  .space-buddy-mini-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .space-buddy-score {
-    font-size: 12px;
-    color: var(--muted);
-    flex: 1;
-  }
-  body.win95-theme .space-buddy-card {
+  .space-buddy-btn:disabled { opacity: 0.45; cursor: default; }
+  body.win95-theme .space-buddy-popout {
     background: #c0c0c0 !important;
     border-radius: 0 !important;
     border: 2px solid !important;
@@ -981,8 +1081,7 @@
   }
   body.win95-theme .space-buddy-title,
   body.win95-theme .space-buddy-note,
-  body.win95-theme .space-buddy-pill,
-  body.win95-theme .space-buddy-score {
+  body.win95-theme .space-buddy-pill {
     font-family: 'VT323', monospace !important;
     color: #000 !important;
   }
@@ -991,7 +1090,6 @@
     border-radius: 0 !important;
     border: 2px solid !important;
     border-color: #808080 #fff #fff #808080 !important;
-    background: #000080 !important;
   }
   body.win95-theme .space-buddy-btn {
     background: #c0c0c0 !important;
@@ -1039,6 +1137,42 @@
     <div class="sidebar-channel-list" id="sidebar-channel-list"></div>
     <button class="sidebar-add-btn" id="sidebar-add-btn">+ Add channel</button>
     <button class="sidebar-add-btn" id="yourday-sidebar-btn" style="margin-top:4px;border-style:solid;border-color:var(--accent2)">☀ YourDay</button>
+    <button class="sidebar-add-btn" id="space-buddy-sidebar-btn" style="margin-top:4px;border-style:solid;border-color:var(--accent2)">🐶 Space Buddy</button>
+    <div class="space-buddy-popout" id="space-buddy-card">
+      <div class="space-buddy-head">
+        <div>
+          <div class="space-buddy-title">Space<em>Buddy</em></div>
+          <div class="space-buddy-sub">A quiet little moon dog</div>
+        </div>
+        <div class="space-buddy-sub" id="space-buddy-status">settled</div>
+      </div>
+      <div class="space-buddy-stage">
+        <div class="space-dog" id="space-buddy-dog" aria-label="Space Buddy corgi">
+          <div class="space-dog-tail"></div>
+          <div class="space-dog-body"></div>
+          <div class="space-dog-chest"></div>
+          <div class="space-dog-leg l1"></div>
+          <div class="space-dog-leg l2"></div>
+          <div class="space-dog-head">
+            <div class="space-dog-ear left"></div>
+            <div class="space-dog-ear right"></div>
+            <div class="space-dog-eye left"></div>
+            <div class="space-dog-eye right"></div>
+            <div class="space-dog-muzzle"></div>
+          </div>
+          <div class="space-dog-helmet"></div>
+        </div>
+      </div>
+      <div class="space-buddy-note" id="space-buddy-note">Complete a goal or take time away to earn snacks for your buddy.</div>
+      <div class="space-buddy-stats">
+        <div class="space-buddy-pill">🍪 Food: <span id="space-buddy-food">0</span></div>
+        <div class="space-buddy-pill">🌙 Mood: <span id="space-buddy-mood">quiet</span></div>
+      </div>
+      <div class="space-buddy-actions">
+        <button class="space-buddy-btn" id="space-buddy-feed-btn">Feed</button>
+        <button class="space-buddy-btn" id="space-buddy-claim-btn">Claim offline snack</button>
+      </div>
+    </div>
 
     <div class="sidebar-bottom">
       <button class="icon-btn" id="sidebar-settings-btn" title="Settings">⚙</button>
@@ -1325,38 +1459,7 @@
           <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Goals achieved today 🎉</div>
           <div id="goals-achieved-list"></div>
         </div>
-        <div class="space-buddy-card" id="space-buddy-card">
-          <div class="space-buddy-head">
-            <div>
-              <div class="space-buddy-title">Space<em>Buddy</em></div>
-              <div class="space-buddy-sub">A quiet little desk friend</div>
-            </div>
-            <div class="space-buddy-sub" id="space-buddy-status">settled</div>
-          </div>
-          <div class="space-buddy-stage">
-            <div class="space-buddy-pet" aria-label="Space Buddy">
-              <div class="space-buddy-antenna"></div>
-              <div class="space-buddy-mouth"></div>
-            </div>
-          </div>
-          <div class="space-buddy-note" id="space-buddy-note">Complete a goal or take time away to earn snacks for your buddy.</div>
-          <div class="space-buddy-stats">
-            <div class="space-buddy-pill">🍪 Food: <span id="space-buddy-food">0</span></div>
-            <div class="space-buddy-pill">🌙 Mood: <span id="space-buddy-mood">quiet</span></div>
-            <div class="space-buddy-pill">🎮 Daily game: <span id="space-buddy-game-state">ready</span></div>
-          </div>
-          <div class="space-buddy-actions">
-            <button class="space-buddy-btn" id="space-buddy-feed-btn">Feed</button>
-            <button class="space-buddy-btn" id="space-buddy-claim-btn">Claim offline snack</button>
-            <button class="space-buddy-btn" id="space-buddy-game-btn">Play tiny hop</button>
-          </div>
-          <div class="space-buddy-mini" id="space-buddy-mini">
-            <div class="space-buddy-mini-row">
-              <div class="space-buddy-score">Hop score: <span id="space-buddy-score">0</span> / 50</div>
-              <button class="space-buddy-btn" id="space-buddy-hop-btn">Hop</button>
-            </div>
-          </div>
-        </div>
+
 
       </div>
       <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999"></canvas>
@@ -2485,8 +2588,7 @@ document.getElementById('goal-input').addEventListener('keydown',e=>{if(e.key===
 // ── SPACE BUDDY ──
 const SPACE_BUDDY_KEY = 'ys_space_buddy';
 const SPACE_BUDDY_LAST_SEEN_KEY = 'ys_space_buddy_last_seen';
-const SPACE_BUDDY_GAME_DATE_KEY = 'ys_space_buddy_game_date';
-let spaceBuddyHopScore = 0;
+let spaceBuddyIdleTimer = null;
 
 function spaceBuddyToday() {
   return new Date().toISOString().slice(0, 10);
@@ -2512,6 +2614,7 @@ function spaceBuddyAwardFood(amount) {
   state.lastMood = 'proud';
   saveSpaceBuddyState(state);
   renderSpaceBuddy();
+  animateSpaceBuddy('tail-chase');
 }
 
 function renderSpaceBuddy() {
@@ -2519,30 +2622,24 @@ function renderSpaceBuddy() {
   if (!card) return;
 
   const state = spaceBuddyState();
-  const gamePlayed = localStorage.getItem(SPACE_BUDDY_GAME_DATE_KEY) === spaceBuddyToday();
-
   const foodEl = document.getElementById('space-buddy-food');
   const moodEl = document.getElementById('space-buddy-mood');
   const noteEl = document.getElementById('space-buddy-note');
   const statusEl = document.getElementById('space-buddy-status');
-  const gameStateEl = document.getElementById('space-buddy-game-state');
   const feedBtn = document.getElementById('space-buddy-feed-btn');
-  const gameBtn = document.getElementById('space-buddy-game-btn');
   const claimBtn = document.getElementById('space-buddy-claim-btn');
 
   if (foodEl) foodEl.textContent = String(state.food);
   if (moodEl) moodEl.textContent = state.lastMood;
   if (statusEl) statusEl.textContent = state.food > 0 ? 'happy' : 'waiting quietly';
-  if (gameStateEl) gameStateEl.textContent = gamePlayed ? 'done today' : 'ready';
 
   if (noteEl) {
     noteEl.textContent = state.food > 0
-      ? 'Your buddy has snacks saved. Feed it when you want a tiny reset.'
-      : 'Complete a goal or take time away to earn snacks for your buddy.';
+      ? 'Your moon dog has snacks saved. Feed him when you want a tiny reset.'
+      : 'Complete a goal or take time away to earn snacks for your moon dog.';
   }
 
   if (feedBtn) feedBtn.disabled = state.food <= 0;
-  if (gameBtn) gameBtn.disabled = gamePlayed;
   if (claimBtn) claimBtn.disabled = !spaceBuddyCanClaimOfflineSnack();
 }
 
@@ -2554,6 +2651,7 @@ function feedSpaceBuddy() {
   state.lastMood = 'fed';
   saveSpaceBuddyState(state);
   playWin95Sound('chord');
+  animateSpaceBuddy('tail-chase');
   renderSpaceBuddy();
 }
 
@@ -2573,48 +2671,45 @@ function claimOfflineSnack() {
   localStorage.setItem(SPACE_BUDDY_LAST_SEEN_KEY, String(Date.now()));
 }
 
-function startSpaceBuddyGame() {
-  if (localStorage.getItem(SPACE_BUDDY_GAME_DATE_KEY) === spaceBuddyToday()) return;
-  spaceBuddyHopScore = 0;
-  const mini = document.getElementById('space-buddy-mini');
-  const score = document.getElementById('space-buddy-score');
-  if (score) score.textContent = '0';
-  if (mini) mini.classList.add('visible');
+function toggleSpaceBuddy() {
+  const card = document.getElementById('space-buddy-card');
+  if (!card) return;
+  card.classList.toggle('visible');
+  renderSpaceBuddy();
+  if (card.classList.contains('visible')) animateSpaceBuddy('lookout');
 }
 
-function hopSpaceBuddy() {
-  if (localStorage.getItem(SPACE_BUDDY_GAME_DATE_KEY) === spaceBuddyToday()) return;
-  spaceBuddyHopScore += 5;
-  const score = document.getElementById('space-buddy-score');
-  if (score) score.textContent = String(Math.min(50, spaceBuddyHopScore));
+function animateSpaceBuddy(mode) {
+  const dog = document.getElementById('space-buddy-dog');
+  if (!dog) return;
+  dog.classList.remove('run-left', 'run-right', 'sleep', 'tail-chase', 'lookout');
+  void dog.offsetWidth;
+  if (mode) dog.classList.add(mode);
+}
 
-  const pet = document.querySelector('.space-buddy-pet');
-  if (pet) {
-    pet.style.transform = 'translateY(-18px)';
-    setTimeout(() => { pet.style.transform = ''; }, 120);
-  }
-
-  if (spaceBuddyHopScore >= 50) {
-    localStorage.setItem(SPACE_BUDDY_GAME_DATE_KEY, spaceBuddyToday());
-    const mini = document.getElementById('space-buddy-mini');
-    if (mini) mini.classList.remove('visible');
-    spaceBuddyAwardFood(1);
-    playWin95Sound('tada');
-  }
+function startSpaceBuddyIdleCycle() {
+  const moods = ['lookout', 'run-left', 'sleep', 'tail-chase', 'run-right'];
+  let i = 0;
+  if (spaceBuddyIdleTimer) clearInterval(spaceBuddyIdleTimer);
+  spaceBuddyIdleTimer = setInterval(() => {
+    const card = document.getElementById('space-buddy-card');
+    if (!card || !card.classList.contains('visible')) return;
+    animateSpaceBuddy(moods[i % moods.length]);
+    i += 1;
+  }, 6500);
 }
 
 function initSpaceBuddy() {
   const feedBtn = document.getElementById('space-buddy-feed-btn');
   const claimBtn = document.getElementById('space-buddy-claim-btn');
-  const gameBtn = document.getElementById('space-buddy-game-btn');
-  const hopBtn = document.getElementById('space-buddy-hop-btn');
+  const buddyBtn = document.getElementById('space-buddy-sidebar-btn');
 
   if (feedBtn) feedBtn.addEventListener('click', feedSpaceBuddy);
   if (claimBtn) claimBtn.addEventListener('click', claimOfflineSnack);
-  if (gameBtn) gameBtn.addEventListener('click', startSpaceBuddyGame);
-  if (hopBtn) hopBtn.addEventListener('click', hopSpaceBuddy);
+  if (buddyBtn) buddyBtn.addEventListener('click', toggleSpaceBuddy);
 
   renderSpaceBuddy();
+  startSpaceBuddyIdleCycle();
   window.addEventListener('beforeunload', () => {
     localStorage.setItem(SPACE_BUDDY_LAST_SEEN_KEY, String(Date.now()));
   });
@@ -2624,7 +2719,6 @@ function initSpaceBuddy() {
   });
 }
 initSpaceBuddy();
-
 
 // ── DRAG TO REORDER ──
 function addDragToSidebar(){const list=document.getElementById('sidebar-channel-list');let src=null;list.querySelectorAll('.sidebar-channel').forEach((c,i)=>{c.setAttribute('draggable','true');c.dataset.index=i;c.addEventListener('dragstart',function(e){src=this;e.dataTransfer.effectAllowed='move';setTimeout(()=>this.classList.add('dragging'),0);});c.addEventListener('dragend',function(){this.classList.remove('dragging');list.querySelectorAll('.sidebar-channel').forEach(x=>x.classList.remove('drag-over'));});c.addEventListener('dragover',function(e){e.preventDefault();list.querySelectorAll('.sidebar-channel').forEach(x=>x.classList.remove('drag-over'));if(this!==src)this.classList.add('drag-over');});c.addEventListener('drop',function(e){e.stopPropagation();if(this===src)return;const fromIdx=parseInt(src.dataset.index),toIdx=parseInt(this.dataset.index),moved=channels.splice(fromIdx,1)[0];channels.splice(toIdx,0,moved);saveChannels();renderSidebar();try{const ca=JSON.parse(localStorage.getItem('ff_feed_cache'));if(ca&&ca.length>0)displayFeed(ca);else{localStorage.removeItem('ff_feed_cache');localStorage.removeItem('ff_feed_date');renderFeed(true);}}catch(err){renderFeed(true);}});});}
