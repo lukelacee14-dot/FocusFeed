@@ -555,32 +555,62 @@
   body.xbox-theme .goal-item{background:rgba(0,0,0,0.5) !important;border:1px solid rgba(240,165,0,0.25) !important;}
   body.xbox-theme .goal-checkbox{border-color:#f0a500 !important;}
   body.xbox-theme .goal-achieved .goal-checkbox{background:#f0a500 !important;}
-  body.xbox-theme .screen.active{background:transparent !important;border:none !important;outline:none !important;margin:0 !important;overflow:visible !important;}
+  body.xbox-theme .screen.active{background:transparent !important;border:none !important;outline:none !important;margin:0 !important;}
   /* Xbox home layout */
-  body.xbox-theme #main{overflow:visible !important;}
-  body.xbox-theme #home-screen{position:relative;overflow:visible;transition:background 0.4s ease;}
+  body.xbox-theme #home-screen{position:relative;overflow:hidden;transition:background 0.4s ease;}
   body.xbox-theme .channels-header{display:none !important;}
   body.xbox-theme #feed-container{display:none !important;}
-  #xbox-layout{display:none;flex:1;position:relative;z-index:1;overflow:visible;min-height:0;}
+  #xbox-layout{display:none;flex:1;position:relative;z-index:1;overflow:hidden;min-height:0;}
   body.xbox-theme #xbox-layout{display:flex;height:100%;align-items:stretch;}
   /* Centred narrower content */
   .xbox-centre{max-width:720px;margin:0 auto;}
   /* Xbox tabs */
-  .xbox-side-tabs{position:relative;flex-shrink:0;align-self:stretch;display:block;overflow:visible;width:90px;}
-  .xbox-side-tab{writing-mode:vertical-rl;text-orientation:mixed;position:absolute;top:8%;bottom:8%;width:54px;display:flex;align-items:center;justify-content:center;background:linear-gradient(to right,#e0deda,#ceccc6,#bcbab4);border:1.5px solid #aaa8a2;box-sizing:border-box;cursor:pointer;transition:transform 0.2s ease;overflow:hidden;}
-  .xbox-tab-label{writing-mode:vertical-rl;text-orientation:mixed;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:10px 5px;border-radius:8px;white-space:nowrap;overflow:hidden;max-height:120px;text-overflow:ellipsis;flex-shrink:0;}
-  .xbox-left-tabs .xbox-side-tab{border-radius:0 14px 14px 0;border-left:none;left:0;box-shadow:4px 0 12px rgba(0,0,0,0.35);}
-  .xbox-left-tabs .xbox-side-tab:nth-child(1){z-index:5;transform:translateX(0);}
-  .xbox-left-tabs .xbox-side-tab:nth-child(2){z-index:4;transform:translateX(-18px);filter:brightness(0.93);}
-  .xbox-left-tabs .xbox-side-tab:nth-child(3){z-index:3;transform:translateX(-32px);filter:brightness(0.86);}
-  .xbox-left-tabs .xbox-side-tab:nth-child(4){z-index:2;transform:translateX(-44px);filter:brightness(0.79);}
-  .xbox-left-tabs .xbox-side-tab:hover{transform:translateX(10px) !important;filter:brightness(1.05) !important;z-index:10 !important;}
-  .xbox-right-tabs .xbox-side-tab{border-radius:14px 0 0 14px;border-right:none;right:0;box-shadow:-4px 0 12px rgba(0,0,0,0.35);}
-  .xbox-right-tabs .xbox-side-tab:nth-child(1){z-index:5;transform:translateX(0);}
-  .xbox-right-tabs .xbox-side-tab:nth-child(2){z-index:4;transform:translateX(18px);filter:brightness(0.93);}
-  .xbox-right-tabs .xbox-side-tab:nth-child(3){z-index:3;transform:translateX(32px);filter:brightness(0.86);}
-  .xbox-right-tabs .xbox-side-tab:nth-child(4){z-index:2;transform:translateX(44px);filter:brightness(0.79);}
-  .xbox-right-tabs .xbox-side-tab:hover{transform:translateX(-10px) !important;filter:brightness(1.05) !important;z-index:10 !important;}
+  .xbox-side-tabs{
+    flex-shrink:0;
+    align-self:stretch;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:8px;
+    padding:12px 0;
+    width:60px;
+    overflow:hidden;
+  }
+  .xbox-side-tab{
+    width:52px;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(to right,#e0deda,#ceccc6,#bcbab4);
+    border:1.5px solid #aaa8a2;
+    box-sizing:border-box;
+    cursor:pointer;
+    transition:transform 0.15s ease, filter 0.15s ease;
+    flex-shrink:0;
+    box-shadow:3px 0 8px rgba(0,0,0,0.25);
+  }
+  .xbox-tab-label{
+    writing-mode:vertical-rl;
+    text-orientation:mixed;
+    font-family:'Exo 2',sans-serif;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:8px 4px;
+    border-radius:6px;
+    white-space:nowrap;
+    overflow:hidden;
+    max-height:54px;
+    text-overflow:ellipsis;
+  }
+  .xbox-left-tabs{align-items:flex-start;}
+  .xbox-left-tabs .xbox-side-tab{border-radius:0 10px 10px 0;border-left:none;}
+  .xbox-left-tabs .xbox-side-tab:hover{transform:translateX(4px);filter:brightness(1.08);}
+  .xbox-right-tabs{align-items:flex-end;}
+  .xbox-right-tabs .xbox-side-tab{border-radius:10px 0 0 10px;border-right:none;box-shadow:-3px 0 8px rgba(0,0,0,0.25);}
+  .xbox-right-tabs .xbox-side-tab:hover{transform:translateX(-4px);filter:brightness(1.08);}
   /* Xbox centre */
   .xbox-centre{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;max-width:700px;margin:0 auto;}
   .xbox-channel-header{display:flex;align-items:center;justify-content:center;gap:12px;padding:14px 20px 10px;border-bottom:1px solid rgba(255,200,80,0.25);flex-shrink:0;}
