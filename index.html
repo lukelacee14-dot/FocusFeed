@@ -561,34 +561,37 @@
   body.xbox-theme .channels-header{display:none !important;}
   body.xbox-theme #feed-container{display:none !important;}
   #xbox-layout{display:none;flex:1;position:relative;z-index:1;overflow:hidden;min-height:0;}
-  body.xbox-theme #xbox-layout{display:flex;height:100%;}
+  body.xbox-theme #xbox-layout{display:flex;height:100%;align-items:stretch;}
+  /* Centred narrower content */
+  .xbox-centre{max-width:720px;margin:0 auto;}
   /* Xbox tabs */
-  .xbox-side-tabs{position:relative;width:52px;flex-shrink:0;align-self:stretch;display:block;overflow:visible;}
-  .xbox-side-tab{writing-mode:vertical-rl;text-orientation:mixed;position:absolute;top:0;bottom:0;width:36px;display:flex;align-items:center;justify-content:center;padding:20px 8px;color:#fff;font-family:'Exo 2',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box;transition:transform 0.2s ease,filter 0.2s ease;text-shadow:0 1px 3px rgba(0,0,0,0.5);}
-  .xbox-left-tabs .xbox-side-tab{border-radius:0 12px 12px 0;border-right:2px solid rgba(255,255,255,0.3);border-top:1px solid rgba(255,255,255,0.2);border-bottom:1px solid rgba(255,255,255,0.2);left:0;}
+  .xbox-side-tabs{position:relative;flex-shrink:0;align-self:stretch;display:block;overflow:visible;width:68px;}
+  .xbox-side-tab{writing-mode:vertical-rl;text-orientation:mixed;position:absolute;top:8%;bottom:8%;width:54px;display:flex;align-items:center;justify-content:center;background:linear-gradient(to right,#e0deda,#ceccc6,#bcbab4);border:1.5px solid #aaa8a2;box-sizing:border-box;cursor:pointer;transition:transform 0.2s ease;overflow:hidden;}
+  .xbox-tab-label{writing-mode:vertical-rl;text-orientation:mixed;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:10px 5px;border-radius:8px;white-space:nowrap;overflow:hidden;max-height:120px;text-overflow:ellipsis;flex-shrink:0;}
+  .xbox-left-tabs .xbox-side-tab{border-radius:0 14px 14px 0;border-left:none;left:0;box-shadow:4px 0 12px rgba(0,0,0,0.35);}
   .xbox-left-tabs .xbox-side-tab:nth-child(1){z-index:5;transform:translateX(0);}
-  .xbox-left-tabs .xbox-side-tab:nth-child(2){z-index:4;transform:translateX(-14px);filter:brightness(0.85);}
-  .xbox-left-tabs .xbox-side-tab:nth-child(3){z-index:3;transform:translateX(-24px);filter:brightness(0.7);}
-  .xbox-left-tabs .xbox-side-tab:nth-child(4){z-index:2;transform:translateX(-32px);filter:brightness(0.55);}
-  .xbox-left-tabs .xbox-side-tab:hover{transform:translateX(8px) !important;filter:brightness(1.1) !important;z-index:10 !important;}
-  .xbox-right-tabs .xbox-side-tab{border-radius:12px 0 0 12px;border-left:2px solid rgba(255,255,255,0.3);border-top:1px solid rgba(255,255,255,0.2);border-bottom:1px solid rgba(255,255,255,0.2);right:0;}
+  .xbox-left-tabs .xbox-side-tab:nth-child(2){z-index:4;transform:translateX(-18px);filter:brightness(0.93);}
+  .xbox-left-tabs .xbox-side-tab:nth-child(3){z-index:3;transform:translateX(-32px);filter:brightness(0.86);}
+  .xbox-left-tabs .xbox-side-tab:nth-child(4){z-index:2;transform:translateX(-44px);filter:brightness(0.79);}
+  .xbox-left-tabs .xbox-side-tab:hover{transform:translateX(10px) !important;filter:brightness(1.05) !important;z-index:10 !important;}
+  .xbox-right-tabs .xbox-side-tab{border-radius:14px 0 0 14px;border-right:none;right:0;box-shadow:-4px 0 12px rgba(0,0,0,0.35);}
   .xbox-right-tabs .xbox-side-tab:nth-child(1){z-index:5;transform:translateX(0);}
-  .xbox-right-tabs .xbox-side-tab:nth-child(2){z-index:4;transform:translateX(14px);filter:brightness(0.85);}
-  .xbox-right-tabs .xbox-side-tab:nth-child(3){z-index:3;transform:translateX(24px);filter:brightness(0.7);}
-  .xbox-right-tabs .xbox-side-tab:nth-child(4){z-index:2;transform:translateX(32px);filter:brightness(0.55);}
-  .xbox-right-tabs .xbox-side-tab:hover{transform:translateX(-8px) !important;filter:brightness(1.1) !important;z-index:10 !important;}
+  .xbox-right-tabs .xbox-side-tab:nth-child(2){z-index:4;transform:translateX(18px);filter:brightness(0.93);}
+  .xbox-right-tabs .xbox-side-tab:nth-child(3){z-index:3;transform:translateX(32px);filter:brightness(0.86);}
+  .xbox-right-tabs .xbox-side-tab:nth-child(4){z-index:2;transform:translateX(44px);filter:brightness(0.79);}
+  .xbox-right-tabs .xbox-side-tab:hover{transform:translateX(-10px) !important;filter:brightness(1.05) !important;z-index:10 !important;}
   /* Xbox centre */
-  .xbox-centre{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-  .xbox-channel-header{display:flex;align-items:center;gap:12px;padding:16px 20px 12px;border-bottom:1px solid rgba(255,200,80,0.25);flex-shrink:0;}
+  .xbox-centre{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;max-width:700px;margin:0 auto;}
+  .xbox-channel-header{display:flex;align-items:center;justify-content:center;gap:12px;padding:14px 20px 10px;border-bottom:1px solid rgba(255,200,80,0.25);flex-shrink:0;}
   .xbox-channel-icon{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,200,80,0.5);flex-shrink:0;}
   .xbox-channel-icon-placeholder{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.4);border:2px solid rgba(255,200,80,0.5);display:flex;align-items:center;justify-content:center;color:#f0a500;font-size:15px;font-weight:600;flex-shrink:0;}
   .xbox-channel-name-text{font-size:18px;font-weight:700;color:#fff;letter-spacing:0.08em;text-transform:uppercase;font-family:'Exo 2',sans-serif;text-shadow:0 1px 8px rgba(0,0,0,0.6);}
   .xbox-video-list{flex:1;overflow-y:auto;padding:12px 20px 20px;scrollbar-width:thin;scrollbar-color:rgba(240,165,0,0.4) transparent;}
-  .xbox-video-item{display:flex;gap:16px;align-items:flex-start;padding:12px 14px;margin-bottom:10px;background:rgba(255,180,20,0.12);border:1px solid rgba(255,220,80,0.25);border-radius:16px;cursor:pointer;transition:background 0.15s,border-color 0.15s,transform 0.12s;backdrop-filter:blur(2px);}
-  .xbox-video-item:hover{background:rgba(255,180,20,0.22);border-color:rgba(255,220,80,0.55);transform:translateX(3px);}
-  .xbox-video-item:first-child{background:rgba(255,180,20,0.18);border-color:rgba(255,220,80,0.4);padding:16px;margin-bottom:12px;border-radius:18px;}
-  .xbox-video-thumb{width:140px;flex-shrink:0;aspect-ratio:16/9;object-fit:cover;border-radius:10px;border:1px solid rgba(240,165,0,0.25);}
-  .xbox-video-item:first-child .xbox-video-thumb{width:180px;}
+  .xbox-video-item{display:flex;gap:12px;align-items:center;padding:8px 12px;margin-bottom:7px;background:rgba(255,180,20,0.1);border:1px solid rgba(255,220,80,0.2);border-radius:12px;cursor:pointer;transition:background 0.15s,border-color 0.15s,transform 0.12s;}
+  .xbox-video-item:hover{background:rgba(255,180,20,0.2);border-color:rgba(255,220,80,0.5);transform:translateX(2px);}
+  .xbox-video-item:first-child{background:rgba(255,180,20,0.15);border-color:rgba(255,220,80,0.35);padding:10px 12px;margin-bottom:9px;}
+  .xbox-video-thumb{width:100px;flex-shrink:0;aspect-ratio:16/9;object-fit:cover;border-radius:8px;border:1px solid rgba(240,165,0,0.2);}
+  .xbox-video-item:first-child .xbox-video-thumb{width:130px;}
   .xbox-video-details{flex:1;min-width:0;}
   .xbox-video-title{font-size:14px;font-weight:500;color:#fff;line-height:1.4;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .xbox-video-item:first-child .xbox-video-title{font-size:16px;}
@@ -2068,14 +2071,29 @@ function renderXboxDashboard(videos){
   if(!isXbox()||!videos)return;
   xboxFeedData=videos;
   const activeColour=XBOX_COLOURS[xboxActiveChannel%XBOX_COLOURS.length];
-  document.getElementById('home-screen').style.background=activeColour.bg;
+  // Apply background colour to home screen fully
+  const _hs=document.getElementById('home-screen');
+  if(_hs){
+    _hs.style.background=activeColour.bg;
+    _hs.style.backgroundSize='100% 100%';
+    _hs.style.transition='background 0.4s ease';
+  }
   const leftEl=document.getElementById('xbox-left-tabs'),rightEl=document.getElementById('xbox-right-tabs'),headerEl=document.getElementById('xbox-channel-header'),listEl=document.getElementById('xbox-video-list');
   if(!leftEl||!rightEl||!headerEl||!listEl)return;
   const ch=channels[xboxActiveChannel];if(!ch)return;
   const leftChs=[],rightChs=[];
   channels.forEach((c,i)=>{if(i<xboxActiveChannel)leftChs.push({ch:c,i});if(i>xboxActiveChannel)rightChs.push({ch:c,i});});
-  leftEl.innerHTML=leftChs.slice(-4).reverse().map(({ch:c,i})=>{const col=XBOX_COLOURS[i%XBOX_COLOURS.length];return`<div class="xbox-side-tab" data-ch-index="${i}" style="background:${col.tab};color:${col.tabText}" title="${esc(c.name)}">${esc(c.name.length>12?c.name.slice(0,12)+'…':c.name)}</div>`;}).join('');
-  rightEl.innerHTML=rightChs.slice(0,4).map(({ch:c,i})=>{const col=XBOX_COLOURS[i%XBOX_COLOURS.length];return`<div class="xbox-side-tab" data-ch-index="${i}" style="background:${col.tab};color:${col.tabText}" title="${esc(c.name)}">${esc(c.name.length>12?c.name.slice(0,12)+'…':c.name)}</div>`;}).join('');
+  // Grey tabs with coloured name bubble inside, all visible
+  leftEl.innerHTML=leftChs.slice(-4).reverse().map(({ch:c,i})=>{
+    const col=XBOX_COLOURS[i%XBOX_COLOURS.length];
+    const label=c.name.length>11?c.name.slice(0,11)+'…':c.name;
+    return`<div class="xbox-side-tab" data-ch-index="${i}" title="${esc(c.name)}"><span class="xbox-tab-label" style="background:${col.tab};color:${col.tabText}">${esc(label)}</span></div>`;
+  }).join('');
+  rightEl.innerHTML=rightChs.slice(0,4).map(({ch:c,i})=>{
+    const col=XBOX_COLOURS[i%XBOX_COLOURS.length];
+    const label=c.name.length>11?c.name.slice(0,11)+'…':c.name;
+    return`<div class="xbox-side-tab" data-ch-index="${i}" title="${esc(c.name)}"><span class="xbox-tab-label" style="background:${col.tab};color:${col.tabText}">${esc(label)}</span></div>`;
+  }).join('');
   document.querySelectorAll('.xbox-side-tab').forEach(tab=>{tab.addEventListener('click',()=>{const newIdx=parseInt(tab.dataset.chIndex);if(newIdx<xboxActiveChannel)playXboxSound('pageLeft');else playXboxSound('pageRight');xboxActiveChannel=newIdx;renderXboxDashboard(xboxFeedData);});});
   headerEl.style.background=`linear-gradient(to right,${activeColour.tab}cc,transparent)`;
   headerEl.innerHTML=`${ch.thumb?`<img src="${ch.thumb}" class="xbox-channel-icon" alt="">` :`<div class="xbox-channel-icon-placeholder">${ch.name[0]}</div>`}<span class="xbox-channel-name-text">${esc(ch.name)}</span>`;
