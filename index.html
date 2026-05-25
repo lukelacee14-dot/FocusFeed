@@ -319,6 +319,100 @@
     font-size: 13px;
     border-radius: 8px !important;
   }
+
+  /* ── WIN95 THEME OVERRIDES ── */
+  body.win95-theme #sidebar { background: #c0c0c0; border-right-color: #808080; }
+  body.win95-theme #main { background: #008080; }
+  body.win95-theme .wordmark { color: #000000; }
+  body.win95-theme .wordmark em { color: #000080; }
+  body.win95-theme .header-sub,
+  body.win95-theme .timer-label,
+  body.win95-theme .sidebar-ch-name,
+  body.win95-theme .section-label { color: #444444; }
+  body.win95-theme .timer-value,
+  body.win95-theme #sidebar-quota { color: #000080; }
+  body.win95-theme .channel-card {
+    background: #c0c0c0;
+    margin-bottom: 3px;
+    border-radius: 0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    outline: 1px solid #000000;
+    padding: 10px 14px;
+  }
+  body.win95-theme .channel-name { color: #000000; }
+  body.win95-theme .channel-meta { color: #444444; }
+  body.win95-theme .video-tile .tile-thumb-wrap { border-radius: 0; }
+
+  /* Win95 raised button — applied to EVERY interactive element */
+  body.win95-theme .add-btn,
+  body.win95-theme .sort-pill,
+  body.win95-theme .load-more-btn,
+  body.win95-theme .search-btn,
+  body.win95-theme .sidebar-add-btn,
+  body.win95-theme #sidebar-search-btn,
+  body.win95-theme .settings-action-btn,
+  body.win95-theme .settings-danger-btn,
+  body.win95-theme .api-save-btn,
+  body.win95-theme .done-back-btn,
+  body.win95-theme .back-btn,
+  body.win95-theme .icon-btn,
+  body.win95-theme .empty-cta {
+    background: #c0c0c0 !important;
+    color: #000000 !important;
+    border-radius: 0 !important;
+    border: 2px solid !important;
+    border-color: #ffffff #808080 #808080 #ffffff !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+    box-shadow: 1px 1px 0 #000000 !important;
+    outline: 1px solid #000000 !important;
+    cursor: pointer;
+  }
+  body.win95-theme .add-btn:hover,
+  body.win95-theme .sort-pill:hover,
+  body.win95-theme .load-more-btn:hover,
+  body.win95-theme .search-btn:hover,
+  body.win95-theme .sidebar-add-btn:hover,
+  body.win95-theme #sidebar-search-btn:hover,
+  body.win95-theme .settings-action-btn:hover,
+  body.win95-theme .api-save-btn:hover,
+  body.win95-theme .done-back-btn:hover,
+  body.win95-theme .empty-cta:hover {
+    background: #d4d0c8 !important;
+    color: #000000 !important;
+    border-color: #ffffff #808080 #808080 #ffffff !important;
+  }
+  body.win95-theme .add-btn:active,
+  body.win95-theme .sort-pill:active,
+  body.win95-theme .load-more-btn:active,
+  body.win95-theme .search-btn:active,
+  body.win95-theme .sidebar-add-btn:active,
+  body.win95-theme #sidebar-search-btn:active,
+  body.win95-theme .api-save-btn:active,
+  body.win95-theme .done-back-btn:active,
+  body.win95-theme .empty-cta:active {
+    border-color: #808080 #ffffff #ffffff #808080 !important;
+    box-shadow: none !important;
+    outline: 1px solid #000000 !important;
+    transform: translate(1px, 1px);
+  }
+  body.win95-theme .sort-pill.active {
+    background: #b0b0b0 !important;
+    border-color: #808080 #ffffff #ffffff #808080 !important;
+    box-shadow: inset 1px 1px 3px #00000050 !important;
+    outline: 1px solid #000000 !important;
+    color: #000000 !important;
+  }
+  /* Win95 search/input fields — inset look */
+  body.win95-theme .search-input,
+  body.win95-theme .api-input {
+    border-radius: 0 !important;
+    border: 2px solid !important;
+    border-color: #808080 #ffffff #ffffff #808080 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: inset 1px 1px 2px #00000030 !important;
+  }
 </style>
 </head>
 <body>
