@@ -1502,6 +1502,13 @@ async function fetchVideos() {
   nextPageToken = ''; // empty string = first page, null = no more pages
   try {
     await fetchUntil(PAGE_SIZE, false);
+    // Save fetched videos to channel cache
+    if (currentChannel && allVideos.length > 0) {
+      try {
+        localStorage.setItem('ys_ch_' + currentChannel.id, JSON.stringify(allVideos));
+        localStorage.setItem('ys_ch_ts_' + currentChannel.id, String(Date.now()));
+      } catch(e) {}
+    }
     displayedCount = 0;
     renderGrid();
   } catch(e) {
