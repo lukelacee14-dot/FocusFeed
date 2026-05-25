@@ -553,8 +553,30 @@
     font-family: 'Exo 2', 'Inter', sans-serif !important;
   }
   body.xbox-theme #sidebar {
-    background: rgba(15,10,0,0.9) !important;
-    border-right: 1px solid rgba(200,140,40,0.3) !important;
+    background: linear-gradient(to bottom, #d8d6cf, #c8c6bf, #b8b6b0) !important;
+    border-right: 2px solid #a0a098 !important;
+  }
+  body.xbox-theme .sidebar-header { border-bottom: 1px solid #a0a098 !important; }
+  body.xbox-theme .sidebar-timer { border-bottom: 1px solid #a0a098 !important; }
+  body.xbox-theme .timer-label, body.xbox-theme .section-label { color: #333 !important; }
+  body.xbox-theme .timer-value, body.xbox-theme #sidebar-quota { color: #4a3000 !important; font-weight: 700 !important; }
+  body.xbox-theme .sidebar-ch-name { color: #1a1a1a !important; font-family: 'Exo 2',sans-serif !important; font-size: 12px !important; letter-spacing: 0.04em !important; }
+  body.xbox-theme .sidebar-channel { border-radius: 0 !important; }
+  body.xbox-theme .sidebar-channel:hover, body.xbox-theme .sidebar-channel.active {
+    background: rgba(0,0,0,0.12) !important;
+    border-left: 3px solid #6a4a10 !important;
+  }
+  body.xbox-theme .wordmark { color: #1a1a1a !important; text-shadow: none !important; }
+  body.xbox-theme .wordmark em { color: #6a3a00 !important; }
+  body.xbox-theme .header-sub { color: #444 !important; }
+  body.xbox-theme .add-btn, body.xbox-theme .sidebar-add-btn,
+  body.xbox-theme #yourday-sidebar-btn, body.xbox-theme #sidebar-search-btn {
+    background: linear-gradient(to bottom, #e8e6df, #d4d2cb) !important;
+    color: #2a2a2a !important;
+    border: 1px solid #a0a098 !important;
+    border-radius: 4px !important;
+    font-family: 'Exo 2',sans-serif !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
   }
   body.xbox-theme .wordmark {
     font-family: 'DM Serif Display', serif !important;
@@ -637,70 +659,103 @@
     position: relative;
     z-index: 1;
     overflow: hidden;
+    min-height: 0;
   }
-  body.xbox-theme #xbox-layout { display: flex; height: 100%; }
+  body.xbox-theme #xbox-layout { display: flex; height: 100%; overflow: hidden; }
 
   /* Left side tabs */
 /* xbox-side-tabs defined in tab section above */
 
-  /* Xbox side tabs — layered page effect */
+  /* Xbox side tabs — overlapping card fan effect */
   .xbox-side-tabs {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     position: relative;
-    width: 36px;
+    width: 42px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
   }
-  .xbox-left-tabs { align-items: flex-start; }
-  .xbox-right-tabs { align-items: flex-end; }
+  .xbox-left-tabs { justify-content: flex-start; }
+  .xbox-right-tabs { justify-content: flex-end; }
 
   .xbox-side-tab {
     writing-mode: vertical-rl;
     text-orientation: mixed;
-    padding: 16px 8px;
-    background: linear-gradient(135deg, #e8e6e0 0%, #d0cec8 40%, #bcbab4 100%);
-    border: 1px solid #a8a6a0;
-    color: #2a2a2a;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    position: absolute;
+    height: 120px;
+    width: 34px;
+    padding: 14px 8px;
+    background: linear-gradient(to bottom, #e8e6df, #d4d2cb, #c0beb8);
+    border: 1px solid #a0a098;
+    color: #222;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     cursor: pointer;
     white-space: nowrap;
     overflow: hidden;
-    max-height: 110px;
-    text-overflow: ellipsis;
-    position: relative;
-    transition: transform 0.15s, background 0.15s;
-    width: 30px;
+    text-overflow: clip;
     box-sizing: border-box;
+    transition: transform 0.18s ease, z-index 0s;
   }
-  /* Left tabs — curve on right side, stack offset left */
-  .xbox-left-tabs .xbox-side-tab {
-    border-radius: 0 8px 8px 0;
-    border-left: none;
-    margin-bottom: -4px;
-    box-shadow: 3px 2px 8px rgba(0,0,0,0.35), inset -1px 0 3px rgba(255,255,255,0.4);
-    transform-origin: left center;
-  }
-  .xbox-left-tabs .xbox-side-tab:nth-child(1) { z-index: 3; transform: translateX(0px); }
-  .xbox-left-tabs .xbox-side-tab:nth-child(2) { z-index: 2; transform: translateX(-4px); background: linear-gradient(135deg,#dddbd5 0%,#c8c6c0 100%); }
-  .xbox-left-tabs .xbox-side-tab:nth-child(3) { z-index: 1; transform: translateX(-8px); background: linear-gradient(135deg,#d2d0ca 0%,#bebcb6 100%); }
-  .xbox-left-tabs .xbox-side-tab:hover { transform: translateX(4px) !important; background: linear-gradient(135deg,#f0eeea 0%,#dddbd6 100%) !important; z-index: 10 !important; }
 
-  /* Right tabs — curve on left side */
-  .xbox-right-tabs .xbox-side-tab {
-    border-radius: 8px 0 0 8px;
-    border-right: none;
-    margin-bottom: -4px;
-    box-shadow: -3px 2px 8px rgba(0,0,0,0.35), inset 1px 0 3px rgba(255,255,255,0.4);
-    transform-origin: right center;
-    direction: rtl;
+  /* LEFT tabs — open on right side, fan leftward */
+  .xbox-left-tabs .xbox-side-tab {
+    border-radius: 0 10px 10px 0;
+    border-left: none;
+    left: 0;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
   }
-  .xbox-right-tabs .xbox-side-tab:nth-child(1) { z-index: 3; transform: translateX(0px); }
-  .xbox-right-tabs .xbox-side-tab:nth-child(2) { z-index: 2; transform: translateX(4px); background: linear-gradient(135deg,#dddbd5 0%,#c8c6c0 100%); }
-  .xbox-right-tabs .xbox-side-tab:nth-child(3) { z-index: 1; transform: translateX(8px); background: linear-gradient(135deg,#d2d0ca 0%,#bebcb6 100%); }
-  .xbox-right-tabs .xbox-side-tab:hover { transform: translateX(-4px) !important; background: linear-gradient(135deg,#f0eeea 0%,#dddbd6 100%) !important; z-index: 10 !important; }
+  /* Front tab fully visible */
+  .xbox-left-tabs .xbox-side-tab:nth-child(1) {
+    z-index: 5;
+    transform: translateX(0);
+  }
+  /* Middle tab mostly hidden, just edge showing */
+  .xbox-left-tabs .xbox-side-tab:nth-child(2) {
+    z-index: 4;
+    transform: translateX(-22px);
+    background: linear-gradient(to bottom, #dddbd4, #cac8c1, #b6b4ae);
+  }
+  /* Back tab barely a sliver */
+  .xbox-left-tabs .xbox-side-tab:nth-child(3) {
+    z-index: 3;
+    transform: translateX(-30px);
+    background: linear-gradient(to bottom, #d0cec7, #bcbab3, #a8a6a0);
+  }
+  .xbox-left-tabs .xbox-side-tab:hover {
+    transform: translateX(6px) !important;
+    z-index: 10 !important;
+    background: linear-gradient(to bottom, #f2f0e9, #e0deda, #cccac4) !important;
+  }
+
+  /* RIGHT tabs — open on left side, fan rightward */
+  .xbox-right-tabs .xbox-side-tab {
+    border-radius: 10px 0 0 10px;
+    border-right: none;
+    right: 0;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  .xbox-right-tabs .xbox-side-tab:nth-child(1) {
+    z-index: 5;
+    transform: translateX(0);
+  }
+  .xbox-right-tabs .xbox-side-tab:nth-child(2) {
+    z-index: 4;
+    transform: translateX(22px);
+    background: linear-gradient(to bottom, #dddbd4, #cac8c1, #b6b4ae);
+  }
+  .xbox-right-tabs .xbox-side-tab:nth-child(3) {
+    z-index: 3;
+    transform: translateX(30px);
+    background: linear-gradient(to bottom, #d0cec7, #bcbab3, #a8a6a0);
+  }
+  .xbox-right-tabs .xbox-side-tab:hover {
+    transform: translateX(-6px) !important;
+    z-index: 10 !important;
+    background: linear-gradient(to bottom, #f2f0e9, #e0deda, #cccac4) !important;
+  }
 
   /* Centre content area */
   .xbox-centre {
