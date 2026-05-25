@@ -940,6 +940,13 @@ function showSettings() {
   document.getElementById('settings-api-error').classList.remove('visible');
   renderThemePanel();
   showScreen('settings-screen');
+  // Always open on Customise tab
+  document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.remove('active'));
+  const firstTab = document.querySelector('[data-tab="customise"]');
+  const firstContent = document.getElementById('tab-customise');
+  if (firstTab) firstTab.classList.add('active');
+  if (firstContent) firstContent.classList.add('active');
 }
 
 // ── Setup ──
@@ -1899,15 +1906,7 @@ document.querySelectorAll('.settings-tab').forEach(tab => {
   });
 });
 
-// Reset to customise tab when opening settings
-const _origShowSettings = showSettings;
-function showSettings() {
-  _origShowSettings();
-  document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.remove('active'));
-  document.querySelector('[data-tab="customise"]').classList.add('active');
-  document.getElementById('tab-customise').classList.add('active');
-}
+// Settings tab reset handled inside showSettings()
 </script>
 </body>
 </html>
