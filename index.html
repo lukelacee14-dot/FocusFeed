@@ -798,6 +798,212 @@
     color: rgba(255,255,255,0.4);
     font-size: 13px;
   }
+
+  /* ── SPACE BUDDY ── */
+  .space-buddy-card {
+    margin-top: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .space-buddy-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .space-buddy-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--text);
+  }
+  .space-buddy-title em { color: var(--accent); font-style: italic; }
+  .space-buddy-sub {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .space-buddy-stage {
+    min-height: 150px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background:
+      radial-gradient(circle at 25% 20%, rgba(200,184,154,0.12), transparent 24%),
+      radial-gradient(circle at 75% 12%, rgba(255,255,255,0.08), transparent 18%),
+      linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.12));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .space-buddy-stage::before,
+  .space-buddy-stage::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(232,228,220,0.45);
+    box-shadow: 42px 20px 0 rgba(232,228,220,0.2), 88px -12px 0 rgba(232,228,220,0.25), 126px 30px 0 rgba(232,228,220,0.18);
+    width: 3px;
+    height: 3px;
+    top: 28px;
+    left: 34px;
+  }
+  .space-buddy-stage::after {
+    top: auto;
+    left: auto;
+    bottom: 26px;
+    right: 44px;
+    opacity: 0.6;
+  }
+  .space-buddy-pet {
+    width: 82px;
+    height: 82px;
+    border-radius: 44% 44% 50% 50%;
+    background: var(--accent);
+    border: 2px solid rgba(0,0,0,0.22);
+    position: relative;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.28), inset 0 -10px 0 rgba(0,0,0,0.08);
+    animation: spaceBuddyFloat 3.2s ease-in-out infinite;
+  }
+  .space-buddy-pet::before,
+  .space-buddy-pet::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 13px;
+    top: 30px;
+    border-radius: 50%;
+    background: #111;
+  }
+  .space-buddy-pet::before { left: 23px; }
+  .space-buddy-pet::after { right: 23px; }
+  .space-buddy-mouth {
+    position: absolute;
+    left: 50%;
+    top: 50px;
+    width: 18px;
+    height: 9px;
+    border-bottom: 2px solid #111;
+    border-radius: 0 0 18px 18px;
+    transform: translateX(-50%);
+  }
+  .space-buddy-antenna {
+    position: absolute;
+    left: 50%;
+    top: -20px;
+    width: 2px;
+    height: 24px;
+    background: var(--accent2);
+    transform: translateX(-50%);
+  }
+  .space-buddy-antenna::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--text);
+    transform: translateX(-50%);
+    box-shadow: 0 0 12px rgba(232,228,220,0.45);
+  }
+  @keyframes spaceBuddyFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .space-buddy-note {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 12px 0;
+  }
+  .space-buddy-stats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .space-buddy-pill {
+    font-size: 11px;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 10px;
+    background: rgba(255,255,255,0.03);
+  }
+  .space-buddy-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .space-buddy-btn {
+    background: rgba(255,255,255,0.92);
+    color: #111;
+    border: 1.5px solid #111;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  .space-buddy-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+  .space-buddy-mini {
+    margin-top: 12px;
+    display: none;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  .space-buddy-mini.visible { display: block; }
+  .space-buddy-mini-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .space-buddy-score {
+    font-size: 12px;
+    color: var(--muted);
+    flex: 1;
+  }
+  body.win95-theme .space-buddy-card {
+    background: #c0c0c0 !important;
+    border-radius: 0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    outline: 1px solid #000 !important;
+  }
+  body.win95-theme .space-buddy-title,
+  body.win95-theme .space-buddy-note,
+  body.win95-theme .space-buddy-pill,
+  body.win95-theme .space-buddy-score {
+    font-family: 'VT323', monospace !important;
+    color: #000 !important;
+  }
+  body.win95-theme .space-buddy-sub { font-family: 'VT323', monospace !important; color: #444 !important; }
+  body.win95-theme .space-buddy-stage {
+    border-radius: 0 !important;
+    border: 2px solid !important;
+    border-color: #808080 #fff #fff #808080 !important;
+    background: #000080 !important;
+  }
+  body.win95-theme .space-buddy-btn {
+    background: #c0c0c0 !important;
+    color: #000 !important;
+    border-radius: 0 !important;
+    border: 2px solid !important;
+    border-color: #fff #808080 #808080 #fff !important;
+    font-family: 'VT323', monospace !important;
+    box-shadow: 1px 1px 0 #000 !important;
+    outline: 1px solid #000 !important;
+  }
+
 </style>
 </head>
 <body>
@@ -1119,6 +1325,39 @@
           <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Goals achieved today 🎉</div>
           <div id="goals-achieved-list"></div>
         </div>
+        <div class="space-buddy-card" id="space-buddy-card">
+          <div class="space-buddy-head">
+            <div>
+              <div class="space-buddy-title">Space<em>Buddy</em></div>
+              <div class="space-buddy-sub">A quiet little desk friend</div>
+            </div>
+            <div class="space-buddy-sub" id="space-buddy-status">settled</div>
+          </div>
+          <div class="space-buddy-stage">
+            <div class="space-buddy-pet" aria-label="Space Buddy">
+              <div class="space-buddy-antenna"></div>
+              <div class="space-buddy-mouth"></div>
+            </div>
+          </div>
+          <div class="space-buddy-note" id="space-buddy-note">Complete a goal or take time away to earn snacks for your buddy.</div>
+          <div class="space-buddy-stats">
+            <div class="space-buddy-pill">🍪 Food: <span id="space-buddy-food">0</span></div>
+            <div class="space-buddy-pill">🌙 Mood: <span id="space-buddy-mood">quiet</span></div>
+            <div class="space-buddy-pill">🎮 Daily game: <span id="space-buddy-game-state">ready</span></div>
+          </div>
+          <div class="space-buddy-actions">
+            <button class="space-buddy-btn" id="space-buddy-feed-btn">Feed</button>
+            <button class="space-buddy-btn" id="space-buddy-claim-btn">Claim offline snack</button>
+            <button class="space-buddy-btn" id="space-buddy-game-btn">Play tiny hop</button>
+          </div>
+          <div class="space-buddy-mini" id="space-buddy-mini">
+            <div class="space-buddy-mini-row">
+              <div class="space-buddy-score">Hop score: <span id="space-buddy-score">0</span> / 50</div>
+              <button class="space-buddy-btn" id="space-buddy-hop-btn">Hop</button>
+            </div>
+          </div>
+        </div>
+
       </div>
       <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999"></canvas>
     </div>
@@ -2235,12 +2474,157 @@ function saveGoals(d){localStorage.setItem('ys_goals_date',new Date().toISOStrin
 function showYourDay(){showScreen('yourday-screen');document.getElementById('yourday-date').textContent=new Date().toLocaleDateString('en',{weekday:'long',month:'long',day:'numeric'});renderGoals();}
 function renderGoals(){const d=goalsToday(),al=document.getElementById('goals-active-list'),xl=document.getElementById('goals-achieved-list'),em=document.getElementById('goals-empty'),xs=document.getElementById('goals-achieved-section');if(d.active.length===0){al.innerHTML='';em.style.display='block';}else{em.style.display='none';al.innerHTML=d.active.map((g,i)=>`<div class="goal-item" data-index="${i}"><div class="goal-checkbox" data-index="${i}"></div><div class="goal-text">${esc(g)}</div></div>`).join('');al.querySelectorAll('.goal-checkbox').forEach(cb=>cb.addEventListener('click',()=>completeGoal(parseInt(cb.dataset.index))));}if(d.achieved.length===0){xs.style.display='none';xl.innerHTML='';}else{xs.style.display='block';xl.innerHTML=d.achieved.map(g=>`<div class="goal-item goal-achieved"><div class="goal-checkbox">✓</div><div class="goal-text">${esc(g)}</div></div>`).join('');}}
 function addGoal(){const input=document.getElementById('goal-input'),text=input.value.trim();if(!text)return;const d=goalsToday();d.active.push(text);saveGoals(d);input.value='';renderGoals();}
-function completeGoal(i){const d=goalsToday(),g=d.active.splice(i,1)[0];d.achieved.push(g);saveGoals(d);playWin95Sound('tada');launchConfetti();renderGoals();}
+function completeGoal(i){const d=goalsToday(),g=d.active.splice(i,1)[0];d.achieved.push(g);saveGoals(d);playWin95Sound('tada');launchConfetti();spaceBuddyAwardFood(1);renderGoals();}
 function launchConfetti(){const canvas=document.getElementById('confetti-canvas');if(!canvas)return;const ctx=canvas.getContext('2d');canvas.width=window.innerWidth;canvas.height=window.innerHeight;const colors=['#6b7fff','#ff6ec7','#00fff0','#fac775','#7ab87c','#ff9f43','#fff'];const pieces=Array.from({length:140},()=>{const a=(Math.random()*140+200)*Math.PI/180,s=Math.random()*28+18;return{x:Math.random()*canvas.width,y:canvas.height+5,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:Math.random()*7+3,color:colors[Math.floor(Math.random()*colors.length)],ta:Math.random()*Math.PI*2,ts:(Math.random()-0.5)*0.15,shape:Math.random()>0.5?'rect':'circle',w:Math.random()*12+5,h:Math.random()*7+3,o:1,g:0.18+Math.random()*0.12}});let fr=0;const tf=240;function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);pieces.forEach(p=>{p.vy+=p.g;p.vx*=0.992;p.x+=p.vx;p.y+=p.vy;p.ta+=p.ts;if(fr>tf-40)p.o=Math.max(0,p.o-1/40);ctx.save();ctx.globalAlpha=p.o;ctx.translate(p.x,p.y);ctx.rotate(p.ta);ctx.fillStyle=p.color;if(p.shape==='rect')ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);else{ctx.beginPath();ctx.arc(0,0,p.r/2,0,Math.PI*2);ctx.fill();}ctx.restore();});fr++;if(fr<tf)requestAnimationFrame(draw);else ctx.clearRect(0,0,canvas.width,canvas.height);}draw();}
 document.getElementById('yourday-sidebar-btn').addEventListener('click',showYourDay);
 document.getElementById('yourday-back-btn').addEventListener('click',showHome);
 document.getElementById('goal-add-btn').addEventListener('click',addGoal);
 document.getElementById('goal-input').addEventListener('keydown',e=>{if(e.key==='Enter')addGoal();});
+
+
+// ── SPACE BUDDY ──
+const SPACE_BUDDY_KEY = 'ys_space_buddy';
+const SPACE_BUDDY_LAST_SEEN_KEY = 'ys_space_buddy_last_seen';
+const SPACE_BUDDY_GAME_DATE_KEY = 'ys_space_buddy_game_date';
+let spaceBuddyHopScore = 0;
+
+function spaceBuddyToday() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function spaceBuddyState() {
+  let state;
+  try { state = JSON.parse(localStorage.getItem(SPACE_BUDDY_KEY) || '{}'); } catch(e) { state = {}; }
+  return {
+    food: Number.isFinite(state.food) ? state.food : 0,
+    fedToday: state.fedToday === spaceBuddyToday() ? state.fedToday : '',
+    lastMood: state.lastMood || 'quiet'
+  };
+}
+
+function saveSpaceBuddyState(state) {
+  localStorage.setItem(SPACE_BUDDY_KEY, JSON.stringify(state));
+}
+
+function spaceBuddyAwardFood(amount) {
+  const state = spaceBuddyState();
+  state.food = Math.min(99, state.food + amount);
+  state.lastMood = 'proud';
+  saveSpaceBuddyState(state);
+  renderSpaceBuddy();
+}
+
+function renderSpaceBuddy() {
+  const card = document.getElementById('space-buddy-card');
+  if (!card) return;
+
+  const state = spaceBuddyState();
+  const gamePlayed = localStorage.getItem(SPACE_BUDDY_GAME_DATE_KEY) === spaceBuddyToday();
+
+  const foodEl = document.getElementById('space-buddy-food');
+  const moodEl = document.getElementById('space-buddy-mood');
+  const noteEl = document.getElementById('space-buddy-note');
+  const statusEl = document.getElementById('space-buddy-status');
+  const gameStateEl = document.getElementById('space-buddy-game-state');
+  const feedBtn = document.getElementById('space-buddy-feed-btn');
+  const gameBtn = document.getElementById('space-buddy-game-btn');
+  const claimBtn = document.getElementById('space-buddy-claim-btn');
+
+  if (foodEl) foodEl.textContent = String(state.food);
+  if (moodEl) moodEl.textContent = state.lastMood;
+  if (statusEl) statusEl.textContent = state.food > 0 ? 'happy' : 'waiting quietly';
+  if (gameStateEl) gameStateEl.textContent = gamePlayed ? 'done today' : 'ready';
+
+  if (noteEl) {
+    noteEl.textContent = state.food > 0
+      ? 'Your buddy has snacks saved. Feed it when you want a tiny reset.'
+      : 'Complete a goal or take time away to earn snacks for your buddy.';
+  }
+
+  if (feedBtn) feedBtn.disabled = state.food <= 0;
+  if (gameBtn) gameBtn.disabled = gamePlayed;
+  if (claimBtn) claimBtn.disabled = !spaceBuddyCanClaimOfflineSnack();
+}
+
+function feedSpaceBuddy() {
+  const state = spaceBuddyState();
+  if (state.food <= 0) return;
+  state.food -= 1;
+  state.fedToday = spaceBuddyToday();
+  state.lastMood = 'fed';
+  saveSpaceBuddyState(state);
+  playWin95Sound('chord');
+  renderSpaceBuddy();
+}
+
+function spaceBuddyCanClaimOfflineSnack() {
+  const lastSeen = parseInt(localStorage.getItem(SPACE_BUDDY_LAST_SEEN_KEY) || '0', 10);
+  if (!lastSeen) return false;
+  const hoursAway = (Date.now() - lastSeen) / 3600000;
+  return hoursAway >= 1;
+}
+
+function claimOfflineSnack() {
+  if (!spaceBuddyCanClaimOfflineSnack()) return;
+  const lastSeen = parseInt(localStorage.getItem(SPACE_BUDDY_LAST_SEEN_KEY) || '0', 10);
+  const hoursAway = Math.floor((Date.now() - lastSeen) / 3600000);
+  const snacks = Math.min(3, Math.max(1, hoursAway));
+  spaceBuddyAwardFood(snacks);
+  localStorage.setItem(SPACE_BUDDY_LAST_SEEN_KEY, String(Date.now()));
+}
+
+function startSpaceBuddyGame() {
+  if (localStorage.getItem(SPACE_BUDDY_GAME_DATE_KEY) === spaceBuddyToday()) return;
+  spaceBuddyHopScore = 0;
+  const mini = document.getElementById('space-buddy-mini');
+  const score = document.getElementById('space-buddy-score');
+  if (score) score.textContent = '0';
+  if (mini) mini.classList.add('visible');
+}
+
+function hopSpaceBuddy() {
+  if (localStorage.getItem(SPACE_BUDDY_GAME_DATE_KEY) === spaceBuddyToday()) return;
+  spaceBuddyHopScore += 5;
+  const score = document.getElementById('space-buddy-score');
+  if (score) score.textContent = String(Math.min(50, spaceBuddyHopScore));
+
+  const pet = document.querySelector('.space-buddy-pet');
+  if (pet) {
+    pet.style.transform = 'translateY(-18px)';
+    setTimeout(() => { pet.style.transform = ''; }, 120);
+  }
+
+  if (spaceBuddyHopScore >= 50) {
+    localStorage.setItem(SPACE_BUDDY_GAME_DATE_KEY, spaceBuddyToday());
+    const mini = document.getElementById('space-buddy-mini');
+    if (mini) mini.classList.remove('visible');
+    spaceBuddyAwardFood(1);
+    playWin95Sound('tada');
+  }
+}
+
+function initSpaceBuddy() {
+  const feedBtn = document.getElementById('space-buddy-feed-btn');
+  const claimBtn = document.getElementById('space-buddy-claim-btn');
+  const gameBtn = document.getElementById('space-buddy-game-btn');
+  const hopBtn = document.getElementById('space-buddy-hop-btn');
+
+  if (feedBtn) feedBtn.addEventListener('click', feedSpaceBuddy);
+  if (claimBtn) claimBtn.addEventListener('click', claimOfflineSnack);
+  if (gameBtn) gameBtn.addEventListener('click', startSpaceBuddyGame);
+  if (hopBtn) hopBtn.addEventListener('click', hopSpaceBuddy);
+
+  renderSpaceBuddy();
+  window.addEventListener('beforeunload', () => {
+    localStorage.setItem(SPACE_BUDDY_LAST_SEEN_KEY, String(Date.now()));
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) localStorage.setItem(SPACE_BUDDY_LAST_SEEN_KEY, String(Date.now()));
+    else renderSpaceBuddy();
+  });
+}
+initSpaceBuddy();
+
 
 // ── DRAG TO REORDER ──
 function addDragToSidebar(){const list=document.getElementById('sidebar-channel-list');let src=null;list.querySelectorAll('.sidebar-channel').forEach((c,i)=>{c.setAttribute('draggable','true');c.dataset.index=i;c.addEventListener('dragstart',function(e){src=this;e.dataTransfer.effectAllowed='move';setTimeout(()=>this.classList.add('dragging'),0);});c.addEventListener('dragend',function(){this.classList.remove('dragging');list.querySelectorAll('.sidebar-channel').forEach(x=>x.classList.remove('drag-over'));});c.addEventListener('dragover',function(e){e.preventDefault();list.querySelectorAll('.sidebar-channel').forEach(x=>x.classList.remove('drag-over'));if(this!==src)this.classList.add('drag-over');});c.addEventListener('drop',function(e){e.stopPropagation();if(this===src)return;const fromIdx=parseInt(src.dataset.index),toIdx=parseInt(this.dataset.index),moved=channels.splice(fromIdx,1)[0];channels.splice(toIdx,0,moved);saveChannels();renderSidebar();try{const ca=JSON.parse(localStorage.getItem('ff_feed_cache'));if(ca&&ca.length>0)displayFeed(ca);else{localStorage.removeItem('ff_feed_cache');localStorage.removeItem('ff_feed_date');renderFeed(true);}}catch(err){renderFeed(true);}});});}
