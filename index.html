@@ -14,18 +14,105 @@
     --bg: #0e0e0e; --surface: #181818; --surface2: #222222;
     --border: #2a2a2a; --text: #e8e4dc; --muted: #6b6760;
     --accent: #c8b89a; --accent2: #8a7a65; --danger: #c0392b; --radius: 12px;
+    --sidebar: 260px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; min-height: 100dvh; overscroll-behavior: none; }
-  #app { max-width: 480px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; }
-  header { padding: 52px 24px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-end; justify-content: space-between; }
-  .wordmark { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); letter-spacing: -0.5px; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; overscroll-behavior: none; }
+
+  /* ── APP SHELL ── */
+  #app { min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* Desktop: sidebar + main */
+  @media (min-width: 768px) {
+    #app { flex-direction: row; }
+    #sidebar {
+      width: var(--sidebar); flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      height: 100vh; position: sticky; top: 0;
+      display: flex; flex-direction: column;
+      overflow-y: auto;
+    }
+    #main { flex: 1; min-width: 0; min-height: 100vh; display: flex; flex-direction: column; }
+    .mobile-header { display: none !important; }
+    .sidebar-header { display: flex !important; }
+  }
+
+  /* Mobile: full width stacked */
+  @media (max-width: 767px) {
+    #sidebar { display: none; }
+    #main { flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+    .sidebar-header { display: none !important; }
+    .mobile-header { display: flex !important; }
+  }
+
+  /* ── SIDEBAR (desktop only) ── */
+  #sidebar { background: var(--bg); }
+  .sidebar-header {
+    display: none;
+    padding: 32px 20px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-direction: column; gap: 4px;
+  }
+  .wordmark { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); letter-spacing: -0.5px; }
   .wordmark em { font-style: italic; color: var(--accent); }
-  .header-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; padding-bottom: 4px; }
+  .header-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* Timer in sidebar */
+  .sidebar-timer {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .timer-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); flex: 1; }
+  .timer-value { font-size: 13px; color: var(--accent); font-weight: 400; font-variant-numeric: tabular-nums; }
+
+  .sidebar-section { padding: 14px 20px 8px; display: flex; align-items: center; justify-content: space-between; }
+  .sidebar-channel-list { flex: 1; padding: 0 12px 16px; display: flex; flex-direction: column; gap: 2px; }
+  .sidebar-channel {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 8px; cursor: pointer;
+    transition: background 0.15s; -webkit-tap-highlight-color: transparent;
+  }
+  .sidebar-channel:hover { background: var(--surface); }
+  .sidebar-channel.active { background: var(--surface2); }
+  .sidebar-ch-thumb { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: var(--surface2); flex-shrink: 0; }
+  .sidebar-ch-placeholder { width: 28px; height: 28px; border-radius: 50%; background: var(--surface2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 12px; color: var(--accent); }
+  .sidebar-ch-name { font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+  .sidebar-ch-remove { background: none; border: none; color: transparent; font-size: 16px; cursor: pointer; padding: 2px 4px; line-height: 1; transition: color 0.15s; flex-shrink: 0; }
+  .sidebar-channel:hover .sidebar-ch-remove { color: var(--muted); }
+  .sidebar-ch-remove:hover { color: var(--danger) !important; }
+
+  .sidebar-add-btn {
+    margin: 0 12px 16px; padding: 8px 14px;
+    background: none; border: 1px dashed var(--border);
+    border-radius: 8px; color: var(--muted);
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    cursor: pointer; text-align: center; transition: border-color 0.2s, color 0.2s;
+  }
+  .sidebar-add-btn:hover { border-color: var(--accent2); color: var(--accent); }
+
+  .sidebar-bottom { margin-top: auto; padding: 12px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; }
+  .icon-btn { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 6px; border-radius: 6px; transition: color 0.2s, background 0.2s; }
+  .icon-btn:hover { color: var(--text); background: var(--surface); }
+
+  /* ── MOBILE HEADER ── */
+  .mobile-header {
+    display: none;
+    padding: 48px 20px 16px;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-end; justify-content: space-between; flex-shrink: 0;
+  }
+  .mobile-header-left { display: flex; flex-direction: column; gap: 3px; }
+  .mobile-header-right { display: flex; align-items: center; gap: 8px; }
+  .mobile-timer { font-size: 12px; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .mobile-timer-label { font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* ── SCREENS ── */
   .screen { display: none; flex: 1; flex-direction: column; }
   .screen.active { display: flex; animation: fadeIn 0.18s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
-  .back-btn { background: none; border: none; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400; cursor: pointer; padding: 0; display: flex; align-items: center; gap: 6px; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .back-btn { background: none; border: none; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; padding: 0; display: flex; align-items: center; gap: 6px; }
   .back-btn:hover { color: var(--text); }
   .section-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
   .spinner { width: 22px; height: 22px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
@@ -33,8 +120,8 @@
   .status { padding: 32px 24px; text-align: center; color: var(--muted); font-size: 13px; }
   .error-msg { padding: 14px 16px; background: rgba(192,57,43,0.1); border: 1px solid rgba(192,57,43,0.25); border-radius: var(--radius); color: #e07060; font-size: 13px; text-align: center; }
 
-  /* ── SETUP SCREEN ── */
-  #setup-screen { padding: 32px 24px; gap: 0; justify-content: center; }
+  /* ── SETUP ── */
+  #setup-screen { padding: 32px 24px; gap: 0; justify-content: center; max-width: 520px; margin: 0 auto; width: 100%; }
   .setup-eyebrow { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent2); margin-bottom: 12px; }
   .setup-title { font-family: 'DM Serif Display', serif; font-size: 28px; line-height: 1.3; color: var(--text); margin-bottom: 16px; }
   .setup-title em { font-style: italic; color: var(--accent); }
@@ -49,35 +136,22 @@
   .step-link { color: var(--accent); text-decoration: none; }
   .step-link:hover { text-decoration: underline; }
   .api-input-wrap { position: relative; margin-bottom: 12px; }
-  .api-input {
-    width: 100%; background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); color: var(--text); font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 300; padding: 14px 48px 14px 16px;
-    outline: none; transition: border-color 0.2s; -webkit-appearance: none;
-  }
+  .api-input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; padding: 14px 48px 14px 16px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
   .api-input::placeholder { color: var(--muted); font-size: 13px; }
   .api-input:focus { border-color: var(--accent2); }
   .api-toggle { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--muted); cursor: pointer; font-size: 13px; padding: 4px; }
-  .api-save-btn {
-    width: 100%; background: var(--accent); border: none; border-radius: var(--radius);
-    color: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-    padding: 14px; cursor: pointer; transition: opacity 0.2s; letter-spacing: 0.02em;
-  }
+  .api-save-btn { width: 100%; background: var(--accent); border: none; border-radius: var(--radius); color: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 14px; cursor: pointer; transition: opacity 0.2s; letter-spacing: 0.02em; }
   .api-save-btn:hover { opacity: 0.9; }
-  .api-save-btn:disabled { opacity: 0.4; cursor: default; }
   .api-error { font-size: 12px; color: #e07060; margin-bottom: 12px; display: none; }
   .api-error.visible { display: block; }
 
-  /* ── HOME ── */
+  /* ── HOME (mobile only) ── */
   #home-screen { padding: 0; }
-  .channels-header { padding: 20px 24px 12px; display: flex; align-items: center; justify-content: space-between; }
-  .header-actions { display: flex; align-items: center; gap: 10px; }
-  .add-btn { background: none; border: 1px solid var(--border); color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400; padding: 6px 14px; border-radius: 20px; cursor: pointer; transition: border-color 0.2s, background 0.2s; letter-spacing: 0.04em; }
-  .add-btn:hover { border-color: var(--accent); background: rgba(200,184,154,0.06); }
-  .settings-btn { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 4px; line-height: 1; }
-  .settings-btn:hover { color: var(--text); }
-  .channel-list { flex: 1; padding: 0 24px; }
-  .channel-card { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: opacity 0.15s; -webkit-tap-highlight-color: transparent; }
+  .channels-header { padding: 20px 20px 12px; display: flex; align-items: center; justify-content: space-between; }
+  .add-btn { background: none; border: 1px solid var(--border); color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 6px 14px; border-radius: 20px; cursor: pointer; transition: border-color 0.2s; }
+  .add-btn:hover { border-color: var(--accent); }
+  .channel-list { flex: 1; padding: 0 20px; }
+  .channel-card { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--border); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: opacity 0.15s; }
   .channel-card:last-child { border-bottom: none; }
   .channel-card:active { opacity: 0.6; }
   .channel-thumb { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: var(--surface2); flex-shrink: 0; }
@@ -85,25 +159,25 @@
   .channel-info { flex: 1; min-width: 0; }
   .channel-name { font-size: 15px; font-weight: 400; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .channel-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .remove-btn { background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; padding: 4px 8px; line-height: 1; transition: color 0.2s; -webkit-tap-highlight-color: transparent; }
+  .remove-btn { background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; padding: 4px 8px; line-height: 1; transition: color 0.2s; }
   .remove-btn:hover { color: var(--danger); }
   .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 48px 32px; gap: 12px; }
   .empty-icon { font-size: 40px; margin-bottom: 8px; opacity: 0.3; }
   .empty-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); }
   .empty-sub { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 260px; }
-  .empty-cta { margin-top: 16px; background: var(--accent); color: var(--bg); border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 10px 24px; border-radius: 20px; cursor: pointer; letter-spacing: 0.04em; }
+  .empty-cta { margin-top: 16px; background: var(--accent); color: var(--bg); border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 10px 24px; border-radius: 20px; cursor: pointer; }
 
   /* ── ADD ── */
-  #add-screen { padding: 24px; gap: 20px; }
+  #add-screen { padding: 24px; gap: 20px; max-width: 520px; width: 100%; margin: 0 auto; }
   .screen-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); }
   .search-row { display: flex; gap: 10px; }
   .search-input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 300; padding: 12px 16px; outline: none; transition: border-color 0.2s; -webkit-appearance: none; }
   .search-input::placeholder { color: var(--muted); }
   .search-input:focus { border-color: var(--accent2); }
-  .search-btn { background: var(--accent); border: none; border-radius: var(--radius); color: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 12px 18px; cursor: pointer; white-space: nowrap; transition: opacity 0.2s; }
+  .search-btn { background: var(--accent); border: none; border-radius: var(--radius); color: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 12px 18px; cursor: pointer; white-space: nowrap; }
   .search-btn:disabled { opacity: 0.4; cursor: default; }
   .search-results { display: flex; flex-direction: column; gap: 10px; }
-  .result-card { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; cursor: pointer; transition: border-color 0.2s; -webkit-tap-highlight-color: transparent; }
+  .result-card { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; cursor: pointer; transition: border-color 0.2s; }
   .result-card:hover { border-color: var(--accent2); }
   .result-card.already-added { opacity: 0.5; cursor: default; }
   .result-thumb { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--surface2); }
@@ -114,15 +188,28 @@
 
   /* ── VIDEOS ── */
   #videos-screen { padding: 0; }
-  .videos-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
-  .videos-channel-thumb { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: var(--surface2); flex-shrink: 0; }
-  .videos-channel-name { font-size: 15px; font-weight: 400; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sort-bar { padding: 12px 24px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+  .videos-top { padding: 20px 24px 0; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .videos-channel-thumb { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--surface2); flex-shrink: 0; }
+  .videos-channel-name { font-size: 17px; font-weight: 400; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sort-bar { padding: 14px 24px 0; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex-shrink: 0; }
   .sort-bar::-webkit-scrollbar { display: none; }
-  .sort-pill { flex-shrink: 0; background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400; padding: 5px 13px; border-radius: 20px; cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; white-space: nowrap; }
+  .sort-pill { flex-shrink: 0; background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 5px 13px; border-radius: 20px; cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; white-space: nowrap; }
   .sort-pill:hover { border-color: var(--accent2); color: var(--text); }
   .sort-pill.active { border-color: var(--accent); color: var(--accent); background: rgba(200,184,154,0.08); }
-  .video-grid { flex: 1; overflow-y: auto; padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-content: start; }
+
+  /* Grid — responsive columns */
+  .video-grid {
+    flex: 1; overflow-y: auto; padding: 16px 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px; align-content: start;
+  }
+  @media (max-width: 767px) {
+    .video-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 14px 16px; }
+    .videos-top { padding: 16px 16px 0; }
+    .sort-bar { padding: 12px 16px 0; }
+  }
+
   .video-tile { cursor: pointer; -webkit-tap-highlight-color: transparent; display: flex; flex-direction: column; gap: 8px; }
   .video-tile:active .tile-thumb { transform: scale(0.97); }
   .tile-thumb-wrap { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; background: var(--surface2); }
@@ -130,161 +217,247 @@
   .tile-duration { position: absolute; bottom: 5px; right: 6px; background: rgba(0,0,0,0.82); color: #fff; font-size: 10px; font-weight: 500; padding: 2px 5px; border-radius: 4px; }
   .tile-play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; background: rgba(0,0,0,0.2); transition: opacity 0.2s; }
   .video-tile:hover .tile-play { opacity: 1; }
-  .tile-play-icon { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; }
-  .tile-play-icon::after { content: ''; border-left: 13px solid #fff; border-top: 8px solid transparent; border-bottom: 8px solid transparent; margin-left: 3px; }
-  .tile-title { font-size: 12px; font-weight: 400; color: var(--text); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .tile-play-icon { width: 40px; height: 40px; border-radius: 50%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; }
+  .tile-play-icon::after { content: ''; border-left: 14px solid #fff; border-top: 9px solid transparent; border-bottom: 9px solid transparent; margin-left: 4px; }
+  .tile-title { font-size: 13px; font-weight: 400; color: var(--text); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .tile-meta { font-size: 11px; color: var(--muted); }
-  .load-more-wrap { padding: 16px 24px 24px; display: flex; justify-content: center; }
-  .load-more-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 9px 24px; border-radius: 20px; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
+  .load-more-wrap { padding: 16px 24px 28px; display: flex; justify-content: center; flex-shrink: 0; }
+  .load-more-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 9px 28px; border-radius: 20px; cursor: pointer; transition: border-color 0.2s, color 0.2s; }
   .load-more-btn:hover { border-color: var(--accent2); color: var(--text); }
 
   /* ── PLAYER ── */
-  #player-screen { padding: 0; background: var(--bg); }
-  .player-top { padding: 14px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
+  #player-screen { padding: 0; }
+  .player-top { padding: 14px 20px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
   .player-channel-label { font-size: 12px; color: var(--muted); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .embed-wrap { width: 100%; aspect-ratio: 16/9; background: #000; }
+  .player-body { flex: 1; display: flex; flex-direction: column; }
+  @media (min-width: 900px) {
+    .player-body { flex-direction: row; }
+    .embed-wrap { flex: 1; aspect-ratio: auto; height: calc(100vh - 53px); }
+    .player-sidebar { width: 320px; flex-shrink: 0; border-left: 1px solid var(--border); overflow-y: auto; padding: 20px; }
+  }
+  .embed-wrap { width: 100%; aspect-ratio: 16/9; background: #000; flex-shrink: 0; }
   .embed-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
-  .player-info { padding: 16px 20px 0; }
-  .player-title { font-family: 'DM Serif Display', serif; font-size: 17px; line-height: 1.45; color: var(--text); margin-bottom: 6px; }
-  .player-meta { font-size: 12px; color: var(--muted); }
-  .done-banner { margin: 16px 20px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: none; align-items: center; gap: 12px; }
+  .player-sidebar { padding: 20px; }
+  .player-title { font-family: 'DM Serif Display', serif; font-size: 18px; line-height: 1.45; color: var(--text); margin-bottom: 8px; }
+  .player-meta { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  .done-banner { padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); display: none; align-items: center; gap: 12px; }
   .done-banner.visible { display: flex; }
   .done-text { flex: 1; font-size: 13px; color: var(--muted); line-height: 1.5; }
   .done-back-btn { background: none; border: 1px solid var(--border); color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 7px 14px; border-radius: 20px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
-  .done-progress { height: 2px; background: var(--border); border-radius: 1px; margin: 0 20px; overflow: hidden; display: none; }
+  .done-progress { height: 2px; background: var(--border); margin: 10px 0 0; border-radius: 1px; overflow: hidden; display: none; }
   .done-progress.visible { display: block; }
   .done-progress-bar { height: 100%; background: var(--accent); border-radius: 1px; width: 0%; transition: width 4s linear; }
+
+  /* ── SESSION TIMER WIDGET ── */
+  .timer-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 0 8px; }
+  .timer-ring-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .timer-big { font-size: 28px; color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 300; letter-spacing: 0.02em; }
+  .timer-sub { font-size: 11px; color: var(--muted); }
 </style>
 </head>
 <body>
 <div id="app">
-  <header>
-    <div class="wordmark">Focus<em>Feed</em></div>
-    <div class="header-sub">intentional viewing</div>
-  </header>
 
-  <!-- SETUP -->
-  <div id="setup-screen" class="screen">
-    <div class="setup-eyebrow">One-time setup</div>
-    <div class="setup-title">Your own<br><em>private key</em></div>
-    <div class="setup-desc">FocusFeed uses YouTube's free API to fetch videos — no algorithm, no tracking. You'll need a free API key. It takes about 3 minutes and you'll never need to touch it again.</div>
-    <div class="setup-steps">
-      <div class="setup-step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-label">Go to Google Cloud Console</div>
-          <div class="step-sub"><a class="step-link" href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → sign in with your Google account</div>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-label">Create a project</div>
-          <div class="step-sub">Click "New Project" → name it anything (e.g. "FocusFeed") → Create</div>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-label">Enable YouTube Data API v3</div>
-          <div class="step-sub">APIs & Services → Library → search "YouTube Data API v3" → Enable</div>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-label">Create an API key</div>
-          <div class="step-sub">APIs & Services → Credentials → Create Credentials → API key → Copy it</div>
-        </div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <div class="step-label">Paste it below</div>
-          <div class="step-sub">Your key stays on your device only — it's never sent anywhere else</div>
-        </div>
-      </div>
+  <!-- SIDEBAR (desktop) -->
+  <div id="sidebar">
+    <div class="sidebar-header">
+      <div class="wordmark">Focus<em>Feed</em></div>
+      <div class="header-sub">intentional viewing</div>
     </div>
-    <div class="api-input-wrap">
-      <input class="api-input" id="api-key-input" type="password" placeholder="Paste your API key here…" autocomplete="off" spellcheck="false">
-      <button class="api-toggle" id="api-toggle-btn" title="Show/hide key">👁</button>
+
+    <div class="sidebar-timer">
+      <span class="timer-label">Today's session</span>
+      <span class="timer-value" id="sidebar-timer">0:00</span>
     </div>
-    <div class="api-error" id="api-error">That doesn't look like a valid API key — it should start with "AIza" and be about 39 characters long.</div>
-    <button class="api-save-btn" id="api-save-btn">Save and get started →</button>
+
+    <div class="sidebar-section">
+      <span class="section-label">Channels</span>
+    </div>
+    <div class="sidebar-channel-list" id="sidebar-channel-list"></div>
+    <button class="sidebar-add-btn" id="sidebar-add-btn">+ Add channel</button>
+
+    <div class="sidebar-bottom">
+      <button class="icon-btn" id="sidebar-settings-btn" title="Settings">⚙</button>
+    </div>
   </div>
 
-  <!-- HOME -->
-  <div id="home-screen" class="screen">
-    <div class="channels-header">
-      <span class="section-label">Your channels</span>
-      <div class="header-actions">
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- Mobile header -->
+    <div class="mobile-header">
+      <div class="mobile-header-left">
+        <div class="wordmark">Focus<em>Feed</em></div>
+        <div class="header-sub" style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">intentional viewing</div>
+      </div>
+      <div class="mobile-header-right">
+        <div style="text-align:right">
+          <div class="mobile-timer-label">today</div>
+          <div class="mobile-timer" id="mobile-timer">0:00</div>
+        </div>
+        <button class="icon-btn" id="mobile-settings-btn" title="Settings">⚙</button>
+      </div>
+    </div>
+
+    <!-- SETUP (first run only) -->
+    <div id="setup-screen" class="screen">
+      <div class="setup-eyebrow">One-time setup</div>
+      <div class="setup-title">Your own<br><em>private key</em></div>
+      <div class="setup-desc">FocusFeed uses YouTube's free API to fetch videos — no algorithm, no tracking. You'll need a free API key. It takes about 3 minutes and you'll never need to touch it again.</div>
+      <div class="setup-steps">
+        <div class="setup-step"><div class="step-num">1</div><div class="step-body"><div class="step-label">Go to Google Cloud Console</div><div class="step-sub"><a class="step-link" href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → sign in with your Google account</div></div></div>
+        <div class="setup-step"><div class="step-num">2</div><div class="step-body"><div class="step-label">Create a project</div><div class="step-sub">Click "New Project" → name it anything (e.g. "FocusFeed") → Create</div></div></div>
+        <div class="setup-step"><div class="step-num">3</div><div class="step-body"><div class="step-label">Enable YouTube Data API v3</div><div class="step-sub">APIs & Services → Library → search "YouTube Data API v3" → Enable</div></div></div>
+        <div class="setup-step"><div class="step-num">4</div><div class="step-body"><div class="step-label">Create an API key</div><div class="step-sub">APIs & Services → Credentials → Create Credentials → API key → Copy it</div></div></div>
+        <div class="setup-step"><div class="step-num">5</div><div class="step-body"><div class="step-label">Paste it below</div><div class="step-sub">Your key stays on your device only — never sent anywhere else</div></div></div>
+      </div>
+      <div class="api-input-wrap">
+        <input class="api-input" id="api-key-input" type="password" placeholder="Paste your API key here…" autocomplete="off" spellcheck="false">
+        <button class="api-toggle" id="api-toggle-btn">👁</button>
+      </div>
+      <div class="api-error" id="api-error">That doesn't look right — the key should start with "AIza" and be about 39 characters.</div>
+      <button class="api-save-btn" id="api-save-btn">Save and get started →</button>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="settings-screen" class="screen">
+      <div class="settings-inner">
+        <button class="back-btn" id="settings-back-btn" style="margin-bottom:20px">← Back</button>
+
+        <div class="settings-section">
+          <div class="settings-section-title">API key</div>
+          <div class="settings-row">
+            <div><div class="settings-label">YouTube Data API key</div><div class="settings-sub">Saved locally on this device only</div></div>
+          </div>
+          <div class="api-input-wrap" style="margin-bottom:8px">
+            <input class="api-input" id="settings-api-input" type="password" placeholder="Key saved — paste new one to replace" autocomplete="off" spellcheck="false">
+            <button class="api-toggle" id="settings-api-toggle">👁</button>
+          </div>
+          <div class="api-error" id="settings-api-error">Key should start with "AIza" and be ~39 characters.</div>
+          <button class="api-save-btn" id="settings-api-save" style="margin-top:4px">Save key</button>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Themes</div>
+          <div class="theme-grid" id="theme-grid"></div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Accent colour</div>
+          <div class="accent-row" id="accent-row"></div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Font</div>
+          <div class="font-options" id="font-options"></div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Background</div>
+          <div class="settings-row">
+            <div><div class="settings-label">Background colour</div></div>
+            <input type="color" id="bg-colour-picker" style="width:36px;height:36px;border:1px solid var(--border);background:none;cursor:pointer;border-radius:8px;padding:2px">
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-label">Background image</div><div class="settings-sub">Stored locally on your device</div></div>
+            <button class="settings-action-btn" id="bg-upload-btn">Upload image</button>
+            <input type="file" id="bg-file-input" accept="image/*" style="display:none">
+          </div>
+          <div class="settings-row" id="bg-clear-row" style="display:none">
+            <div><div class="settings-label">Background image set</div></div>
+            <button class="settings-action-btn settings-danger-btn" id="bg-clear-btn">Remove</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Theme export / import</div>
+          <div class="theme-io-row">
+            <button class="settings-action-btn" id="export-theme-btn" style="flex:1;text-align:center">Export theme</button>
+            <button class="settings-action-btn" id="import-theme-btn" style="flex:1;text-align:center">Import theme</button>
+            <input type="file" id="theme-file-input" accept=".json" style="display:none">
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="settings-section-title">Reset</div>
+          <div class="settings-row">
+            <div><div class="settings-label">Reset to defaults</div><div class="settings-sub">Restores the original theme</div></div>
+            <button class="settings-action-btn settings-danger-btn" id="reset-theme-btn">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOME (mobile) -->
+    <div id="home-screen" class="screen">
+      <div class="channels-header">
+        <span class="section-label">Your channels</span>
         <button class="add-btn" id="show-add-btn">+ Add channel</button>
-        <button class="settings-btn" id="show-settings-btn" title="API settings">⚙</button>
+      </div>
+      <div class="channel-list" id="channel-list"></div>
+    </div>
+
+    <!-- ADD -->
+    <div id="add-screen" class="screen">
+      <button class="back-btn" id="add-back-btn" style="margin:24px 24px 4px">← Back</button>
+      <div class="screen-title" style="padding:0 24px">Add a channel</div>
+      <div class="search-row" style="padding:0 24px">
+        <input class="search-input" id="search-input" type="text" placeholder="Search YouTube channels…" autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="search-btn" id="search-btn">Search</button>
+      </div>
+      <div id="search-status" style="padding:0 24px"></div>
+      <div class="search-results" id="search-results" style="padding:0 24px 24px"></div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div id="videos-screen" class="screen">
+      <div class="videos-top">
+        <button class="back-btn" id="videos-back-btn">← Back</button>
+        <img class="videos-channel-thumb" id="videos-thumb" src="" alt="">
+        <span class="videos-channel-name" id="videos-name"></span>
+      </div>
+      <div class="sort-bar" id="sort-bar">
+        <button class="sort-pill active" data-sort="newest">Newest</button>
+        <button class="sort-pill" data-sort="oldest">Oldest</button>
+        <button class="sort-pill" data-sort="popular">Most popular</button>
+        <button class="sort-pill" data-sort="longest">Longest</button>
+        <button class="sort-pill" data-sort="shortest">Shortest</button>
+      </div>
+      <div class="video-grid" id="video-grid"></div>
+      <div class="load-more-wrap" id="load-more-wrap" style="display:none">
+        <button class="load-more-btn" id="load-more-btn">Load more videos</button>
       </div>
     </div>
-    <div class="channel-list" id="channel-list"></div>
-  </div>
 
-  <!-- ADD -->
-  <div id="add-screen" class="screen">
-    <button class="back-btn" id="add-back-btn" style="margin:24px 24px 4px">← Back</button>
-    <div class="screen-title" style="padding:0 24px">Add a channel</div>
-    <div class="search-row" style="padding:0 24px">
-      <input class="search-input" id="search-input" type="text" placeholder="Search YouTube channels…" autocomplete="off" autocorrect="off" spellcheck="false">
-      <button class="search-btn" id="search-btn">Search</button>
+    <!-- PLAYER -->
+    <div id="player-screen" class="screen">
+      <div class="player-top">
+        <button class="back-btn" id="player-back-btn">← Back</button>
+        <span class="player-channel-label" id="player-channel-label"></span>
+      </div>
+      <div class="player-body">
+        <div class="embed-wrap">
+          <iframe id="player-frame" allowfullscreen allow="autoplay; fullscreen; encrypted-media"></iframe>
+        </div>
+        <div class="player-sidebar">
+          <div class="player-title" id="player-title"></div>
+          <div class="player-meta" id="player-meta"></div>
+          <div class="done-progress" id="done-progress"><div class="done-progress-bar" id="done-progress-bar"></div></div>
+          <div class="done-banner" id="done-banner">
+            <div class="done-text">Video finished — heading back…</div>
+            <button class="done-back-btn" id="done-back-btn">Go now ←</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="search-status" style="padding:0 24px"></div>
-    <div class="search-results" id="search-results" style="padding:0 24px 24px"></div>
-  </div>
 
-  <!-- VIDEOS -->
-  <div id="videos-screen" class="screen">
-    <div class="videos-header">
-      <button class="back-btn" id="videos-back-btn">← Back</button>
-      <img class="videos-channel-thumb" id="videos-thumb" src="" alt="">
-      <span class="videos-channel-name" id="videos-name"></span>
-    </div>
-    <div class="sort-bar" id="sort-bar">
-      <button class="sort-pill active" data-sort="newest">Newest</button>
-      <button class="sort-pill" data-sort="oldest">Oldest</button>
-      <button class="sort-pill" data-sort="popular">Most popular</button>
-      <button class="sort-pill" data-sort="longest">Longest</button>
-      <button class="sort-pill" data-sort="shortest">Shortest</button>
-    </div>
-    <div class="video-grid" id="video-grid"></div>
-    <div class="load-more-wrap" id="load-more-wrap" style="display:none">
-      <button class="load-more-btn" id="load-more-btn">Load more videos</button>
-    </div>
-  </div>
-
-  <!-- PLAYER -->
-  <div id="player-screen" class="screen">
-    <div class="player-top">
-      <button class="back-btn" id="player-back-btn">← Back</button>
-      <span class="player-channel-label" id="player-channel-label"></span>
-    </div>
-    <div class="embed-wrap">
-      <iframe id="player-frame" allowfullscreen allow="autoplay; fullscreen; encrypted-media"></iframe>
-    </div>
-    <div class="done-progress" id="done-progress"><div class="done-progress-bar" id="done-progress-bar"></div></div>
-    <div class="done-banner" id="done-banner">
-      <div class="done-text">Video finished — returning to channel…</div>
-      <button class="done-back-btn" id="done-back-btn">Go now ←</button>
-    </div>
-    <div class="player-info">
-      <div class="player-title" id="player-title"></div>
-      <div class="player-meta" id="player-meta"></div>
-    </div>
   </div>
 </div>
 
 <script>
-// ── API Key management ──
-let API_KEY = localStorage.getItem('ff_api_key') || '';
-
+// ── API Key ──
 function getKey() { return localStorage.getItem('ff_api_key') || ''; }
-function saveKey(k) { localStorage.setItem('ff_api_key', k); API_KEY = k; }
-function clearKey() { localStorage.removeItem('ff_api_key'); API_KEY = ''; }
+function saveKey(k) { localStorage.setItem('ff_api_key', k); }
 
 // ── State ──
 let channels = JSON.parse(localStorage.getItem('ff_channels') || '[]');
@@ -297,12 +470,65 @@ let currentVideoId = null;
 let nextPageToken = null;
 let loadingMore = false;
 let autoReturnTimer = null;
-
 const PAGE_SIZE = 12;
 
 function saveChannels() { localStorage.setItem('ff_channels', JSON.stringify(channels)); }
 
+// ── SESSION TIMER ──
+const TIMER_KEY = 'ff_timer';
+const TIMER_DATE_KEY = 'ff_timer_date';
+
+function todayStr() { return new Date().toISOString().slice(0,10); }
+
+function getElapsed() {
+  const saved = localStorage.getItem(TIMER_DATE_KEY);
+  if (saved !== todayStr()) {
+    localStorage.setItem(TIMER_DATE_KEY, todayStr());
+    localStorage.setItem(TIMER_KEY, '0');
+    return 0;
+  }
+  return parseInt(localStorage.getItem(TIMER_KEY) || '0');
+}
+
+function saveElapsed(secs) {
+  localStorage.setItem(TIMER_DATE_KEY, todayStr());
+  localStorage.setItem(TIMER_KEY, String(secs));
+}
+
+function fmtTimer(secs) {
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+let elapsed = getElapsed();
+let timerInterval = null;
+
+function startTimer() {
+  if (timerInterval) return;
+  timerInterval = setInterval(() => {
+    elapsed++;
+    saveElapsed(elapsed);
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const str = fmtTimer(elapsed);
+  const sEl = document.getElementById('sidebar-timer');
+  const mEl = document.getElementById('mobile-timer');
+  if (sEl) sEl.textContent = str;
+  if (mEl) mEl.textContent = str;
+}
+
+updateTimerDisplay();
+startTimer();
+
 // ── Navigation ──
+function isDesktop() { return window.innerWidth >= 768; }
+
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -310,7 +536,14 @@ function showScreen(id) {
 
 function showHome() {
   if (currentVideoId) stopPlayer();
-  showScreen('home-screen');
+  if (isDesktop()) {
+    // On desktop, home = videos screen cleared, show empty state in main
+    showScreen('home-screen');
+  } else {
+    showScreen('home-screen');
+  }
+  currentChannel = null;
+  renderSidebar();
   renderChannels();
 }
 
@@ -328,12 +561,19 @@ function showVideosScreen() { showScreen('videos-screen'); }
 function showSetup() {
   const hasKey = !!getKey();
   document.getElementById('api-key-input').value = '';
-  document.getElementById('api-key-input').placeholder = hasKey ? 'Key saved 2014 paste a new one to replace it' : 'Paste your API key here2026';
+  document.getElementById('api-key-input').placeholder = hasKey ? 'Key saved — paste a new one to replace it' : 'Paste your API key here…';
   document.getElementById('api-error').classList.remove('visible');
   showScreen('setup-screen');
 }
 
-// ── Setup screen ──
+function showSettings() {
+  document.getElementById('settings-api-input').value = '';
+  document.getElementById('settings-api-error').classList.remove('visible');
+  renderThemePanel();
+  showScreen('settings-screen');
+}
+
+// ── Setup ──
 document.getElementById('api-toggle-btn').addEventListener('click', () => {
   const input = document.getElementById('api-key-input');
   input.type = input.type === 'password' ? 'text' : 'password';
@@ -342,12 +582,8 @@ document.getElementById('api-toggle-btn').addEventListener('click', () => {
 document.getElementById('api-save-btn').addEventListener('click', () => {
   const val = document.getElementById('api-key-input').value.trim();
   const errEl = document.getElementById('api-error');
-  // If field is empty and we already have a saved key, just proceed
   if (val === '' && getKey()) { showHome(); return; }
-  if (!val.startsWith('AIza') || val.length < 30) {
-    errEl.classList.add('visible');
-    return;
-  }
+  if (!val.startsWith('AIza') || val.length < 30) { errEl.classList.add('visible'); return; }
   errEl.classList.remove('visible');
   saveKey(val);
   showHome();
@@ -357,16 +593,18 @@ document.getElementById('api-key-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('api-save-btn').click();
 });
 
-// ── Static button wiring ──
+// ── Button wiring ──
 document.getElementById('show-add-btn').addEventListener('click', showAdd);
-document.getElementById('show-settings-btn').addEventListener('click', showSetup);
-document.getElementById('add-back-btn').addEventListener('click', showHome);
+document.getElementById('add-back-btn').addEventListener('click', () => { isDesktop() ? showHome() : showHome(); });
 document.getElementById('videos-back-btn').addEventListener('click', showHome);
 document.getElementById('player-back-btn').addEventListener('click', () => { stopPlayer(); showVideosScreen(); });
 document.getElementById('done-back-btn').addEventListener('click', () => { stopPlayer(); showVideosScreen(); });
 document.getElementById('search-btn').addEventListener('click', searchChannels);
 document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchChannels(); });
 document.getElementById('load-more-btn').addEventListener('click', loadMoreVideos);
+document.getElementById('sidebar-add-btn').addEventListener('click', showAdd);
+document.getElementById('sidebar-settings-btn').addEventListener('click', showSettings);
+document.getElementById('mobile-settings-btn').addEventListener('click', showSettings);
 
 document.getElementById('sort-bar').addEventListener('click', e => {
   const pill = e.target.closest('.sort-pill');
@@ -378,7 +616,32 @@ document.getElementById('sort-bar').addEventListener('click', e => {
   renderGrid();
 });
 
-// ── HOME ──
+// ── Sidebar render ──
+function renderSidebar() {
+  const list = document.getElementById('sidebar-channel-list');
+  if (channels.length === 0) {
+    list.innerHTML = `<div style="padding:8px 10px;font-size:12px;color:var(--muted)">No channels yet</div>`;
+    return;
+  }
+  list.innerHTML = channels.map((ch, i) => `
+    <div class="sidebar-channel ${currentChannel && currentChannel.id === ch.id ? 'active' : ''}" data-index="${i}">
+      ${ch.thumb ? `<img class="sidebar-ch-thumb" src="${ch.thumb}" alt="">` : `<div class="sidebar-ch-placeholder">${ch.name[0]}</div>`}
+      <span class="sidebar-ch-name">${esc(ch.name)}</span>
+      <button class="sidebar-ch-remove" data-remove="${i}" title="Remove">×</button>
+    </div>`).join('');
+
+  list.querySelectorAll('.sidebar-channel').forEach(card => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('.sidebar-ch-remove')) return;
+      openChannel(parseInt(card.dataset.index));
+    });
+  });
+  list.querySelectorAll('.sidebar-ch-remove').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); removeChannel(parseInt(btn.dataset.remove)); });
+  });
+}
+
+// ── Mobile channel list ──
 function renderChannels() {
   const list = document.getElementById('channel-list');
   if (channels.length === 0) {
@@ -399,7 +662,7 @@ function renderChannels() {
         <div class="channel-name">${esc(ch.name)}</div>
         <div class="channel-meta">Tap to browse videos</div>
       </div>
-      <button class="remove-btn" data-remove="${i}" title="Remove">×</button>
+      <button class="remove-btn" data-remove="${i}">×</button>
     </div>`).join('');
 
   list.querySelectorAll('.channel-card').forEach(card => {
@@ -413,12 +676,19 @@ function renderChannels() {
   });
 }
 
-function removeChannel(i) { channels.splice(i, 1); saveChannels(); renderChannels(); }
+function removeChannel(i) {
+  if (currentChannel && currentChannel.id === channels[i].id) { currentChannel = null; showHome(); }
+  channels.splice(i, 1);
+  saveChannels();
+  renderSidebar();
+  renderChannels();
+}
 
-// ── OPEN CHANNEL ──
+// ── Open channel ──
 async function openChannel(i) {
   currentChannel = channels[i];
   allVideos = []; displayedCount = 0; currentSort = 'newest'; nextPageToken = null;
+
   document.getElementById('videos-name').textContent = currentChannel.name;
   const thumb = document.getElementById('videos-thumb');
   thumb.src = currentChannel.thumb || '';
@@ -427,88 +697,78 @@ async function openChannel(i) {
   document.querySelector('[data-sort="newest"]').classList.add('active');
   document.getElementById('video-grid').innerHTML = `<div class="status" style="grid-column:1/-1"><div class="spinner"></div>Loading videos…</div>`;
   document.getElementById('load-more-wrap').style.display = 'none';
+
+  renderSidebar();
   showScreen('videos-screen');
   await fetchVideos();
 }
 
-async function fetchVideos() {
-  try {
-    let pageToken = '';
-    let fetched = [];
-    let pages = 0;
-    while (fetched.length < 50 && pages < 5) {
-      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${currentChannel.id}&part=snippet,id&order=date&maxResults=15&type=video${pageToken ? '&pageToken=' + pageToken : ''}`;
-      const res = await fetch(url);
-      const data = await res.json();
+// Fetch until we have `target` long-form videos or run out of pages
+// Saves the page token so load more can continue from where we stopped
+async function fetchUntil(target, appendToExisting) {
+  const API_KEY = getKey();
+  let fetched = [];
+  let maxPages = 20; // safety cap — won't infinite loop
+  let pages = 0;
 
-      if (data.error) {
-        const msg = data.error.message || 'API error';
-        document.getElementById('video-grid').innerHTML = `<div class="status" style="grid-column:1/-1"><div class="error-msg">${esc(msg)}<br><br><small>Check your API key in settings ⚙</small></div></div>`;
-        return;
-      }
+  while (fetched.length < target && nextPageToken !== null && pages < maxPages) {
+    const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${currentChannel.id}&part=snippet,id&order=date&maxResults=50&type=video${nextPageToken ? '&pageToken=' + nextPageToken : ''}`;
+    const res = await fetch(url);
+    const data = await res.json();
 
-      if (!data.items || data.items.length === 0) break;
-      const ids = data.items.map(v => v.id.videoId).filter(Boolean);
-      const detailUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${ids.join(',')}&part=contentDetails,statistics,snippet`;
-      const detailRes = await fetch(detailUrl);
-      const detailData = await detailRes.json();
-      const batch = (detailData.items || []).map(item => ({
-        id: item.id,
-        title: item.snippet.title,
-        thumb: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
-        published: item.snippet.publishedAt,
-        duration: parseDuration(item.contentDetails.duration),
-        views: parseInt(item.statistics?.viewCount || 0)
-      })).filter(v => v.duration >= 60);
-      fetched = fetched.concat(batch);
-      pageToken = data.nextPageToken || '';
-      nextPageToken = pageToken;
-      pages++;
-      if (!pageToken) break;
-    }
+    if (data.error) throw new Error(data.error.message);
+    if (!data.items || data.items.length === 0) { nextPageToken = null; break; }
+
+    const ids = data.items.map(v => v.id.videoId).filter(Boolean);
+    const detailUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${ids.join(',')}&part=contentDetails,statistics,snippet`;
+    const detailRes = await fetch(detailUrl);
+    const detailData = await detailRes.json();
+
+    const batch = (detailData.items || []).map(item => ({
+      id: item.id, title: item.snippet.title,
+      thumb: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+      published: item.snippet.publishedAt,
+      duration: parseDuration(item.contentDetails.duration),
+      views: parseInt(item.statistics?.viewCount || 0)
+    })).filter(v => v.duration >= 60);
+
+    fetched = fetched.concat(batch);
+    nextPageToken = data.nextPageToken || null;
+    pages++;
+  }
+
+  if (appendToExisting) {
+    allVideos = allVideos.concat(fetched);
+  } else {
     allVideos = fetched;
+  }
+}
+
+async function fetchVideos() {
+  nextPageToken = ''; // empty string = first page, null = no more pages
+  try {
+    await fetchUntil(PAGE_SIZE, false);
     displayedCount = 0;
     renderGrid();
   } catch(e) {
-    document.getElementById('video-grid').innerHTML = `<div class="status" style="grid-column:1/-1"><div class="error-msg">Couldn't load videos. Check your connection.</div></div>`;
+    document.getElementById('video-grid').innerHTML = `<div class="status" style="grid-column:1/-1"><div class="error-msg">${esc(e.message) || 'Couldn\'t load videos.'}<br><br><small>Check your API key in settings ⚙</small></div></div>`;
   }
 }
 
 async function loadMoreVideos() {
   if (loadingMore) return;
+  // If we already have more cached locally just show them
   const sorted = getSorted();
   if (displayedCount < sorted.length) { renderGrid(); return; }
-  if (!nextPageToken) return;
+  // No more pages left
+  if (nextPageToken === null) return;
   loadingMore = true;
   document.getElementById('load-more-btn').textContent = 'Loading…';
   try {
-    let pageToken = nextPageToken;
-    let fetched = [];
-    let pages = 0;
-    while (fetched.length < 30 && pages < 3 && pageToken) {
-      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${currentChannel.id}&part=snippet,id&order=date&maxResults=15&type=video&pageToken=${pageToken}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      if (!data.items || data.items.length === 0) { nextPageToken = ''; break; }
-      const ids = data.items.map(v => v.id.videoId).filter(Boolean);
-      const detailUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${ids.join(',')}&part=contentDetails,statistics,snippet`;
-      const detailRes = await fetch(detailUrl);
-      const detailData = await detailRes.json();
-      const batch = (detailData.items || []).map(item => ({
-        id: item.id,
-        title: item.snippet.title,
-        thumb: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
-        published: item.snippet.publishedAt,
-        duration: parseDuration(item.contentDetails.duration),
-        views: parseInt(item.statistics?.viewCount || 0)
-      })).filter(v => v.duration >= 60);
-      fetched = fetched.concat(batch);
-      pageToken = data.nextPageToken || '';
-      nextPageToken = pageToken;
-      pages++;
-    }
-    allVideos = allVideos.concat(fetched);
+    await fetchUntil(PAGE_SIZE, true);
     renderGrid();
+  } catch(e) {
+    document.getElementById('load-more-btn').textContent = 'Load more videos';
   } finally {
     loadingMore = false;
     document.getElementById('load-more-btn').textContent = 'Load more videos';
@@ -552,11 +812,11 @@ function renderGrid() {
     tile.addEventListener('click', () => { playVideo(visible[parseInt(tile.dataset.index)]); });
   });
 
-  const hasMore = displayedCount < sorted.length || nextPageToken;
+  const hasMore = displayedCount < sorted.length || nextPageToken !== null;
   document.getElementById('load-more-wrap').style.display = hasMore ? 'flex' : 'none';
 }
 
-// ── PLAYER ──
+// ── Player ──
 function playVideo(v) {
   currentVideoId = v.id;
   document.getElementById('player-title').textContent = v.title;
@@ -577,34 +837,29 @@ function stopPlayer() {
   document.getElementById('done-progress').classList.remove('visible');
 }
 
-// Detect video end via YouTube postMessage API
 window.addEventListener('message', e => {
   try {
     const data = JSON.parse(e.data);
     if (data.event === 'onStateChange' && data.info === 0) {
-      // Video ended — show banner + progress bar, auto-return in 4s
       document.getElementById('done-banner').classList.add('visible');
       document.getElementById('done-progress').classList.add('visible');
-      // Trigger CSS transition on next frame
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          document.getElementById('done-progress-bar').style.width = '100%';
-        });
-      });
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        document.getElementById('done-progress-bar').style.width = '100%';
+      }));
       autoReturnTimer = setTimeout(() => {
         if (document.getElementById('player-screen').classList.contains('active')) {
-          stopPlayer();
-          showVideosScreen();
+          stopPlayer(); showVideosScreen();
         }
       }, 4000);
     }
   } catch(_) {}
 });
 
-// ── SEARCH ──
+// ── Search ──
 async function searchChannels() {
   const q = document.getElementById('search-input').value.trim();
   if (!q) return;
+  const API_KEY = getKey();
   const btn = document.getElementById('search-btn');
   const status = document.getElementById('search-status');
   const resultsEl = document.getElementById('search-results');
@@ -617,7 +872,7 @@ async function searchChannels() {
     const data = await res.json();
     status.innerHTML = '';
     if (data.error) { status.innerHTML = `<div class="error-msg">${esc(data.error.message)}</div>`; return; }
-    if (!data.items || data.items.length === 0) { status.innerHTML = `<div class="error-msg">No channels found. Try a different name.</div>`; return; }
+    if (!data.items || data.items.length === 0) { status.innerHTML = `<div class="error-msg">No channels found.</div>`; return; }
     const channelIds = data.items.map(i => i.snippet.channelId).join(',');
     const statsRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${channelIds}&part=statistics`);
     const statsData = await statsRes.json();
@@ -654,7 +909,10 @@ function addChannel(i) {
   const ch = searchResults[i];
   if (!ch || channels.some(c => c.id === ch.id)) return;
   channels.push({ id: ch.id, name: ch.name, thumb: ch.thumb });
-  saveChannels(); showHome();
+  saveChannels();
+  renderSidebar();
+  renderChannels();
+  showHome();
 }
 
 // ── Helpers ──
@@ -693,8 +951,235 @@ function esc(str) {
 if (!getKey()) {
   showScreen('setup-screen');
 } else {
-  showHome();
+  renderSidebar();
+  renderChannels();
+  if (isDesktop()) {
+    showScreen('home-screen');
+  } else {
+    showScreen('home-screen');
+  }
 }
+
+// ── THEME SYSTEM ──
+const THEME_KEY = 'ff_theme';
+
+const PRESETS = [
+  { name: 'Default',    bg: '#0e0e0e', surface: '#181818', surface2: '#222222', border: '#2a2a2a', text: '#e8e4dc', muted: '#6b6760', accent: '#c8b89a', accent2: '#8a7a65', font: 'DM Sans' },
+  { name: 'Midnight',   bg: '#05050f', surface: '#0d0d1f', surface2: '#141428', border: '#1e1e3a', text: '#d8d4f0', muted: '#5a5870', accent: '#8b7fd4', accent2: '#6557b8', font: 'DM Sans' },
+  { name: 'Forest',     bg: '#060e07', surface: '#0e1a0f', surface2: '#152417', border: '#1e3020', text: '#d4e8d5', muted: '#527055', accent: '#7ab87c', accent2: '#5a9060', font: 'Lora' },
+  { name: 'Warm',       bg: '#120c08', surface: '#1e1410', surface2: '#281c16', border: '#3a2820', text: '#f0e0d0', muted: '#7a6055', accent: '#d4885a', accent2: '#b06840', font: 'Lora' },
+  { name: 'Ocean',      bg: '#050d12', surface: '#0a1820', surface2: '#10222e', border: '#183040', text: '#d0e8f0', muted: '#4a7080', accent: '#5ab8d4', accent2: '#3a98b8', font: 'Inter' },
+  { name: 'Mono',       bg: '#0a0a0a', surface: '#141414', surface2: '#1e1e1e', border: '#2a2a2a', text: '#e0e0e0', muted: '#606060', accent: '#a0a0a0', accent2: '#808080', font: 'IBM Plex Mono' },
+];
+
+const ACCENTS = [
+  { label: 'Sand',    accent: '#c8b89a', accent2: '#8a7a65' },
+  { label: 'Violet',  accent: '#9b87d4', accent2: '#7060b0' },
+  { label: 'Sage',    accent: '#7ab87c', accent2: '#5a9060' },
+  { label: 'Coral',   accent: '#d4885a', accent2: '#b06840' },
+  { label: 'Sky',     accent: '#5ab8d4', accent2: '#3a98b8' },
+  { label: 'Rose',    accent: '#d47a9b', accent2: '#b05a7a' },
+  { label: 'Amber',   accent: '#d4a840', accent2: '#b08820' },
+  { label: 'Mist',    accent: '#a0b8c8', accent2: '#7898a8' },
+  { label: 'Lime',    accent: '#9ac840', accent2: '#78a820' },
+  { label: 'White',   accent: '#d8d8d8', accent2: '#a0a0a0' },
+];
+
+const FONTS = [
+  { name: 'DM Sans',       label: 'Clean sans-serif',    preview: 'The quick brown fox' },
+  { name: 'Inter',         label: 'Modern & neutral',    preview: 'The quick brown fox' },
+  { name: 'Lora',          label: 'Warm serif',          preview: 'The quick brown fox' },
+  { name: 'IBM Plex Mono', label: 'Monospace',           preview: 'The quick brown fox' },
+];
+
+function loadTheme() {
+  try {
+    return JSON.parse(localStorage.getItem(THEME_KEY) || '{}');
+  } catch(e) { return {}; }
+}
+
+function saveTheme(t) {
+  localStorage.setItem(THEME_KEY, JSON.stringify(t));
+}
+
+function applyTheme(t) {
+  const root = document.documentElement;
+  if (t.bg)       root.style.setProperty('--bg', t.bg);
+  if (t.surface)  root.style.setProperty('--surface', t.surface);
+  if (t.surface2) root.style.setProperty('--surface2', t.surface2);
+  if (t.border)   root.style.setProperty('--border', t.border);
+  if (t.text)     root.style.setProperty('--text', t.text);
+  if (t.muted)    root.style.setProperty('--muted', t.muted);
+  if (t.accent)   root.style.setProperty('--accent', t.accent);
+  if (t.accent2)  root.style.setProperty('--accent2', t.accent2);
+  if (t.font) {
+    const stack = t.font === 'IBM Plex Mono' ? "'IBM Plex Mono', monospace"
+                : t.font === 'Lora' ? "'Lora', Georgia, serif"
+                : t.font === 'Inter' ? "'Inter', sans-serif"
+                : "'DM Sans', sans-serif";
+    root.style.setProperty('--font-body', stack);
+    document.body.style.fontFamily = stack;
+  }
+  if (t.bgImage) {
+    document.body.style.backgroundImage = `url('${t.bgImage}')`;
+    document.body.classList.add('has-bg-image');
+  } else {
+    document.body.style.backgroundImage = '';
+    document.body.classList.remove('has-bg-image');
+  }
+}
+
+function renderThemePanel() {
+  const current = loadTheme();
+
+  // Presets
+  const tg = document.getElementById('theme-grid');
+  tg.innerHTML = PRESETS.map((p, i) => `
+    <div class="theme-swatch ${(current.presetName === p.name) ? 'active' : ''}" data-preset="${i}">
+      <div class="theme-swatch-preview" style="background:${p.accent};border-color:${p.border}"></div>
+      <div class="theme-swatch-name">${p.name}</div>
+    </div>`).join('');
+  tg.querySelectorAll('.theme-swatch').forEach(sw => {
+    sw.addEventListener('click', () => {
+      const p = PRESETS[parseInt(sw.dataset.preset)];
+      const t = { ...p, presetName: p.name };
+      const existing = loadTheme();
+      if (existing.bgImage) t.bgImage = existing.bgImage;
+      saveTheme(t);
+      applyTheme(t);
+      renderThemePanel();
+    });
+  });
+
+  // Accents
+  const ar = document.getElementById('accent-row');
+  ar.innerHTML = ACCENTS.map((a, i) => `
+    <div class="accent-dot ${current.accent === a.accent ? 'active' : ''}" data-accent="${i}" style="background:${a.accent}" title="${a.label}"></div>`).join('');
+  ar.querySelectorAll('.accent-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      const a = ACCENTS[parseInt(dot.dataset.accent)];
+      const t = { ...loadTheme(), accent: a.accent, accent2: a.accent2, presetName: null };
+      saveTheme(t); applyTheme(t); renderThemePanel();
+    });
+  });
+
+  // Fonts
+  const fo = document.getElementById('font-options');
+  fo.innerHTML = FONTS.map((f, i) => {
+    const stack = f.name === 'IBM Plex Mono' ? "'IBM Plex Mono', monospace"
+                : f.name === 'Lora' ? "'Lora', Georgia, serif"
+                : f.name === 'Inter' ? "'Inter', sans-serif"
+                : "'DM Sans', sans-serif";
+    return `
+    <div class="font-option ${current.font === f.name ? 'active' : ''}" data-font="${i}">
+      <div class="font-option-preview" style="font-family:${stack}">${f.preview}</div>
+      <div class="font-option-name">${f.label}</div>
+    </div>`;
+  }).join('');
+  fo.querySelectorAll('.font-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const f = FONTS[parseInt(opt.dataset.font)];
+      const t = { ...loadTheme(), font: f.name };
+      saveTheme(t); applyTheme(t); renderThemePanel();
+    });
+  });
+
+  // BG colour picker
+  const picker = document.getElementById('bg-colour-picker');
+  picker.value = current.bg || '#0e0e0e';
+
+  // BG clear row
+  document.getElementById('bg-clear-row').style.display = current.bgImage ? 'flex' : 'none';
+}
+
+// Settings API key
+document.getElementById('settings-api-toggle').addEventListener('click', () => {
+  const input = document.getElementById('settings-api-input');
+  input.type = input.type === 'password' ? 'text' : 'password';
+});
+
+document.getElementById('settings-api-save').addEventListener('click', () => {
+  const val = document.getElementById('settings-api-input').value.trim();
+  const errEl = document.getElementById('settings-api-error');
+  if (val === '' && getKey()) { showHome(); return; }
+  if (!val.startsWith('AIza') || val.length < 30) { errEl.classList.add('visible'); return; }
+  errEl.classList.remove('visible');
+  saveKey(val);
+  showHome();
+});
+
+document.getElementById('settings-back-btn').addEventListener('click', () => {
+  if (currentChannel) { showVideosScreen(); } else { showHome(); }
+});
+
+// BG colour picker
+document.getElementById('bg-colour-picker').addEventListener('input', e => {
+  const t = { ...loadTheme(), bg: e.target.value, bgImage: null, presetName: null };
+  saveTheme(t); applyTheme(t);
+  document.getElementById('bg-clear-row').style.display = 'none';
+});
+
+// BG image upload
+document.getElementById('bg-upload-btn').addEventListener('click', () => {
+  document.getElementById('bg-file-input').click();
+});
+document.getElementById('bg-file-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const t = { ...loadTheme(), bgImage: ev.target.result };
+    saveTheme(t); applyTheme(t);
+    document.getElementById('bg-clear-row').style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('bg-clear-btn').addEventListener('click', () => {
+  const t = { ...loadTheme(), bgImage: null };
+  saveTheme(t); applyTheme(t);
+  document.getElementById('bg-clear-row').style.display = 'none';
+});
+
+// Export theme
+document.getElementById('export-theme-btn').addEventListener('click', () => {
+  const t = { ...loadTheme() };
+  delete t.bgImage; // don't export image — too large
+  const blob = new Blob([JSON.stringify(t, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'focusfeed-theme.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Import theme
+document.getElementById('import-theme-btn').addEventListener('click', () => {
+  document.getElementById('theme-file-input').click();
+});
+document.getElementById('theme-file-input').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const t = JSON.parse(ev.target.result);
+      const existing = loadTheme();
+      if (existing.bgImage) t.bgImage = existing.bgImage;
+      saveTheme(t); applyTheme(t); renderThemePanel();
+    } catch(err) { alert('Invalid theme file.'); }
+  };
+  reader.readAsText(file);
+});
+
+// Reset theme
+document.getElementById('reset-theme-btn').addEventListener('click', () => {
+  localStorage.removeItem(THEME_KEY);
+  applyTheme(PRESETS[0]);
+  renderThemePanel();
+});
+
+// Apply saved theme on load
+applyTheme(loadTheme());
 </script>
 </body>
 </html>
