@@ -353,28 +353,25 @@
         </div>
 
         <div class="settings-section">
-          <div class="settings-section-title">Background</div>
-          <div class="settings-row">
-            <div><div class="settings-label">Background colour</div></div>
-            <input type="color" id="bg-colour-picker" style="width:36px;height:36px;border:1px solid var(--border);background:none;cursor:pointer;border-radius:8px;padding:2px">
+          <div class="settings-section-title">Colours</div>
+          <div class="colour-pickers-row">
+            <div class="colour-picker-item">
+              <div class="colour-picker-label">Background</div>
+              <input type="color" id="bg-colour-picker" class="colour-picker-btn">
+            </div>
+            <div class="colour-picker-item">
+              <div class="colour-picker-label">Text colour</div>
+              <input type="color" id="text-colour-picker" class="colour-picker-btn">
+            </div>
           </div>
-          <div class="settings-row">
+          <div class="settings-row" style="margin-top:14px">
             <div><div class="settings-label">Background image</div><div class="settings-sub">Stored locally on your device</div></div>
-            <button class="settings-action-btn" id="bg-upload-btn">Upload image</button>
+            <button class="settings-action-btn" id="bg-upload-btn">Upload</button>
             <input type="file" id="bg-file-input" accept="image/*" style="display:none">
           </div>
           <div class="settings-row" id="bg-clear-row" style="display:none">
             <div><div class="settings-label">Background image set</div></div>
             <button class="settings-action-btn settings-danger-btn" id="bg-clear-btn">Remove</button>
-          </div>
-        </div>
-
-        <div class="settings-section">
-          <div class="settings-section-title">Theme export / import</div>
-          <div class="theme-io-row">
-            <button class="settings-action-btn" id="export-theme-btn" style="flex:1;text-align:center">Export theme</button>
-            <button class="settings-action-btn" id="import-theme-btn" style="flex:1;text-align:center">Import theme</button>
-            <input type="file" id="theme-file-input" accept=".json" style="display:none">
           </div>
         </div>
 
@@ -970,6 +967,30 @@ const PRESETS = [
   { name: 'Warm',       bg: '#120c08', surface: '#1e1410', surface2: '#281c16', border: '#3a2820', text: '#f0e0d0', muted: '#7a6055', accent: '#d4885a', accent2: '#b06840', font: 'Lora' },
   { name: 'Ocean',      bg: '#050d12', surface: '#0a1820', surface2: '#10222e', border: '#183040', text: '#d0e8f0', muted: '#4a7080', accent: '#5ab8d4', accent2: '#3a98b8', font: 'Inter' },
   { name: 'Mono',       bg: '#0a0a0a', surface: '#141414', surface2: '#1e1e1e', border: '#2a2a2a', text: '#e0e0e0', muted: '#606060', accent: '#a0a0a0', accent2: '#808080', font: 'IBM Plex Mono' },
+  {
+    name: 'Cyberpunk',
+    bg: '#0a0a1a', surface: '#0e0e28', surface2: '#141432', border: '#00fff044',
+    text: '#e0f8ff', muted: '#5a8090', accent: '#00fff0', accent2: '#00c8c0',
+    font: 'Orbitron',
+    bgPattern: 'linear-gradient(180deg, #0a0a1a 0%, #0d0d2e 50%, #0a0a1a 100%), repeating-linear-gradient(90deg, #00fff008 0px, #00fff008 1px, transparent 1px, transparent 60px), repeating-linear-gradient(0deg, #00fff008 0px, #00fff008 1px, transparent 1px, transparent 60px)',
+    bgPatternSize: '100% 100%, 60px 60px, 60px 60px'
+  },
+  {
+    name: 'Retrowave',
+    bg: '#12001e', surface: '#1a0030', surface2: '#220040', border: '#ff6ec740',
+    text: '#ffe0f8', muted: '#906080', accent: '#ff6ec7', accent2: '#cc44a0',
+    font: 'DM Sans',
+    bgPattern: 'linear-gradient(180deg, #12001e 0%, #1a0030 40%, #300060 70%, #12001e 100%), repeating-linear-gradient(90deg, #ff6ec710 0px, transparent 1px, transparent 80px), linear-gradient(180deg, transparent 60%, #ff6ec718 100%)',
+    bgPatternSize: '100% 100%, 80px 100%, 100% 100%'
+  },
+  {
+    name: 'Win95',
+    bg: '#008080', surface: '#c0c0c0', surface2: '#d4d0c8', border: '#808080',
+    text: '#000000', muted: '#444444', accent: '#000080', accent2: '#0000a0',
+    font: 'IBM Plex Mono',
+    bgPattern: 'none',
+    bgPatternSize: 'auto'
+  },
 ];
 
 const ACCENTS = [
@@ -990,6 +1011,8 @@ const FONTS = [
   { name: 'Inter',         label: 'Modern & neutral',    preview: 'The quick brown fox' },
   { name: 'Lora',          label: 'Warm serif',          preview: 'The quick brown fox' },
   { name: 'IBM Plex Mono', label: 'Monospace',           preview: 'The quick brown fox' },
+  { name: 'Orbitron',      label: 'Futuristic / sci-fi', preview: 'Focus Feed' },
+  { name: 'VT323',         label: 'Retro pixel',         preview: 'The quick brown fox' },
 ];
 
 function loadTheme() {
@@ -1008,23 +1031,35 @@ function applyTheme(t) {
   if (t.surface)  root.style.setProperty('--surface', t.surface);
   if (t.surface2) root.style.setProperty('--surface2', t.surface2);
   if (t.border)   root.style.setProperty('--border', t.border);
-  if (t.text)     root.style.setProperty('--text', t.text);
+  if (t.text)     { root.style.setProperty('--text', t.text); document.body.style.color = t.text; }
   if (t.muted)    root.style.setProperty('--muted', t.muted);
   if (t.accent)   root.style.setProperty('--accent', t.accent);
   if (t.accent2)  root.style.setProperty('--accent2', t.accent2);
+  // Special theme classes
+  document.body.classList.toggle('win95-theme', t.presetName === 'Win95');
   if (t.font) {
     const stack = t.font === 'IBM Plex Mono' ? "'IBM Plex Mono', monospace"
                 : t.font === 'Lora' ? "'Lora', Georgia, serif"
                 : t.font === 'Inter' ? "'Inter', sans-serif"
+                : t.font === 'Orbitron' ? "'Orbitron', sans-serif"
+                : t.font === 'VT323' ? "'VT323', monospace"
                 : "'DM Sans', sans-serif";
     root.style.setProperty('--font-body', stack);
     document.body.style.fontFamily = stack;
   }
   if (t.bgImage) {
     document.body.style.backgroundImage = `url('${t.bgImage}')`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.classList.add('has-bg-image');
+  } else if (t.bgPattern) {
+    document.body.style.backgroundImage = t.bgPattern;
+    document.body.style.backgroundSize = t.bgPatternSize || 'auto';
+    document.body.style.backgroundPosition = 'center';
     document.body.classList.add('has-bg-image');
   } else {
     document.body.style.backgroundImage = '';
+    document.body.style.backgroundSize = '';
     document.body.classList.remove('has-bg-image');
   }
 }
@@ -1035,9 +1070,14 @@ function renderThemePanel() {
   // Presets
   const tg = document.getElementById('theme-grid');
   tg.innerHTML = PRESETS.map((p, i) => `
-    <div class="theme-swatch ${(current.presetName === p.name) ? 'active' : ''}" data-preset="${i}">
-      <div class="theme-swatch-preview" style="background:${p.accent};border-color:${p.border}"></div>
+    <div class="theme-swatch ${current.presetName === p.name ? 'active' : ''}" data-preset="${i}" style="cursor:pointer">
+      <div class="theme-swatch-dots">
+        <div class="theme-swatch-dot" style="background:${p.bg};border:1px solid ${p.border}"></div>
+        <div class="theme-swatch-dot" style="background:${p.accent}"></div>
+        <div class="theme-swatch-dot" style="background:${p.text};opacity:0.7"></div>
+      </div>
       <div class="theme-swatch-name">${p.name}</div>
+      ${current.presetName === p.name ? '<div class="theme-active-tick">✓ active</div>' : ''}
     </div>`).join('');
   tg.querySelectorAll('.theme-swatch').forEach(sw => {
     sw.addEventListener('click', () => {
@@ -1045,16 +1085,15 @@ function renderThemePanel() {
       const t = { ...p, presetName: p.name };
       const existing = loadTheme();
       if (existing.bgImage) t.bgImage = existing.bgImage;
-      saveTheme(t);
-      applyTheme(t);
-      renderThemePanel();
+      saveTheme(t); applyTheme(t); renderThemePanel();
     });
   });
 
   // Accents
   const ar = document.getElementById('accent-row');
   ar.innerHTML = ACCENTS.map((a, i) => `
-    <div class="accent-dot ${current.accent === a.accent ? 'active' : ''}" data-accent="${i}" style="background:${a.accent}" title="${a.label}"></div>`).join('');
+    <div class="accent-dot ${current.accent === a.accent ? 'active' : ''}" data-accent="${i}"
+      style="background:${a.accent};cursor:pointer" title="${a.label}"></div>`).join('');
   ar.querySelectorAll('.accent-dot').forEach(dot => {
     dot.addEventListener('click', () => {
       const a = ACCENTS[parseInt(dot.dataset.accent)];
@@ -1066,14 +1105,20 @@ function renderThemePanel() {
   // Fonts
   const fo = document.getElementById('font-options');
   fo.innerHTML = FONTS.map((f, i) => {
+    const isActive = (current.font || 'DM Sans') === f.name;
     const stack = f.name === 'IBM Plex Mono' ? "'IBM Plex Mono', monospace"
                 : f.name === 'Lora' ? "'Lora', Georgia, serif"
                 : f.name === 'Inter' ? "'Inter', sans-serif"
+                : f.name === 'Orbitron' ? "'Orbitron', sans-serif"
+                : f.name === 'VT323' ? "'VT323', monospace"
                 : "'DM Sans', sans-serif";
     return `
-    <div class="font-option ${current.font === f.name ? 'active' : ''}" data-font="${i}">
-      <div class="font-option-preview" style="font-family:${stack}">${f.preview}</div>
-      <div class="font-option-name">${f.label}</div>
+    <div class="font-option ${isActive ? 'active' : ''}" data-font="${i}" style="cursor:pointer">
+      <div class="font-option-left">
+        <div class="font-option-preview" style="font-family:${stack}">${f.preview}</div>
+        <div class="font-option-name">${f.label}</div>
+      </div>
+      <div class="font-option-tick">✓</div>
     </div>`;
   }).join('');
   fo.querySelectorAll('.font-option').forEach(opt => {
@@ -1084,9 +1129,9 @@ function renderThemePanel() {
     });
   });
 
-  // BG colour picker
-  const picker = document.getElementById('bg-colour-picker');
-  picker.value = current.bg || '#0e0e0e';
+  // Colour pickers
+  document.getElementById('bg-colour-picker').value = current.bg || '#0e0e0e';
+  document.getElementById('text-colour-picker').value = current.text || '#e8e4dc';
 
   // BG clear row
   document.getElementById('bg-clear-row').style.display = current.bgImage ? 'flex' : 'none';
@@ -1114,9 +1159,8 @@ document.getElementById('settings-back-btn').addEventListener('click', () => {
 
 // BG colour picker
 document.getElementById('bg-colour-picker').addEventListener('input', e => {
-  const t = { ...loadTheme(), bg: e.target.value, bgImage: null, presetName: null };
+  const t = { ...loadTheme(), bg: e.target.value, presetName: null };
   saveTheme(t); applyTheme(t);
-  document.getElementById('bg-clear-row').style.display = 'none';
 });
 
 // BG image upload
@@ -1141,34 +1185,10 @@ document.getElementById('bg-clear-btn').addEventListener('click', () => {
   document.getElementById('bg-clear-row').style.display = 'none';
 });
 
-// Export theme
-document.getElementById('export-theme-btn').addEventListener('click', () => {
-  const t = { ...loadTheme() };
-  delete t.bgImage; // don't export image — too large
-  const blob = new Blob([JSON.stringify(t, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'focusfeed-theme.json'; a.click();
-  URL.revokeObjectURL(url);
-});
-
-// Import theme
-document.getElementById('import-theme-btn').addEventListener('click', () => {
-  document.getElementById('theme-file-input').click();
-});
-document.getElementById('theme-file-input').addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const t = JSON.parse(ev.target.result);
-      const existing = loadTheme();
-      if (existing.bgImage) t.bgImage = existing.bgImage;
-      saveTheme(t); applyTheme(t); renderThemePanel();
-    } catch(err) { alert('Invalid theme file.'); }
-  };
-  reader.readAsText(file);
+// Text colour picker
+document.getElementById('text-colour-picker').addEventListener('input', e => {
+  const t = { ...loadTheme(), text: e.target.value, presetName: null };
+  saveTheme(t); applyTheme(t);
 });
 
 // Reset theme
