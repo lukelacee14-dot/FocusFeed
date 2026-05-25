@@ -265,9 +265,18 @@
       <div class="header-sub">intentional viewing</div>
     </div>
 
-    <div class="sidebar-timer">
-      <span class="timer-label">Today's session</span>
-      <span class="timer-value" id="sidebar-timer">0:00</span>
+    <div class="sidebar-timer" style="flex-direction:column;align-items:flex-start;gap:6px">
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+        <span class="timer-label">Today's session</span>
+        <span class="timer-value" id="sidebar-timer">0:00</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+        <span class="timer-label">API quota used</span>
+        <span id="sidebar-quota" style="font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums">0 / 10,000</span>
+      </div>
+    </div>
+    <div style="padding:8px 12px;border-bottom:1px solid var(--border)">
+      <button id="sidebar-search-btn" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:var(--font-body,'DM Sans',sans-serif);font-size:13px;padding:8px 12px;cursor:pointer;text-align:left;transition:border-color 0.2s">⌕ Search all of YouTube…</button>
     </div>
 
     <div class="sidebar-section">
@@ -294,7 +303,9 @@
         <div style="text-align:right">
           <div class="mobile-timer-label">today</div>
           <div class="mobile-timer" id="mobile-timer">0:00</div>
+          <div id="mobile-quota" style="font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums"></div>
         </div>
+        <button class="icon-btn" id="mobile-search-btn" title="Search videos" style="font-size:18px">⌕</button>
         <button class="icon-btn" id="mobile-settings-btn" title="Settings">⚙</button>
       </div>
     </div>
@@ -448,6 +459,17 @@
         <button class="add-btn" id="show-add-btn">+ Add channel</button>
       </div>
       <div class="channel-list" id="channel-list"></div>
+    </div>
+
+    <!-- SEARCH -->
+    <div id="search-videos-screen" class="screen">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0">
+        <button class="back-btn" id="search-videos-back-btn">← Back</button>
+        <input class="search-input" id="video-search-input" type="text" placeholder="Search YouTube…" autocomplete="off" autocorrect="off" spellcheck="false" style="flex:1;padding:9px 14px;font-size:14px">
+        <button class="search-btn" id="video-search-btn" style="padding:9px 16px">Search</button>
+      </div>
+      <div id="video-search-status"></div>
+      <div class="video-grid" id="video-search-grid" style="flex:1;overflow-y:auto"></div>
     </div>
 
     <!-- ADD -->
@@ -766,7 +788,7 @@ async function fetchUntil(target, appendToExisting) {
 
   while (fetched.length < target && nextPageToken !== null && pages < maxPages) {
     const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${currentChannel.id}&part=snippet,id&order=date&maxResults=50&type=video${nextPageToken ? '&pageToken=' + nextPageToken : ''}`;
-    const res = await fetch(url);
+    const res = await apiFetch(url, 100);
     const data = await res.json();
 
     if (data.error) throw new Error(data.error.message);
@@ -774,7 +796,7 @@ async function fetchUntil(target, appendToExisting) {
 
     const ids = data.items.map(v => v.id.videoId).filter(Boolean);
     const detailUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${ids.join(',')}&part=contentDetails,statistics,snippet`;
-    const detailRes = await fetch(detailUrl);
+    const detailRes = await apiFetch(detailUrl, ids.length);
     const detailData = await detailRes.json();
 
     const batch = (detailData.items || []).map(item => ({
@@ -921,13 +943,13 @@ async function searchChannels() {
   resultsEl.innerHTML = ''; searchResults = [];
   try {
     const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(q)}&part=snippet&type=channel&maxResults=6`;
-    const res = await fetch(url);
+    const res = await apiFetch(url, 100);
     const data = await res.json();
     status.innerHTML = '';
     if (data.error) { status.innerHTML = `<div class="error-msg">${esc(data.error.message)}</div>`; return; }
     if (!data.items || data.items.length === 0) { status.innerHTML = `<div class="error-msg">No channels found.</div>`; return; }
     const channelIds = data.items.map(i => i.snippet.channelId).join(',');
-    const statsRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${channelIds}&part=statistics`);
+    const statsRes = await apiFetch(`https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${channelIds}&part=statistics`, channelIds.split(',').length);
     const statsData = await statsRes.json();
     const statsMap = {};
     (statsData.items || []).forEach(s => { statsMap[s.id] = s.statistics?.subscriberCount; });
@@ -1256,6 +1278,194 @@ document.getElementById('reset-theme-btn').addEventListener('click', () => {
 
 // Apply saved theme on load
 applyTheme(loadTheme());
+
+// ── QUOTA TRACKER ──
+const QUOTA_KEY = 'ff_quota';
+const QUOTA_DATE_KEY = 'ff_quota_date';
+const QUOTA_RESET_HOUR = 16; // 4pm Melbourne = midnight Pacific (approx)
+
+function getQuotaDate() {
+  const now = new Date();
+  // Use Pacific reset: midnight Pacific = ~4pm-5pm Melbourne AEST
+  // We just use calendar date as an approximation
+  return now.toISOString().slice(0, 10);
+}
+
+function getQuota() {
+  const saved = localStorage.getItem(QUOTA_DATE_KEY);
+  if (saved !== getQuotaDate()) {
+    localStorage.setItem(QUOTA_DATE_KEY, getQuotaDate());
+    localStorage.setItem(QUOTA_KEY, '0');
+    return 0;
+  }
+  return parseInt(localStorage.getItem(QUOTA_KEY) || '0');
+}
+
+function addQuota(units) {
+  const current = getQuota();
+  const next = current + units;
+  localStorage.setItem(QUOTA_DATE_KEY, getQuotaDate());
+  localStorage.setItem(QUOTA_KEY, String(next));
+  updateQuotaDisplay();
+  return next;
+}
+
+function updateQuotaDisplay() {
+  const used = getQuota();
+  const pct = used / 10000;
+  const colour = pct >= 0.9 ? '#e07060' : pct >= 0.7 ? '#d4a840' : 'var(--muted)';
+  const str = used.toLocaleString() + ' / 10,000';
+
+  const sq = document.getElementById('sidebar-quota');
+  const mq = document.getElementById('mobile-quota');
+  if (sq) { sq.textContent = str; sq.style.color = colour; }
+  if (mq) { mq.textContent = str; mq.style.color = colour; }
+}
+
+// Wrap fetch to auto-track quota
+function apiFetch(url, units) {
+  addQuota(units);
+  return fetch(url);
+}
+
+// ── VIDEO SEARCH ──
+let videoSearchResults = [];
+
+function showVideoSearch() {
+  document.getElementById('video-search-input').value = '';
+  document.getElementById('video-search-status').innerHTML = '';
+  document.getElementById('video-search-grid').innerHTML = '';
+  videoSearchResults = [];
+  showScreen('search-videos-screen');
+  setTimeout(() => document.getElementById('video-search-input').focus(), 100);
+}
+
+async function runVideoSearch() {
+  const q = document.getElementById('video-search-input').value.trim();
+  if (!q) return;
+
+  const API_KEY = getKey();
+  const statusEl = document.getElementById('video-search-status');
+  const gridEl = document.getElementById('video-search-grid');
+  const btn = document.getElementById('video-search-btn');
+
+  btn.disabled = true; btn.textContent = '…';
+  statusEl.innerHTML = '<div class="status"><div class="spinner"></div>Searching…</div>';
+  gridEl.innerHTML = '';
+  videoSearchResults = [];
+
+  try {
+    // 100 units for search
+    const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(q)}&part=snippet,id&type=video&maxResults=10&order=relevance`;
+    const res = await apiFetch(url, 100);
+    const data = await res.json();
+
+    statusEl.innerHTML = '';
+
+    if (data.error) {
+      statusEl.innerHTML = `<div style="padding:16px 24px"><div class="error-msg">${esc(data.error.message)}</div></div>`;
+      return;
+    }
+
+    if (!data.items || data.items.length === 0) {
+      statusEl.innerHTML = '<div class="status">No results found. Try different keywords.</div>';
+      return;
+    }
+
+    const ids = data.items.map(v => v.id.videoId).filter(Boolean);
+
+    // 1 unit per video for details
+    const detailUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${ids.join(',')}&part=contentDetails,statistics,snippet`;
+    const detailRes = await apiFetch(detailUrl, ids.length);
+    const detailData = await detailRes.json();
+
+    videoSearchResults = (detailData.items || []).map(item => ({
+      id: item.id,
+      title: item.snippet.title,
+      channelName: item.snippet.channelTitle,
+      thumb: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+      published: item.snippet.publishedAt,
+      duration: parseDuration(item.contentDetails.duration),
+      views: parseInt(item.statistics?.viewCount || 0)
+    }));
+
+    if (videoSearchResults.length === 0) {
+      statusEl.innerHTML = '<div class="status">No results found.</div>';
+      return;
+    }
+
+    gridEl.innerHTML = videoSearchResults.map((v, i) => `
+      <div class="video-tile" data-index="${i}">
+        <div class="tile-thumb-wrap">
+          <img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy">
+          <div class="tile-duration">${fmtDur(v.duration)}</div>
+          <div class="tile-play"><div class="tile-play-icon"></div></div>
+        </div>
+        <div class="tile-title">${esc(v.title)}</div>
+        <div class="tile-meta">${esc(v.channelName)} · ${fmtDate(v.published)}${v.views > 0 ? ' · ' + fmtViews(v.views) + ' views' : ''}</div>
+      </div>`).join('');
+
+    gridEl.querySelectorAll('.video-tile').forEach(tile => {
+      tile.addEventListener('click', () => {
+        const v = videoSearchResults[parseInt(tile.dataset.index)];
+        playSearchResult(v);
+      });
+    });
+
+  } catch(e) {
+    statusEl.innerHTML = '<div style="padding:16px 24px"><div class="error-msg">Search failed. Check your connection.</div></div>';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Search';
+  }
+}
+
+function playSearchResult(v) {
+  // Reuse player screen — set currentChannel to null so back goes to search
+  currentVideoId = v.id;
+  document.getElementById('player-title').textContent = v.title;
+  document.getElementById('player-meta').textContent = v.channelName + ' · ' + fmtDate(v.published) + (v.views > 0 ? ' · ' + fmtViews(v.views) + ' views' : '');
+  document.getElementById('player-channel-label').textContent = v.channelName;
+  document.getElementById('done-banner').classList.remove('visible');
+  document.getElementById('done-progress').classList.remove('visible');
+  document.getElementById('player-frame').src =
+    `https://www.youtube.com/embed/${v.id}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1`;
+
+  // Override back button to return to search
+  document.getElementById('player-back-btn').onclick = () => { stopPlayer(); showVideoSearch(); };
+  document.getElementById('done-back-btn').onclick = () => { stopPlayer(); showVideoSearch(); };
+
+  showScreen('player-screen');
+}
+
+// Wire up search buttons
+document.getElementById('sidebar-search-btn').addEventListener('click', showVideoSearch);
+document.getElementById('mobile-search-btn').addEventListener('click', showVideoSearch);
+document.getElementById('search-videos-back-btn').addEventListener('click', () => {
+  currentChannel ? showVideosScreen() : showHome();
+});
+document.getElementById('video-search-btn').addEventListener('click', runVideoSearch);
+document.getElementById('video-search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') runVideoSearch();
+});
+
+// Restore normal back button behaviour when opening channel videos
+const _origPlayVideo = playVideo;
+function playVideo(v) {
+  document.getElementById('player-back-btn').onclick = () => { stopPlayer(); showVideosScreen(); };
+  document.getElementById('done-back-btn').onclick = () => { stopPlayer(); showVideosScreen(); };
+  _origPlayVideo(v);
+}
+
+// Update quota display now and patch existing fetch calls to track units
+// Patch fetchUntil to track quota
+const _origFetchUntil = fetchUntil;
+async function fetchUntil(target, append) {
+  // Units tracked inside fetchUntil — we patch apiFetch there
+  return _origFetchUntil(target, append);
+}
+
+// Init quota display
+updateQuotaDisplay();
 </script>
 </body>
 </html>
