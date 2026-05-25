@@ -517,7 +517,7 @@
   body.win95-theme .channel-name { font-family: 'VT323',monospace !important; color: #000 !important; }
   body.win95-theme .channel-meta { font-family: 'VT323',monospace !important; color: #444 !important; }
   /* Global white buttons */
-  body:not(.win95-theme) .add-btn,body:not(.win95-theme) .search-btn,body:not(.win95-theme) .load-more-btn,body:not(.win95-theme) .sidebar-add-btn,body:not(.win95-theme) #sidebar-search-btn,body:not(.win95-theme) .empty-cta,body:not(.win95-theme) .done-back-btn,body:not(.win95-theme) #yourday-sidebar-btn { background: rgba(255,255,255,0.92) !important; color: #111 !important; border: 1.5px solid #111 !important; border-radius: 6px !important; }
+  body:not(.win95-theme):not(.xbox-theme) .add-btn,body:not(.win95-theme):not(.xbox-theme) .search-btn,body:not(.win95-theme):not(.xbox-theme) .load-more-btn,body:not(.win95-theme):not(.xbox-theme) .sidebar-add-btn,body:not(.win95-theme):not(.xbox-theme) #sidebar-search-btn,body:not(.win95-theme):not(.xbox-theme) .empty-cta,body:not(.win95-theme):not(.xbox-theme) .done-back-btn,body:not(.win95-theme):not(.xbox-theme) #yourday-sidebar-btn { background: rgba(255,255,255,0.92) !important; color: #111 !important; border: 1.5px solid #111 !important; border-radius: 6px !important; }
   body:not(.win95-theme):not(.xbox-theme) .sort-pill { background: rgba(255,255,255,0.85) !important; color: #111 !important; border: 1.5px solid #111 !important; border-radius: 20px !important; }
   body:not(.win95-theme):not(.xbox-theme) .sort-pill.active { background: var(--accent) !important; color: var(--bg) !important; border-color: var(--accent) !important; }
   body:not(.win95-theme):not(.xbox-theme) .settings-action-btn { background: rgba(255,255,255,0.92) !important; color: #111 !important; border: 1.5px solid #111 !important; border-radius: 6px !important; }
@@ -575,7 +575,9 @@
   body.xbox-theme #yourday-sidebar-btn,
   body.xbox-theme #sidebar-search-btn,
   body.xbox-theme #show-add-btn,
-  body.xbox-theme #sidebar-add-btn {
+  body.xbox-theme #sidebar-add-btn,
+  body.xbox-theme #sidebar-search-btn,
+  body.xbox-theme .icon-btn {
     background: #3a3530 !important;
     color: #f0a500 !important;
     border: none !important;
@@ -909,6 +911,16 @@
     text-align: center;
     color: rgba(255,255,255,0.4);
     font-size: 13px;
+  }
+
+  /* Xbox button override — max specificity for stubborn elements */
+  html body.xbox-theme #sidebar-search-btn,
+  html body.xbox-theme #yourday-sidebar-btn {
+    background: #3a3530 !important;
+    color: #f0a500 !important;
+    border: none !important;
+    border-radius: 999px !important;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.45) !important;
   }
 </style>
 </head>
