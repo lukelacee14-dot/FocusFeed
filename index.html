@@ -571,13 +571,27 @@
   body.xbox-theme .header-sub { color: #444 !important; }
   body.xbox-theme .add-btn, body.xbox-theme .sidebar-add-btn,
   body.xbox-theme #yourday-sidebar-btn, body.xbox-theme #sidebar-search-btn {
-    background: linear-gradient(to bottom, #e8e6df, #d4d2cb) !important;
-    color: #2a2a2a !important;
-    border: 1px solid #a0a098 !important;
-    border-radius: 4px !important;
+    background: linear-gradient(to bottom, #3a2800, #2a1c00) !important;
+    color: #f0c060 !important;
+    border: 1.5px solid #6a4a10 !important;
+    border-radius: 3px !important;
     font-family: 'Exo 2',sans-serif !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5) !important;
   }
+  body.xbox-theme .add-btn:hover, body.xbox-theme .sidebar-add-btn:hover,
+  body.xbox-theme #yourday-sidebar-btn:hover, body.xbox-theme #sidebar-search-btn:hover {
+    background: linear-gradient(to bottom, #5a3c00, #3a2800) !important;
+    color: #ffd080 !important;
+  }
+  body.xbox-theme .icon-btn {
+    color: #3a2400 !important;
+    background: linear-gradient(to bottom, #c8b890, #b0a078) !important;
+    border: 1px solid #6a4a10 !important;
+    border-radius: 3px !important;
+    width: 28px !important; height: 28px !important;
+  }
+  body.xbox-theme .icon-btn:hover { background: linear-gradient(to bottom, #d8c8a0, #c0a888) !important; }
   body.xbox-theme .wordmark {
     font-family: 'DM Serif Display', serif !important;
     color: #fff !important;
@@ -666,95 +680,107 @@
   /* Left side tabs */
 /* xbox-side-tabs defined in tab section above */
 
-  /* Xbox side tabs — overlapping card fan effect */
+  /* Xbox side tabs — full height overlapping wings */
   .xbox-side-tabs {
     position: relative;
-    width: 42px;
+    width: 52px;
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
+    align-self: stretch;
+    display: block;
+    overflow: visible;
   }
-  .xbox-left-tabs { justify-content: flex-start; }
-  .xbox-right-tabs { justify-content: flex-end; }
 
   .xbox-side-tab {
     writing-mode: vertical-rl;
     text-orientation: mixed;
     position: absolute;
-    height: 120px;
-    width: 34px;
-    padding: 14px 8px;
-    background: linear-gradient(to bottom, #e8e6df, #d4d2cb, #c0beb8);
-    border: 1px solid #a0a098;
-    color: #222;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    min-height: 100%;
+    padding: 20px 10px;
+    color: #1a1a1a;
     font-family: 'Exo 2', sans-serif;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     cursor: pointer;
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: clip;
+    text-overflow: ellipsis;
     box-sizing: border-box;
-    transition: transform 0.18s ease, z-index 0s;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  /* LEFT tabs — open on right side, fan leftward */
+  /* LEFT tabs — rounded right edge, stack behind each other going left */
   .xbox-left-tabs .xbox-side-tab {
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 14px 14px 0;
+    border: 1.5px solid #b0aea8;
     border-left: none;
     left: 0;
-    box-shadow: 4px 0 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
   }
-  /* Front tab fully visible */
   .xbox-left-tabs .xbox-side-tab:nth-child(1) {
     z-index: 5;
     transform: translateX(0);
+    background: linear-gradient(to right, #eceae3, #dddbd4);
+    box-shadow: 5px 0 12px rgba(0,0,0,0.35);
   }
-  /* Middle tab mostly hidden, just edge showing */
   .xbox-left-tabs .xbox-side-tab:nth-child(2) {
     z-index: 4;
-    transform: translateX(-22px);
-    background: linear-gradient(to bottom, #dddbd4, #cac8c1, #b6b4ae);
+    transform: translateX(-16px);
+    background: linear-gradient(to right, #e0deda, #d0cec8);
+    box-shadow: 5px 0 10px rgba(0,0,0,0.28);
+    border-color: #a8a6a0;
   }
-  /* Back tab barely a sliver */
   .xbox-left-tabs .xbox-side-tab:nth-child(3) {
     z-index: 3;
-    transform: translateX(-30px);
-    background: linear-gradient(to bottom, #d0cec7, #bcbab3, #a8a6a0);
+    transform: translateX(-28px);
+    background: linear-gradient(to right, #d4d2cc, #c4c2bc);
+    box-shadow: 5px 0 8px rgba(0,0,0,0.22);
+    border-color: #a0a098;
   }
   .xbox-left-tabs .xbox-side-tab:hover {
-    transform: translateX(6px) !important;
+    transform: translateX(8px) !important;
     z-index: 10 !important;
-    background: linear-gradient(to bottom, #f2f0e9, #e0deda, #cccac4) !important;
+    background: linear-gradient(to right, #f4f2eb, #e8e6e0) !important;
+    box-shadow: 6px 0 16px rgba(0,0,0,0.4) !important;
   }
 
-  /* RIGHT tabs — open on left side, fan rightward */
+  /* RIGHT tabs — rounded left edge, stack behind each other going right */
   .xbox-right-tabs .xbox-side-tab {
-    border-radius: 10px 0 0 10px;
+    border-radius: 14px 0 0 14px;
+    border: 1.5px solid #b0aea8;
     border-right: none;
     right: 0;
-    box-shadow: -4px 0 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.5);
   }
   .xbox-right-tabs .xbox-side-tab:nth-child(1) {
     z-index: 5;
     transform: translateX(0);
+    background: linear-gradient(to left, #eceae3, #dddbd4);
+    box-shadow: -5px 0 12px rgba(0,0,0,0.35);
   }
   .xbox-right-tabs .xbox-side-tab:nth-child(2) {
     z-index: 4;
-    transform: translateX(22px);
-    background: linear-gradient(to bottom, #dddbd4, #cac8c1, #b6b4ae);
+    transform: translateX(16px);
+    background: linear-gradient(to left, #e0deda, #d0cec8);
+    box-shadow: -5px 0 10px rgba(0,0,0,0.28);
+    border-color: #a8a6a0;
   }
   .xbox-right-tabs .xbox-side-tab:nth-child(3) {
     z-index: 3;
-    transform: translateX(30px);
-    background: linear-gradient(to bottom, #d0cec7, #bcbab3, #a8a6a0);
+    transform: translateX(28px);
+    background: linear-gradient(to left, #d4d2cc, #c4c2bc);
+    box-shadow: -5px 0 8px rgba(0,0,0,0.22);
+    border-color: #a0a098;
   }
   .xbox-right-tabs .xbox-side-tab:hover {
-    transform: translateX(-6px) !important;
+    transform: translateX(-8px) !important;
     z-index: 10 !important;
-    background: linear-gradient(to bottom, #f2f0e9, #e0deda, #cccac4) !important;
+    background: linear-gradient(to left, #f4f2eb, #e8e6e0) !important;
+    box-shadow: -6px 0 16px rgba(0,0,0,0.4) !important;
   }
 
   /* Centre content area */
