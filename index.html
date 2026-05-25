@@ -555,17 +555,18 @@
   body.xbox-theme .goal-item{background:rgba(0,0,0,0.5) !important;border:1px solid rgba(240,165,0,0.25) !important;}
   body.xbox-theme .goal-checkbox{border-color:#f0a500 !important;}
   body.xbox-theme .goal-achieved .goal-checkbox{background:#f0a500 !important;}
-  body.xbox-theme .screen.active{background:transparent !important;border:none !important;outline:none !important;margin:0 !important;}
+  body.xbox-theme .screen.active{background:transparent !important;border:none !important;outline:none !important;margin:0 !important;overflow:visible !important;}
   /* Xbox home layout */
-  body.xbox-theme #home-screen{position:relative;overflow:hidden;transition:background 0.4s ease;}
+  body.xbox-theme #main{overflow:visible !important;}
+  body.xbox-theme #home-screen{position:relative;overflow:visible;transition:background 0.4s ease;}
   body.xbox-theme .channels-header{display:none !important;}
   body.xbox-theme #feed-container{display:none !important;}
-  #xbox-layout{display:none;flex:1;position:relative;z-index:1;overflow:hidden;min-height:0;}
+  #xbox-layout{display:none;flex:1;position:relative;z-index:1;overflow:visible;min-height:0;}
   body.xbox-theme #xbox-layout{display:flex;height:100%;align-items:stretch;}
   /* Centred narrower content */
   .xbox-centre{max-width:720px;margin:0 auto;}
   /* Xbox tabs */
-  .xbox-side-tabs{position:relative;flex-shrink:0;align-self:stretch;display:block;overflow:visible;width:68px;}
+  .xbox-side-tabs{position:relative;flex-shrink:0;align-self:stretch;display:block;overflow:visible;width:90px;}
   .xbox-side-tab{writing-mode:vertical-rl;text-orientation:mixed;position:absolute;top:8%;bottom:8%;width:54px;display:flex;align-items:center;justify-content:center;background:linear-gradient(to right,#e0deda,#ceccc6,#bcbab4);border:1.5px solid #aaa8a2;box-sizing:border-box;cursor:pointer;transition:transform 0.2s ease;overflow:hidden;}
   .xbox-tab-label{writing-mode:vertical-rl;text-orientation:mixed;font-family:'Exo 2',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:10px 5px;border-radius:8px;white-space:nowrap;overflow:hidden;max-height:120px;text-overflow:ellipsis;flex-shrink:0;}
   .xbox-left-tabs .xbox-side-tab{border-radius:0 14px 14px 0;border-left:none;left:0;box-shadow:4px 0 12px rgba(0,0,0,0.35);}
@@ -2071,12 +2072,14 @@ function renderXboxDashboard(videos){
   if(!isXbox()||!videos)return;
   xboxFeedData=videos;
   const activeColour=XBOX_COLOURS[xboxActiveChannel%XBOX_COLOURS.length];
-  // Apply background colour to home screen fully
+  // Apply background colour to home screen — override everything
   const _hs=document.getElementById('home-screen');
   if(_hs){
-    _hs.style.background=activeColour.bg;
-    _hs.style.backgroundSize='100% 100%';
-    _hs.style.transition='background 0.4s ease';
+    _hs.setAttribute('style','background:'+activeColour.bg+' !important;background-size:100% 100%;transition:background 0.4s ease;');
+  }
+  // Also remove any body background that might override
+  if(document.body.classList.contains('xbox-theme')){
+    document.body.style.backgroundImage='none';
   }
   const leftEl=document.getElementById('xbox-left-tabs'),rightEl=document.getElementById('xbox-right-tabs'),headerEl=document.getElementById('xbox-channel-header'),listEl=document.getElementById('xbox-video-list');
   if(!leftEl||!rightEl||!headerEl||!listEl)return;
