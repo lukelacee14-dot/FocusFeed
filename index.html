@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="FocusFeed">
-<title>FocusFeed</title>
+<meta name="apple-mobile-web-app-title" content="YourSpace">
+<title>YourSpace</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -475,6 +475,51 @@
     background: #d4d0c8 !important;
     border-bottom-color: #d4d0c8 !important;
   }
+
+  /* ── FEED CHANNEL ROWS ── */
+  .feed-channel-section { margin-bottom: 28px; }
+  .feed-channel-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; cursor: pointer;
+    transition: opacity 0.15s; -webkit-tap-highlight-color: transparent;
+  }
+  .feed-channel-header:hover { opacity: 0.75; }
+  .feed-ch-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .feed-ch-avatar-placeholder { width: 28px; height: 28px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--accent); flex-shrink: 0; }
+  .feed-ch-title { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; }
+  .feed-ch-arrow { font-size: 12px; color: var(--muted); }
+  .feed-channel-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 14px; padding: 4px 20px 0;
+  }
+  @media (max-width: 767px) {
+    .feed-channel-row { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 4px 14px 0; }
+    .feed-channel-header { padding: 10px 14px; }
+  }
+
+  /* ── DRAG TO REORDER SIDEBAR ── */
+  .sidebar-channel.dragging { opacity: 0.4; }
+  .sidebar-channel.drag-over { border-top: 2px solid var(--accent); }
+
+  /* ── YOURDAY ── */
+  .goal-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    margin-bottom: 8px; transition: opacity 0.2s;
+  }
+  .goal-checkbox {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid var(--accent); background: none;
+    cursor: pointer; flex-shrink: 0; display: flex;
+    align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .goal-checkbox:hover { background: var(--accent2); border-color: var(--accent2); }
+  .goal-text { font-size: 14px; color: var(--text); flex: 1; line-height: 1.4; }
+  .goal-achieved .goal-text { color: var(--muted); text-decoration: line-through; }
+  .goal-achieved .goal-checkbox { background: var(--accent); border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -483,7 +528,7 @@
   <!-- SIDEBAR (desktop) -->
   <div id="sidebar">
     <div class="sidebar-header">
-      <div class="wordmark">Focus<em>Feed</em></div>
+      <div class="wordmark">Your<em>Space</em></div>
       <div class="header-sub">Only What You Choose</div>
     </div>
 
@@ -509,6 +554,7 @@
     </div>
     <div class="sidebar-channel-list" id="sidebar-channel-list"></div>
     <button class="sidebar-add-btn" id="sidebar-add-btn">+ Add channel</button>
+    <button class="sidebar-add-btn" id="yourday-sidebar-btn" style="margin-top:4px;border-style:solid;border-color:var(--accent2)">☀ YourDay</button>
 
     <div class="sidebar-bottom">
       <button class="icon-btn" id="sidebar-settings-btn" title="Settings">⚙</button>
@@ -521,7 +567,7 @@
     <!-- Mobile header -->
     <div class="mobile-header">
       <div class="mobile-header-left">
-        <div class="wordmark">Focus<em>Feed</em></div>
+        <div class="wordmark">Your<em>Space</em></div>
         <div class="header-sub" style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Only What You Choose</div>
       </div>
       <div class="mobile-header-right">
@@ -539,12 +585,12 @@
     <div id="setup-screen" class="screen">
       <div class="setup-eyebrow">One-time setup</div>
       <div class="setup-title">Before you<br><em>get started</em></div>
-      <div class="setup-desc">FocusFeed needs a free API key to fetch videos from YouTube. This takes about 3 minutes to set up and you'll never need to touch it again.</div>
+      <div class="setup-desc">YourSpace needs a free API key to fetch videos from YouTube. This takes about 3 minutes to set up and you'll never need to touch it again.</div>
 
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:24px">
         <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent2);margin-bottom:10px;font-weight:500">What is an API key?</div>
         <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px">Think of it like a personal library card. It proves to YouTube that you're allowed to request their data, and it tracks your personal daily usage — not ours. Google gives every account 10,000 free requests per day, which is far more than you'll ever use just watching videos.</p>
-        <p style="font-size:13px;color:var(--muted);line-height:1.7">FocusFeed is completely free. The API key is also free. Neither of us ever sees your key — it lives only in your browser on your device.</p>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7">YourSpace is completely free. The API key is also free. Neither of us ever sees your key — it lives only in your browser on your device.</p>
       </div>
 
       <div style="background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.25);border-radius:var(--radius);padding:14px 18px;margin-bottom:28px;display:flex;gap:12px;align-items:flex-start">
@@ -572,7 +618,7 @@
           <div class="step-num">2</div>
           <div class="step-body">
             <div class="step-label">Create a project</div>
-            <div class="step-sub">Click "New Project" at the top → give it any name (e.g. "FocusFeed") → click Create. A project is just a folder that keeps your key organised.</div>
+            <div class="step-sub">Click "New Project" at the top → give it any name (e.g. "YourSpace") → click Create. A project is just a folder that keeps your key organised.</div>
           </div>
         </div>
         <div class="setup-step">
@@ -593,7 +639,7 @@
           <div class="step-num">5</div>
           <div class="step-body">
             <div class="step-label">Paste it below and save</div>
-            <div class="step-sub">Your key is saved in your browser only. It never leaves your device and is never shared with FocusFeed or anyone else.</div>
+            <div class="step-sub">Your key is saved in your browser only. It never leaves your device and is never shared with YourSpace or anyone else.</div>
           </div>
         </div>
       </div>
@@ -699,8 +745,8 @@
         <div class="settings-tab-content" id="tab-feedback">
           <div class="settings-section">
             <div class="settings-section-title">Get in touch</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">Found a bug? Something not working? Have an idea? I'd genuinely love to hear from you — FocusFeed is being built in the open and early feedback shapes everything.</p>
-            <a id="feedback-email-btn" href="mailto:hello@focusfeed.io?subject=FocusFeed feedback" style="display:block;text-decoration:none">
+            <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">Found a bug? Something not working? Have an idea? I'd genuinely love to hear from you — YourSpace is being built in the open and early feedback shapes everything.</p>
+            <a id="feedback-email-btn" href="mailto:hello@yourspace.space?subject=YourSpace feedback" style="display:block;text-decoration:none">
               <button class="api-save-btn" style="width:100%">Send feedback by email →</button>
             </a>
           </div>
@@ -723,13 +769,13 @@
               <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em" id="version-label">v0.1 beta</div>
             </div>
             <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Only What You Choose</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7">FocusFeed is an intentional YouTube client — no algorithm, no recommendations, no infinite scroll. Just the channels you chose, the videos you actually want to watch.</p>
+            <p style="font-size:13px;color:var(--muted);line-height:1.7">YourSpace is your personal, intentional digital environment — no algorithm, no recommendations, no infinite scroll. Just the channels you chose, the videos you actually want to watch.</p>
           </div>
           <div class="settings-section">
             <div class="settings-section-title">Privacy</div>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px">FocusFeed does not collect, store, or transmit any personal data.</p>
+            <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px">YourSpace does not collect, store, or transmit any personal data.</p>
             <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px">Your API key and channel preferences are stored locally in your browser only and never leave your device. We do not use cookies, analytics, or tracking of any kind.</p>
-            <p style="font-size:13px;color:var(--muted);line-height:1.7">Your API key communicates directly with YouTube's servers on your behalf — FocusFeed never sees or handles this traffic.</p>
+            <p style="font-size:13px;color:var(--muted);line-height:1.7">Your API key communicates directly with YouTube's servers on your behalf — YourSpace never sees or handles this traffic.</p>
           </div>
           <div class="settings-section">
             <div class="settings-section-title">Built with</div>
@@ -764,6 +810,41 @@
       </div>
       <div id="video-search-status"></div>
       <div class="video-grid" id="video-search-grid" style="flex:1;overflow-y:auto"></div>
+    </div>
+
+    <!-- YOURDAY -->
+    <div id="yourday-screen" class="screen">
+      <div style="max-width:600px;width:100%;margin:0 auto;padding:28px 24px;display:flex;flex-direction:column;gap:0;flex:1">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+          <div>
+            <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text)">Your<em style="font-style:italic;color:var(--accent)">Day</em></div>
+            <div style="font-size:11px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:2px" id="yourday-date"></div>
+          </div>
+          <button class="back-btn" id="yourday-back-btn">← Back</button>
+        </div>
+
+        <!-- Add goal input -->
+        <div style="display:flex;gap:8px;margin-bottom:24px">
+          <input id="goal-input" type="text" placeholder="Add a goal for today…" class="search-input" style="flex:1;padding:10px 14px;font-size:14px" maxlength="120">
+          <button class="search-btn" id="goal-add-btn" style="padding:10px 18px">Add</button>
+        </div>
+
+        <!-- Active goals -->
+        <div id="goals-active-section">
+          <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Today's goals</div>
+          <div id="goals-active-list"></div>
+          <div id="goals-empty" style="font-size:13px;color:var(--muted);padding:16px 0;display:none">No goals yet — add something you want to do today.</div>
+        </div>
+
+        <!-- Achieved goals -->
+        <div id="goals-achieved-section" style="margin-top:28px;display:none">
+          <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Goals achieved today 🎉</div>
+          <div id="goals-achieved-list"></div>
+        </div>
+      </div>
+
+      <!-- Confetti canvas -->
+      <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999"></canvas>
     </div>
 
     <!-- ADD -->
@@ -940,6 +1021,13 @@ function showSettings() {
   document.getElementById('settings-api-error').classList.remove('visible');
   renderThemePanel();
   showScreen('settings-screen');
+  // Always open on Customise tab
+  document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.remove('active'));
+  const firstTab = document.querySelector('[data-tab="customise"]');
+  const firstContent = document.getElementById('tab-customise');
+  if (firstTab) firstTab.classList.add('active');
+  if (firstContent) firstContent.classList.add('active');
 }
 
 // ── Setup ──
@@ -1034,6 +1122,7 @@ function renderSidebar() {
   list.querySelectorAll('.sidebar-ch-remove').forEach(btn => {
     btn.addEventListener('click', e => { e.stopPropagation(); removeChannel(parseInt(btn.dataset.remove)); });
   });
+  addDragToSidebar();
 }
 
 // ── Mobile channel list ──
@@ -1132,41 +1221,57 @@ function displayFeed(videos) {
     return;
   }
 
-  // Cache age note
-  const cacheDate = localStorage.getItem('ff_feed_date');
-  const today = new Date().toISOString().slice(0, 10);
-  const cacheNote = cacheDate === today
-    ? `<div class="feed-cache-note">Updated today — refreshes daily or tap ↻</div>`
-    : '';
+  // Group videos by channel, preserving sidebar order
+  const channelOrder = channels.map(ch => ch.id);
+  const grouped = {};
+  channelOrder.forEach(id => { grouped[id] = []; });
+  videos.forEach(v => { if (grouped[v.channelId]) grouped[v.channelId].push(v); });
 
-  const grid = document.createElement('div');
-  grid.className = 'feed-grid';
-  grid.innerHTML = videos.map((v, i) => `
-    <div class="feed-tile" data-index="${i}">
-      <div class="tile-thumb-wrap">
-        <img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy">
-        <div class="tile-duration">${fmtDur(v.duration)}</div>
-        <div class="tile-play"><div class="tile-play-icon"></div></div>
+  container.innerHTML = '';
+
+  channelOrder.forEach(chId => {
+    const chVideos = grouped[chId];
+    if (!chVideos || chVideos.length === 0) return;
+    const ch = channels.find(c => c.id === chId);
+    if (!ch) return;
+
+    // Channel row section
+    const section = document.createElement('div');
+    section.className = 'feed-channel-section';
+    section.innerHTML = `
+      <div class="feed-channel-header" data-channel-index="${channels.indexOf(ch)}">
+        ${ch.thumb ? `<img src="${ch.thumb}" class="feed-ch-avatar" alt="">` : `<div class="feed-ch-avatar-placeholder">${ch.name[0]}</div>`}
+        <span class="feed-ch-title">${esc(ch.name)}</span>
+        <span class="feed-ch-arrow">→</span>
       </div>
-      <div class="feed-channel-badge">
-        ${v.channelThumb ? `<img src="${v.channelThumb}" style="width:14px;height:14px;border-radius:50%;object-fit:cover;flex-shrink:0" alt="">` : `<div class="feed-channel-dot"></div>`}
-        <span class="feed-channel-name">${esc(v.channelName)}</span>
-      </div>
-      <div class="tile-title">${esc(v.title)}</div>
-      <div class="tile-meta">${fmtDate(v.published)}${v.views > 0 ? ' · ' + fmtViews(v.views) + ' views' : ''}</div>
-    </div>`).join('');
+      <div class="feed-channel-row">
+        ${chVideos.map((v, i) => `
+          <div class="feed-tile" data-ch="${chId}" data-vi="${i}">
+            <div class="tile-thumb-wrap">
+              <img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy">
+              <div class="tile-duration">${fmtDur(v.duration)}</div>
+              <div class="tile-play"><div class="tile-play-icon"></div></div>
+            </div>
+            <div class="tile-title">${esc(v.title)}</div>
+            <div class="tile-meta">${fmtDate(v.published)}${v.views > 0 ? ' · ' + fmtViews(v.views) + ' views' : ''}</div>
+          </div>`).join('')}
+      </div>`;
+    container.appendChild(section);
 
-  container.innerHTML = cacheNote;
-  container.appendChild(grid);
+    // Channel header → open channel grid
+    section.querySelector('.feed-channel-header').addEventListener('click', function() {
+      openChannel(parseInt(this.dataset.channelIndex));
+    });
 
-  // Wire clicks — play via search result player (back → home)
-  grid.querySelectorAll('.feed-tile').forEach(tile => {
-    tile.addEventListener('click', () => {
-      const v = videos[parseInt(tile.dataset.index)];
-      playSearchResult(v);
-      // Override back to go home
-      document.getElementById('player-back-btn').onclick = () => { stopPlayer(); showHome(); };
-      document.getElementById('done-back-btn').onclick = () => { stopPlayer(); showHome(); };
+    // Video tiles → play
+    section.querySelectorAll('.feed-tile').forEach(tile => {
+      tile.addEventListener('click', () => {
+        const vi = parseInt(tile.dataset.vi);
+        const v = grouped[tile.dataset.ch][vi];
+        playSearchResult(v);
+        document.getElementById('player-back-btn').onclick = () => { stopPlayer(); showHome(); };
+        document.getElementById('done-back-btn').onclick = () => { stopPlayer(); showHome(); };
+      });
     });
   });
 }
@@ -1318,6 +1423,8 @@ function renderGrid() {
 // ── Player ──
 function playVideo(v) {
   currentVideoId = v.id;
+  document.getElementById('player-back-btn').onclick = () => { stopPlayer(); showVideosScreen(); };
+  document.getElementById('done-back-btn').onclick = () => { stopPlayer(); showVideosScreen(); };
   document.getElementById('player-title').textContent = v.title;
   document.getElementById('player-meta').textContent = fmtDate(v.published) + (v.views > 0 ? ' · ' + fmtViews(v.views) + ' views' : '');
   document.getElementById('player-channel-label').textContent = currentChannel.name;
@@ -1461,7 +1568,7 @@ if (!getKey()) {
 const THEME_KEY = 'ff_theme';
 
 const PRESETS = [
-  { name: 'Default',    bg: '#0e0e0e', surface: '#181818', surface2: '#222222', border: '#2a2a2a', text: '#e8e4dc', muted: '#6b6760', accent: '#c8b89a', accent2: '#8a7a65', font: 'DM Sans' },
+  { name: 'YourSpace',  bg: '#0e0e0e', surface: '#181818', surface2: '#222222', border: '#2a2a2a', text: '#e8e4dc', muted: '#6b6760', accent: '#6b7fff', accent2: '#4a5eee', font: 'DM Sans' },
   { name: 'Midnight',   bg: '#05050f', surface: '#0d0d1f', surface2: '#141428', border: '#1e1e3a', text: '#d8d4f0', muted: '#5a5870', accent: '#8b7fd4', accent2: '#6557b8', font: 'DM Sans' },
   { name: 'Forest',     bg: '#060e07', surface: '#0e1a0f', surface2: '#152417', border: '#1e3020', text: '#d4e8d5', muted: '#527055', accent: '#7ab87c', accent2: '#5a9060', font: 'Lora' },
   { name: 'Warm',       bg: '#120c08', surface: '#1e1410', surface2: '#281c16', border: '#3a2820', text: '#f0e0d0', muted: '#7a6055', accent: '#d4885a', accent2: '#b06840', font: 'Lora' },
@@ -1698,8 +1805,13 @@ document.getElementById('reset-theme-btn').addEventListener('click', () => {
   renderThemePanel();
 });
 
-// Apply saved theme on load
-applyTheme(loadTheme());
+// Apply saved theme on load — only apply default if nothing saved yet
+const _savedTheme = loadTheme();
+if (Object.keys(_savedTheme).length === 0) {
+  applyTheme(PRESETS[0]);
+} else {
+  applyTheme(_savedTheme);
+}
 
 // ── QUOTA TRACKER ──
 const QUOTA_KEY = 'ff_quota';
@@ -1870,21 +1982,10 @@ document.getElementById('video-search-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') runVideoSearch();
 });
 
-// Restore normal back button behaviour when opening channel videos
-const _origPlayVideo = playVideo;
-function playVideo(v) {
-  document.getElementById('player-back-btn').onclick = () => { stopPlayer(); showVideosScreen(); };
-  document.getElementById('done-back-btn').onclick = () => { stopPlayer(); showVideosScreen(); };
-  _origPlayVideo(v);
-}
+// Back button wiring handled per context in playSearchResult and feed tile clicks
 
 // Update quota display now and patch existing fetch calls to track units
-// Patch fetchUntil to track quota
-const _origFetchUntil = fetchUntil;
-async function fetchUntil(target, append) {
-  // Units tracked inside fetchUntil — we patch apiFetch there
-  return _origFetchUntil(target, append);
-}
+// fetchUntil quota tracking handled via apiFetch
 
 // Init quota display
 updateQuotaDisplay();
@@ -1899,15 +2000,188 @@ document.querySelectorAll('.settings-tab').forEach(tab => {
   });
 });
 
-// Reset to customise tab when opening settings
-const _origShowSettings = showSettings;
-function showSettings() {
-  _origShowSettings();
-  document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.remove('active'));
-  document.querySelector('[data-tab="customise"]').classList.add('active');
-  document.getElementById('tab-customise').classList.add('active');
+// Settings tab reset handled inside showSettings()
+
+// ── YOURDAY ──
+const GOALS_KEY = 'ys_goals';
+const GOALS_DATE_KEY = 'ys_goals_date';
+
+function goalsToday() {
+  const today = new Date().toISOString().slice(0,10);
+  const saved = localStorage.getItem(GOALS_DATE_KEY);
+  if (saved !== today) {
+    localStorage.setItem(GOALS_DATE_KEY, today);
+    localStorage.setItem(GOALS_KEY, JSON.stringify({ active: [], achieved: [] }));
+  }
+  try { return JSON.parse(localStorage.getItem(GOALS_KEY)); } catch(e) { return { active: [], achieved: [] }; }
 }
+
+function saveGoals(data) {
+  const today = new Date().toISOString().slice(0,10);
+  localStorage.setItem(GOALS_DATE_KEY, today);
+  localStorage.setItem(GOALS_KEY, JSON.stringify(data));
+}
+
+function showYourDay() {
+  showScreen('yourday-screen');
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en', { weekday: 'long', month: 'long', day: 'numeric' });
+  document.getElementById('yourday-date').textContent = dateStr;
+  renderGoals();
+}
+
+function renderGoals() {
+  const data = goalsToday();
+  const activeList = document.getElementById('goals-active-list');
+  const achievedList = document.getElementById('goals-achieved-list');
+  const emptyMsg = document.getElementById('goals-empty');
+  const achievedSection = document.getElementById('goals-achieved-section');
+
+  // Active goals
+  if (data.active.length === 0) {
+    activeList.innerHTML = '';
+    emptyMsg.style.display = 'block';
+  } else {
+    emptyMsg.style.display = 'none';
+    activeList.innerHTML = data.active.map((g, i) => `
+      <div class="goal-item" data-index="${i}">
+        <div class="goal-checkbox" data-index="${i}" title="Mark complete"></div>
+        <div class="goal-text">${esc(g)}</div>
+      </div>`).join('');
+
+    activeList.querySelectorAll('.goal-checkbox').forEach(cb => {
+      cb.addEventListener('click', () => completeGoal(parseInt(cb.dataset.index)));
+    });
+  }
+
+  // Achieved goals
+  if (data.achieved.length === 0) {
+    achievedSection.style.display = 'none';
+    achievedList.innerHTML = '';
+  } else {
+    achievedSection.style.display = 'block';
+    achievedList.innerHTML = data.achieved.map(g => `
+      <div class="goal-item goal-achieved">
+        <div class="goal-checkbox">✓</div>
+        <div class="goal-text">${esc(g)}</div>
+      </div>`).join('');
+  }
+}
+
+function addGoal() {
+  const input = document.getElementById('goal-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const data = goalsToday();
+  data.active.push(text);
+  saveGoals(data);
+  input.value = '';
+  renderGoals();
+}
+
+function completeGoal(index) {
+  const data = goalsToday();
+  const goal = data.active.splice(index, 1)[0];
+  data.achieved.push(goal);
+  saveGoals(data);
+  launchConfetti();
+  renderGoals();
+}
+
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const pieces = Array.from({ length: 80 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height * 0.5,
+    r: Math.random() * 6 + 3,
+    d: Math.random() * 80 + 20,
+    color: ['#6b7fff','#ff6ec7','#00fff0','#fac775','#7ab87c','#ff9f43'][Math.floor(Math.random()*6)],
+    tilt: Math.random() * 10 - 5,
+    tiltAngle: 0,
+    tiltSpeed: Math.random() * 0.1 + 0.05,
+    opacity: 1
+  }));
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.tiltAngle += p.tiltSpeed;
+      p.y += (Math.cos(frame * 0.01 + p.d) + 2);
+      p.x += Math.sin(frame * 0.01) * 0.5;
+      p.tilt = Math.sin(p.tiltAngle) * 12;
+      p.opacity = Math.max(0, p.opacity - 0.008);
+      ctx.beginPath();
+      ctx.lineWidth = p.r;
+      ctx.strokeStyle = p.color;
+      ctx.globalAlpha = p.opacity;
+      ctx.moveTo(p.x + p.tilt, p.y);
+      ctx.lineTo(p.x + p.tilt + p.r, p.y + p.tilt + p.r);
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+    frame++;
+    if (frame < 120) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+
+// Wire YourDay buttons
+const _ydBtn = document.getElementById('yourday-sidebar-btn');
+if (_ydBtn) _ydBtn.addEventListener('click', showYourDay);
+document.getElementById('yourday-back-btn').addEventListener('click', showHome);
+document.getElementById('goal-add-btn').addEventListener('click', addGoal);
+document.getElementById('goal-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addGoal();
+});
+
+// ── DRAG TO REORDER SIDEBAR ──
+function addDragToSidebar() {
+  const list = document.getElementById('sidebar-channel-list');
+  let dragSrc = null;
+
+  list.querySelectorAll('.sidebar-channel').forEach((card, i) => {
+    card.setAttribute('draggable', 'true');
+    card.dataset.index = i;
+
+    card.addEventListener('dragstart', function(e) {
+      dragSrc = this;
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(() => this.classList.add('dragging'), 0);
+    });
+    card.addEventListener('dragend', function() {
+      this.classList.remove('dragging');
+      list.querySelectorAll('.sidebar-channel').forEach(c => c.classList.remove('drag-over'));
+    });
+    card.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      list.querySelectorAll('.sidebar-channel').forEach(c => c.classList.remove('drag-over'));
+      if (this !== dragSrc) this.classList.add('drag-over');
+    });
+    card.addEventListener('drop', function(e) {
+      e.stopPropagation();
+      if (this === dragSrc) return;
+      const fromIdx = parseInt(dragSrc.dataset.index);
+      const toIdx = parseInt(this.dataset.index);
+      // Reorder channels array
+      const moved = channels.splice(fromIdx, 1)[0];
+      channels.splice(toIdx, 0, moved);
+      saveChannels();
+      // Clear feed cache so it rebuilds in new order
+      localStorage.removeItem('ff_feed_cache');
+      localStorage.removeItem('ff_feed_date');
+      renderSidebar();
+    });
+  });
+}
+
+// Add drag after sidebar renders - called from renderSidebar directly
 </script>
 </body>
 </html>
