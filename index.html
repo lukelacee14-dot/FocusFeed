@@ -253,6 +253,72 @@
   .timer-ring-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
   .timer-big { font-size: 28px; color: var(--accent); font-variant-numeric: tabular-nums; font-weight: 300; letter-spacing: 0.02em; }
   .timer-sub { font-size: 11px; color: var(--muted); }
+
+  /* ── GLOBAL BUTTON VISIBILITY ── */
+  body:not(.win95-theme) .add-btn,
+  body:not(.win95-theme) .search-btn,
+  body:not(.win95-theme) .load-more-btn,
+  body:not(.win95-theme) .sidebar-add-btn,
+  body:not(.win95-theme) #sidebar-search-btn,
+  body:not(.win95-theme) .empty-cta,
+  body:not(.win95-theme) .done-back-btn {
+    background: rgba(255,255,255,0.92) !important;
+    color: #111111 !important;
+    border: 1.5px solid #111111 !important;
+    border-radius: 6px !important;
+  }
+  body:not(.win95-theme) .add-btn:hover,
+  body:not(.win95-theme) .search-btn:hover,
+  body:not(.win95-theme) .load-more-btn:hover,
+  body:not(.win95-theme) .sidebar-add-btn:hover,
+  body:not(.win95-theme) #sidebar-search-btn:hover,
+  body:not(.win95-theme) .empty-cta:hover,
+  body:not(.win95-theme) .done-back-btn:hover {
+    background: rgba(255,255,255,1) !important;
+    border-color: #000000 !important;
+  }
+  /* Sort pills */
+  body:not(.win95-theme) .sort-pill {
+    background: rgba(255,255,255,0.85) !important;
+    color: #111111 !important;
+    border: 1.5px solid #111111 !important;
+    border-radius: 20px !important;
+  }
+  body:not(.win95-theme) .sort-pill.active {
+    background: var(--accent) !important;
+    color: var(--bg) !important;
+    border-color: var(--accent) !important;
+  }
+  /* Settings buttons */
+  body:not(.win95-theme) .settings-action-btn {
+    background: rgba(255,255,255,0.92) !important;
+    color: #111111 !important;
+    border: 1.5px solid #111111 !important;
+    border-radius: 6px !important;
+  }
+  body:not(.win95-theme) .settings-action-btn:hover {
+    background: rgba(255,255,255,1) !important;
+  }
+  body:not(.win95-theme) .settings-danger-btn {
+    color: #c0392b !important;
+    border-color: #c0392b !important;
+    background: rgba(255,255,255,0.92) !important;
+  }
+  /* api-save keeps accent colour */
+  body:not(.win95-theme) .api-save-btn {
+    background: var(--accent) !important;
+    color: var(--bg) !important;
+    border: 1.5px solid var(--accent) !important;
+    border-radius: 6px !important;
+  }
+  /* Sidebar search button */
+  body:not(.win95-theme) #sidebar-search-btn {
+    text-align: left;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: 8px !important;
+  }
 </style>
 </head>
 <body>
