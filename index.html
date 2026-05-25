@@ -449,6 +449,32 @@
     display: none;
   }
   .quota-tooltip.visible { display: block; }
+
+  /* ── SETTINGS TABS ── */
+  .settings-tab {
+    background: none; border: none; border-bottom: 2px solid transparent;
+    color: var(--muted); font-family: var(--font-body, 'DM Sans', sans-serif);
+    font-size: 13px; padding: 8px 12px; cursor: pointer;
+    transition: color 0.15s, border-color 0.15s; margin-bottom: -1px;
+    border-radius: 0 !important; border-left: none !important;
+    border-right: none !important; border-top: none !important;
+    background: transparent !important; box-shadow: none !important;
+    outline: none !important;
+  }
+  .settings-tab:hover { color: var(--text); }
+  .settings-tab.active { color: var(--accent); border-bottom-color: var(--accent) !important; }
+  .settings-tab-content { display: none; }
+  .settings-tab-content.active { display: block; }
+  body.win95-theme .settings-tab {
+    background: #c0c0c0 !important; border: 2px solid !important;
+    border-color: #ffffff #808080 #808080 #ffffff !important;
+    box-shadow: 1px 1px 0 #000 !important; margin-right: 2px;
+    color: #000 !important; outline: 1px solid #000 !important;
+  }
+  body.win95-theme .settings-tab.active {
+    background: #d4d0c8 !important;
+    border-bottom-color: #d4d0c8 !important;
+  }
 </style>
 </head>
 <body>
@@ -587,80 +613,138 @@
       <div class="settings-inner">
         <button class="back-btn" id="settings-back-btn" style="margin-bottom:20px">← Back</button>
 
-        <div class="settings-section">
-          <div class="settings-section-title">API key</div>
-          <div class="settings-row">
-            <div><div class="settings-label">YouTube Data API key</div><div class="settings-sub">Saved in this browser only — never shared or transmitted</div></div>
+        <!-- Tab bar -->
+        <div style="display:flex;gap:4px;margin-bottom:24px;border-bottom:1px solid var(--border);padding-bottom:0">
+          <button class="settings-tab active" data-tab="customise">Customise</button>
+          <button class="settings-tab" data-tab="apikey">API key</button>
+          <button class="settings-tab" data-tab="feedback">Feedback</button>
+          <button class="settings-tab" data-tab="about">About</button>
+        </div>
+
+        <!-- CUSTOMISE TAB -->
+        <div class="settings-tab-content active" id="tab-customise">
+          <div class="settings-section">
+            <div class="settings-section-title">Themes</div>
+            <div class="theme-grid" id="theme-grid"></div>
           </div>
-          <div style="background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#c07060;line-height:1.6">
-            ⚠️ Your API key is personal — treat it like a password. Never share it or paste it into other apps.
+          <div class="settings-section">
+            <div class="settings-section-title">Accent colour</div>
+            <div class="accent-row" id="accent-row"></div>
           </div>
-          <div class="api-input-wrap" style="margin-bottom:8px">
-            <input class="api-input" id="settings-api-input" type="password" placeholder="Key saved — paste new one to replace" autocomplete="off" spellcheck="false">
-            <button class="api-toggle" id="settings-api-toggle">👁</button>
+          <div class="settings-section">
+            <div class="settings-section-title">Font</div>
+            <div class="font-options" id="font-options"></div>
           </div>
-          <div class="api-error" id="settings-api-error">Key should start with "AIza" and be ~39 characters.</div>
-          <button class="api-save-btn" id="settings-api-save" style="margin-top:4px">Save key</button>
-        </div>
-
-        <div class="settings-section">
-          <div class="settings-section-title">Themes</div>
-          <div class="theme-grid" id="theme-grid"></div>
-        </div>
-
-        <div class="settings-section">
-          <div class="settings-section-title">Accent colour</div>
-          <div class="accent-row" id="accent-row"></div>
-        </div>
-
-        <div class="settings-section">
-          <div class="settings-section-title">Font</div>
-          <div class="font-options" id="font-options"></div>
-        </div>
-
-        <div class="settings-section">
-          <div class="settings-section-title">Colours</div>
-          <div class="colour-pickers-row">
-            <div class="colour-picker-item">
-              <div class="colour-picker-label">Background</div>
-              <input type="color" id="bg-colour-picker" class="colour-picker-btn">
+          <div class="settings-section">
+            <div class="settings-section-title">Colours</div>
+            <div class="colour-pickers-row">
+              <div class="colour-picker-item">
+                <div class="colour-picker-label">Background</div>
+                <input type="color" id="bg-colour-picker" class="colour-picker-btn">
+              </div>
+              <div class="colour-picker-item">
+                <div class="colour-picker-label">Text colour</div>
+                <input type="color" id="text-colour-picker" class="colour-picker-btn">
+              </div>
             </div>
-            <div class="colour-picker-item">
-              <div class="colour-picker-label">Text colour</div>
-              <input type="color" id="text-colour-picker" class="colour-picker-btn">
+            <div class="settings-row" style="margin-top:14px">
+              <div><div class="settings-label">Background image</div><div class="settings-sub">Stored locally on your device</div></div>
+              <button class="settings-action-btn" id="bg-upload-btn">Upload</button>
+              <input type="file" id="bg-file-input" accept="image/*" style="display:none">
+            </div>
+            <div class="settings-row" id="bg-clear-row" style="display:none">
+              <div><div class="settings-label">Background image set</div></div>
+              <button class="settings-action-btn settings-danger-btn" id="bg-clear-btn">Remove</button>
             </div>
           </div>
-          <div class="settings-row" style="margin-top:14px">
-            <div><div class="settings-label">Background image</div><div class="settings-sub">Stored locally on your device</div></div>
-            <button class="settings-action-btn" id="bg-upload-btn">Upload</button>
-            <input type="file" id="bg-file-input" accept="image/*" style="display:none">
-          </div>
-          <div class="settings-row" id="bg-clear-row" style="display:none">
-            <div><div class="settings-label">Background image set</div></div>
-            <button class="settings-action-btn settings-danger-btn" id="bg-clear-btn">Remove</button>
+          <div class="settings-section">
+            <div class="settings-section-title">Reset</div>
+            <div class="settings-row">
+              <div><div class="settings-label">Reset to defaults</div><div class="settings-sub">Restores the original theme</div></div>
+              <button class="settings-action-btn settings-danger-btn" id="reset-theme-btn">Reset</button>
+            </div>
           </div>
         </div>
 
-        <div class="settings-section">
-          <div class="settings-section-title">Feed</div>
-          <div class="settings-row">
-            <div>
-              <div class="settings-label">Refresh feed now</div>
-              <div class="settings-sub">Fetches latest videos from all your channels. Uses tokens — your feed auto-refreshes daily for free.</div>
+        <!-- API KEY TAB -->
+        <div class="settings-tab-content" id="tab-apikey">
+          <div class="settings-section">
+            <div class="settings-section-title">Your API key</div>
+            <div class="settings-row">
+              <div><div class="settings-label">YouTube Data API key</div><div class="settings-sub">Saved in this browser only — never shared or transmitted</div></div>
             </div>
-            <button class="settings-action-btn" id="refresh-feed-btn">↻ Refresh</button>
+            <div style="background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#c07060;line-height:1.6">
+              ⚠️ Your API key is personal — treat it like a password. Never share it or paste it into other apps.
+            </div>
+            <div class="api-input-wrap" style="margin-bottom:8px">
+              <input class="api-input" id="settings-api-input" type="password" placeholder="Key saved — paste new one to replace" autocomplete="off" spellcheck="false">
+              <button class="api-toggle" id="settings-api-toggle">👁</button>
+            </div>
+            <div class="api-error" id="settings-api-error">Key should start with "AIza" and be ~39 characters.</div>
+            <button class="api-save-btn" id="settings-api-save" style="margin-top:4px">Save key</button>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">Feed</div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-label">Refresh feed now</div>
+                <div class="settings-sub">Fetches latest videos from all channels. Uses tokens — your feed auto-refreshes daily for free.</div>
+              </div>
+              <button class="settings-action-btn" id="refresh-feed-btn">↻ Refresh</button>
+            </div>
           </div>
         </div>
 
-        <div class="settings-section">
-          <div class="settings-section-title">Reset</div>
-          <div class="settings-row">
-            <div><div class="settings-label">Reset to defaults</div><div class="settings-sub">Restores the original theme</div></div>
-            <button class="settings-action-btn settings-danger-btn" id="reset-theme-btn">Reset</button>
+        <!-- FEEDBACK TAB -->
+        <div class="settings-tab-content" id="tab-feedback">
+          <div class="settings-section">
+            <div class="settings-section-title">Get in touch</div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">Found a bug? Something not working? Have an idea? I'd genuinely love to hear from you — FocusFeed is being built in the open and early feedback shapes everything.</p>
+            <a id="feedback-email-btn" href="mailto:hello@focusfeed.io?subject=FocusFeed feedback" style="display:block;text-decoration:none">
+              <button class="api-save-btn" style="width:100%">Send feedback by email →</button>
+            </a>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">What to include</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.8">
+              <div style="margin-bottom:6px">· What you were trying to do</div>
+              <div style="margin-bottom:6px">· What happened instead</div>
+              <div style="margin-bottom:6px">· What device and browser you were using</div>
+              <div>· Any features you wish existed</div>
+            </div>
           </div>
         </div>
+
+        <!-- ABOUT TAB -->
+        <div class="settings-tab-content" id="tab-about">
+          <div class="settings-section">
+            <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
+              <div style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text)">Focus<em style="font-style:italic;color:var(--accent)">Feed</em></div>
+              <div style="font-size:11px;color:var(--muted);letter-spacing:0.06em" id="version-label">v0.1 beta</div>
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Only What You Choose</div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.7">FocusFeed is an intentional YouTube client — no algorithm, no recommendations, no infinite scroll. Just the channels you chose, the videos you actually want to watch.</p>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">Privacy</div>
+            <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px">FocusFeed does not collect, store, or transmit any personal data.</p>
+            <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px">Your API key and channel preferences are stored locally in your browser only and never leave your device. We do not use cookies, analytics, or tracking of any kind.</p>
+            <p style="font-size:13px;color:var(--muted);line-height:1.7">Your API key communicates directly with YouTube's servers on your behalf — FocusFeed never sees or handles this traffic.</p>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">Built with</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.8">
+              <div>· YouTube Data API v3</div>
+              <div>· Hosted on Vercel</div>
+              <div>· No frameworks, no tracking, no nonsense</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
+
+
 
     <!-- HOME — mixed feed -->
     <div id="home-screen" class="screen">
@@ -1804,6 +1888,26 @@ async function fetchUntil(target, append) {
 
 // Init quota display
 updateQuotaDisplay();
+
+// ── SETTINGS TABS ──
+document.querySelectorAll('.settings-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// Reset to customise tab when opening settings
+const _origShowSettings = showSettings;
+function showSettings() {
+  _origShowSettings();
+  document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector('[data-tab="customise"]').classList.add('active');
+  document.getElementById('tab-customise').classList.add('active');
+}
 </script>
 </body>
 </html>
