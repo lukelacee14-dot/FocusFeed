@@ -1278,11 +1278,14 @@ function displayFeed(videos) {
 
 function removeChannel(i) {
   if (currentChannel && currentChannel.id === channels[i].id) { currentChannel = null; }
+  const removedId = channels[i].id;
   channels.splice(i, 1);
   saveChannels();
-  // Clear feed cache so it rebuilds without removed channel
+  // Clear feed cache and channel video cache
   localStorage.removeItem('ff_feed_cache');
   localStorage.removeItem('ff_feed_date');
+  localStorage.removeItem('ys_ch_' + removedId);
+  localStorage.removeItem('ys_ch_ts_' + removedId);
   renderSidebar();
   showHome();
   renderFeed(true);
@@ -1299,11 +1302,33 @@ async function openChannel(i) {
   thumb.style.display = currentChannel.thumb ? 'block' : 'none';
   document.querySelectorAll('.sort-pill').forEach(p => p.classList.remove('active'));
   document.querySelector('[data-sort="newest"]').classList.add('active');
-  document.getElementById('video-grid').innerHTML = `<div class="status" style="grid-column:1/-1"><div class="spinner"></div>Loading videos…</div>`;
   document.getElementById('load-more-wrap').style.display = 'none';
 
   renderSidebar();
   showScreen('videos-screen');
+
+  // Check channel video cache (expires after 3 hours)
+  const CACHE_KEY = 'ys_ch_' + currentChannel.id;
+  const CACHE_TS_KEY = 'ys_ch_ts_' + currentChannel.id;
+  const THREE_HOURS = 3 * 60 * 60 * 1000;
+  const cachedTs = parseInt(localStorage.getItem(CACHE_TS_KEY) || '0');
+  const now = Date.now();
+
+  if (cachedTs && (now - cachedTs) < THREE_HOURS) {
+    try {
+      const cachedVideos = JSON.parse(localStorage.getItem(CACHE_KEY));
+      if (cachedVideos && cachedVideos.length > 0) {
+        allVideos = cachedVideos;
+        nextPageToken = null;
+        document.getElementById('video-grid').innerHTML = '';
+        renderGrid();
+        return;
+      }
+    } catch(e) {}
+  }
+
+  // No valid cache — fetch fresh
+  document.getElementById('video-grid').innerHTML = `<div class="status" style="grid-column:1/-1"><div class="spinner"></div>Loading videos…</div>`;
   await fetchVideos();
 }
 
@@ -2094,40 +2119,73 @@ function launchConfetti() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  const pieces = Array.from({ length: 80 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height * 0.5,
-    r: Math.random() * 6 + 3,
-    d: Math.random() * 80 + 20,
-    color: ['#6b7fff','#ff6ec7','#00fff0','#fac775','#7ab87c','#ff9f43'][Math.floor(Math.random()*6)],
-    tilt: Math.random() * 10 - 5,
-    tiltAngle: 0,
-    tiltSpeed: Math.random() * 0.1 + 0.05,
-    opacity: 1
-  }));
+  const colors = ['#6b7fff','#ff6ec7','#00fff0','#fac775','#7ab87c','#ff9f43','#ffffff','#c8b89a'];
+  const totalFrames = 240; // 4 seconds at 60fps
+
+  // Pieces shoot up from bottom in a spread
+  const pieces = Array.from({ length: 120 }, () => {
+    const angle = (Math.random() * 120 + 210) * Math.PI / 180; // upward arc: 210°-330°
+    const speed = Math.random() * 18 + 8;
+    return {
+      x: Math.random() * canvas.width,
+      y: canvas.height + 10,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      r: Math.random() * 7 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      tiltAngle: Math.random() * Math.PI * 2,
+      tiltSpeed: (Math.random() - 0.5) * 0.2,
+      shape: Math.random() > 0.5 ? 'rect' : 'circle',
+      w: Math.random() * 10 + 4,
+      h: Math.random() * 6 + 3,
+      opacity: 1,
+      gravity: 0.3 + Math.random() * 0.2,
+    };
+  });
 
   let frame = 0;
+
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     pieces.forEach(p => {
+      // Physics
+      p.vy += p.gravity;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vx *= 0.99;
       p.tiltAngle += p.tiltSpeed;
-      p.y += (Math.cos(frame * 0.01 + p.d) + 2);
-      p.x += Math.sin(frame * 0.01) * 0.5;
-      p.tilt = Math.sin(p.tiltAngle) * 12;
-      p.opacity = Math.max(0, p.opacity - 0.008);
-      ctx.beginPath();
-      ctx.lineWidth = p.r;
-      ctx.strokeStyle = p.color;
+
+      // Fade out in last 60 frames
+      if (frame > totalFrames - 60) {
+        p.opacity = Math.max(0, p.opacity - (1 / 60));
+      }
+
+      ctx.save();
       ctx.globalAlpha = p.opacity;
-      ctx.moveTo(p.x + p.tilt, p.y);
-      ctx.lineTo(p.x + p.tilt + p.r, p.y + p.tilt + p.r);
-      ctx.stroke();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.tiltAngle);
+      ctx.fillStyle = p.color;
+
+      if (p.shape === 'rect') {
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.r / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
     });
-    ctx.globalAlpha = 1;
+
     frame++;
-    if (frame < 120) requestAnimationFrame(draw);
-    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (frame < totalFrames) {
+      requestAnimationFrame(draw);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
   }
+
   draw();
 }
 
@@ -2169,14 +2227,16 @@ function addDragToSidebar() {
       if (this === dragSrc) return;
       const fromIdx = parseInt(dragSrc.dataset.index);
       const toIdx = parseInt(this.dataset.index);
-      // Reorder channels array
       const moved = channels.splice(fromIdx, 1)[0];
       channels.splice(toIdx, 0, moved);
       saveChannels();
-      // Clear feed cache so it rebuilds in new order
-      localStorage.removeItem('ff_feed_cache');
-      localStorage.removeItem('ff_feed_date');
       renderSidebar();
+      // Re-render feed immediately in new order using cached data
+      try {
+        const _cached = JSON.parse(localStorage.getItem('ff_feed_cache'));
+        if (_cached && _cached.length > 0) { displayFeed(_cached); }
+        else { localStorage.removeItem('ff_feed_cache'); localStorage.removeItem('ff_feed_date'); renderFeed(true); }
+      } catch(err) { renderFeed(true); }
     });
   });
 }
