@@ -413,6 +413,42 @@
     color: #000000 !important;
     box-shadow: inset 1px 1px 2px #00000030 !important;
   }
+
+  /* ── HOME FEED ── */
+  .feed-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 16px 20px 28px;
+    align-content: start;
+  }
+  @media (max-width: 767px) {
+    .feed-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px 16px 24px; }
+  }
+  .feed-tile { cursor: pointer; -webkit-tap-highlight-color: transparent; display: flex; flex-direction: column; gap: 7px; }
+  .feed-tile:active .tile-thumb { transform: scale(0.97); }
+  .feed-channel-badge {
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 2px;
+  }
+  .feed-channel-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+  .feed-channel-name { font-size: 11px; color: var(--accent2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .feed-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 32px; gap: 12px; }
+  .feed-empty-title { font-family: var(--font-body, "DM Serif Display", serif); font-size: 18px; color: var(--text); }
+  .feed-empty-sub { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 280px; }
+  .feed-loading { display: flex; flex-direction: column; align-items: center; padding: 48px 24px; gap: 12px; color: var(--muted); font-size: 13px; }
+  .feed-cache-note { font-size: 11px; color: var(--muted); padding: 0 20px 4px; flex-shrink: 0; }
+
+  /* Info tooltip */
+  .quota-tooltip {
+    position: fixed; z-index: 1000;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 12px; color: var(--text); line-height: 1.6;
+    max-width: 220px; box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    display: none;
+  }
+  .quota-tooltip.visible { display: block; }
 </style>
 </head>
 <body>
@@ -422,7 +458,7 @@
   <div id="sidebar">
     <div class="sidebar-header">
       <div class="wordmark">Focus<em>Feed</em></div>
-      <div class="header-sub">intentional viewing</div>
+      <div class="header-sub">Only What You Choose</div>
     </div>
 
     <div class="sidebar-timer" style="flex-direction:column;align-items:flex-start;gap:6px">
@@ -431,7 +467,10 @@
         <span class="timer-value" id="sidebar-timer">0:00</span>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
-        <span class="timer-label">API quota used</span>
+        <span class="timer-label" style="display:flex;align-items:center;gap:4px">
+          Tokens used
+          <button id="quota-info-btn" style="background:none;border:1px solid var(--muted);border-radius:50%;width:14px;height:14px;font-size:9px;color:var(--muted);cursor:pointer;line-height:1;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0" title="What are tokens?">i</button>
+        </span>
         <span id="sidebar-quota" style="font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums">0 / 10,000</span>
       </div>
     </div>
@@ -457,13 +496,13 @@
     <div class="mobile-header">
       <div class="mobile-header-left">
         <div class="wordmark">Focus<em>Feed</em></div>
-        <div class="header-sub" style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">intentional viewing</div>
+        <div class="header-sub" style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Only What You Choose</div>
       </div>
       <div class="mobile-header-right">
         <div style="text-align:right">
           <div class="mobile-timer-label">today</div>
           <div class="mobile-timer" id="mobile-timer">0:00</div>
-          <div id="mobile-quota" style="font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums"></div>
+          <div id="mobile-quota" style="font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums" title="Tokens are the currency your API key uses to load YouTube videos"></div>
         </div>
         <button class="icon-btn" id="mobile-search-btn" title="Search videos" style="font-size:18px">⌕</button>
         <button class="icon-btn" id="mobile-settings-btn" title="Settings">⚙</button>
@@ -612,13 +651,16 @@
       </div>
     </div>
 
-    <!-- HOME (mobile) -->
+    <!-- HOME — mixed feed -->
     <div id="home-screen" class="screen">
-      <div class="channels-header">
-        <span class="section-label">Your channels</span>
-        <button class="add-btn" id="show-add-btn">+ Add channel</button>
+      <div class="channels-header" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex-shrink:0">
+        <span class="section-label" id="feed-status-label">Your feed</span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="add-btn" id="refresh-feed-btn" title="Refresh feed">↻ Refresh</button>
+          <button class="add-btn" id="show-add-btn">+ Add channel</button>
+        </div>
       </div>
-      <div class="channel-list" id="channel-list"></div>
+      <div id="feed-container" style="flex:1;overflow-y:auto"></div>
     </div>
 
     <!-- SEARCH -->
@@ -830,6 +872,28 @@ document.getElementById('api-key-input').addEventListener('keydown', e => {
 
 // ── Button wiring ──
 document.getElementById('show-add-btn').addEventListener('click', showAdd);
+document.getElementById('refresh-feed-btn').addEventListener('click', () => renderFeed(true));
+
+// Quota info tooltip
+const quotaTooltip = document.createElement('div');
+quotaTooltip.className = 'quota-tooltip';
+quotaTooltip.id = 'quota-tooltip';
+quotaTooltip.textContent = 'Tokens are like currency your API key spends to load YouTube videos. You get 10,000 free per day, resetting each morning.';
+document.body.appendChild(quotaTooltip);
+
+document.getElementById('quota-info-btn').addEventListener('click', e => {
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  const rect = btn.getBoundingClientRect();
+  const tt = document.getElementById('quota-tooltip');
+  tt.style.left = Math.min(rect.left, window.innerWidth - 240) + 'px';
+  tt.style.top = (rect.bottom + 6) + 'px';
+  tt.classList.toggle('visible');
+});
+document.addEventListener('click', () => {
+  const tt = document.getElementById('quota-tooltip');
+  if (tt) tt.classList.remove('visible');
+});
 document.getElementById('add-back-btn').addEventListener('click', () => { isDesktop() ? showHome() : showHome(); });
 document.getElementById('videos-back-btn').addEventListener('click', showHome);
 document.getElementById('player-back-btn').addEventListener('click', () => { stopPlayer(); showVideosScreen(); });
@@ -878,45 +942,149 @@ function renderSidebar() {
 
 // ── Mobile channel list ──
 function renderChannels() {
-  const list = document.getElementById('channel-list');
+  // renderChannels now triggers the feed — mobile list is gone
+  renderFeed();
+}
+
+async function renderFeed(forceRefresh) {
+  const container = document.getElementById('feed-container');
+  if (!container) return;
+
   if (channels.length === 0) {
-    list.innerHTML = `
-      <div class="empty-state">
+    container.innerHTML = `
+      <div class="feed-empty">
         <div class="empty-icon">◎</div>
-        <div class="empty-title">No channels yet</div>
-        <div class="empty-sub">Add the channels you actually want to watch. Nothing else will show up.</div>
-        <button class="empty-cta" id="empty-add-btn">Add your first channel</button>
+        <div class="feed-empty-title">No channels yet</div>
+        <div class="feed-empty-sub">Add the channels you want to watch. Their latest videos will appear here.</div>
+        <button class="empty-cta" id="empty-add-btn" style="margin-top:12px">Add your first channel</button>
       </div>`;
     document.getElementById('empty-add-btn').addEventListener('click', showAdd);
     return;
   }
-  list.innerHTML = channels.map((ch, i) => `
-    <div class="channel-card" data-index="${i}">
-      ${ch.thumb ? `<img class="channel-thumb" src="${ch.thumb}" alt="">` : `<div class="channel-thumb-placeholder">${ch.name[0]}</div>`}
-      <div class="channel-info">
-        <div class="channel-name">${esc(ch.name)}</div>
-        <div class="channel-meta">Tap to browse videos</div>
+
+  const FEED_KEY = 'ff_feed_cache';
+  const FEED_DATE_KEY = 'ff_feed_date';
+
+  // Check cache — only refresh if > 24 hours old or forced
+  const cacheDate = localStorage.getItem(FEED_DATE_KEY);
+  const today = new Date().toISOString().slice(0, 10);
+  let cached = null;
+  if (!forceRefresh && cacheDate === today) {
+    try { cached = JSON.parse(localStorage.getItem(FEED_KEY)); } catch(e) {}
+  }
+
+  if (cached && cached.length > 0) {
+    document.getElementById('feed-status-label').textContent = 'Your feed';
+    displayFeed(cached);
+    return;
+  }
+
+  // Fetch fresh
+  container.innerHTML = '<div class="feed-loading"><div class="spinner"></div>Loading your feed…</div>';
+  document.getElementById('feed-status-label').textContent = 'Loading feed…';
+
+  const API_KEY = getKey();
+  const allVideos = [];
+
+  for (const ch of channels) {
+    try {
+      // Fetch latest 8 per channel, filter shorts, take 5
+      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${ch.id}&part=snippet,id&order=date&maxResults=15&type=video`;
+      const res = await apiFetch(url, 100);
+      const data = await res.json();
+      if (!data.items || data.error) continue;
+
+      const ids = data.items.map(v => v.id.videoId).filter(Boolean);
+      if (ids.length === 0) continue;
+
+      const detailUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${ids.join(',')}&part=contentDetails,statistics,snippet`;
+      const detailRes = await apiFetch(detailUrl, ids.length);
+      const detailData = await detailRes.json();
+
+      const videos = (detailData.items || []).map(item => ({
+        id: item.id,
+        title: item.snippet.title,
+        channelName: ch.name,
+        channelThumb: ch.thumb,
+        channelId: ch.id,
+        thumb: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+        published: item.snippet.publishedAt,
+        duration: parseDuration(item.contentDetails.duration),
+        views: parseInt(item.statistics?.viewCount || 0)
+      })).filter(v => v.duration >= 60).slice(0, 5);
+
+      allVideos.push(...videos);
+    } catch(e) { continue; }
+  }
+
+  // Sort all by newest first
+  allVideos.sort((a, b) => new Date(b.published) - new Date(a.published));
+
+  // Cache it
+  localStorage.setItem(FEED_KEY, JSON.stringify(allVideos));
+  localStorage.setItem(FEED_DATE_KEY, today);
+
+  document.getElementById('feed-status-label').textContent = 'Your feed';
+  displayFeed(allVideos);
+}
+
+function displayFeed(videos) {
+  const container = document.getElementById('feed-container');
+
+  if (!videos || videos.length === 0) {
+    container.innerHTML = '<div class="feed-loading" style="color:var(--muted)">No videos found. Try refreshing later.</div>';
+    return;
+  }
+
+  // Cache age note
+  const cacheDate = localStorage.getItem('ff_feed_date');
+  const today = new Date().toISOString().slice(0, 10);
+  const cacheNote = cacheDate === today
+    ? `<div class="feed-cache-note">Updated today — refreshes daily or tap ↻</div>`
+    : '';
+
+  const grid = document.createElement('div');
+  grid.className = 'feed-grid';
+  grid.innerHTML = videos.map((v, i) => `
+    <div class="feed-tile" data-index="${i}">
+      <div class="tile-thumb-wrap">
+        <img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy">
+        <div class="tile-duration">${fmtDur(v.duration)}</div>
+        <div class="tile-play"><div class="tile-play-icon"></div></div>
       </div>
-      <button class="remove-btn" data-remove="${i}">×</button>
+      <div class="feed-channel-badge">
+        ${v.channelThumb ? `<img src="${v.channelThumb}" style="width:14px;height:14px;border-radius:50%;object-fit:cover;flex-shrink:0" alt="">` : `<div class="feed-channel-dot"></div>`}
+        <span class="feed-channel-name">${esc(v.channelName)}</span>
+      </div>
+      <div class="tile-title">${esc(v.title)}</div>
+      <div class="tile-meta">${fmtDate(v.published)}${v.views > 0 ? ' · ' + fmtViews(v.views) + ' views' : ''}</div>
     </div>`).join('');
 
-  list.querySelectorAll('.channel-card').forEach(card => {
-    card.addEventListener('click', e => {
-      if (e.target.closest('.remove-btn')) return;
-      openChannel(parseInt(card.dataset.index));
+  container.innerHTML = cacheNote;
+  container.appendChild(grid);
+
+  // Wire clicks — play via search result player (back → home)
+  grid.querySelectorAll('.feed-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      const v = videos[parseInt(tile.dataset.index)];
+      playSearchResult(v);
+      // Override back to go home
+      document.getElementById('player-back-btn').onclick = () => { stopPlayer(); showHome(); };
+      document.getElementById('done-back-btn').onclick = () => { stopPlayer(); showHome(); };
     });
-  });
-  list.querySelectorAll('.remove-btn').forEach(btn => {
-    btn.addEventListener('click', e => { e.stopPropagation(); removeChannel(parseInt(btn.dataset.remove)); });
   });
 }
 
 function removeChannel(i) {
-  if (currentChannel && currentChannel.id === channels[i].id) { currentChannel = null; showHome(); }
+  if (currentChannel && currentChannel.id === channels[i].id) { currentChannel = null; }
   channels.splice(i, 1);
   saveChannels();
+  // Clear feed cache so it rebuilds without removed channel
+  localStorage.removeItem('ff_feed_cache');
+  localStorage.removeItem('ff_feed_date');
   renderSidebar();
-  renderChannels();
+  showHome();
+  renderFeed(true);
 }
 
 // ── Open channel ──
@@ -1145,8 +1313,10 @@ function addChannel(i) {
   if (!ch || channels.some(c => c.id === ch.id)) return;
   channels.push({ id: ch.id, name: ch.name, thumb: ch.thumb });
   saveChannels();
+  // Clear feed cache so new channel appears
+  localStorage.removeItem('ff_feed_cache');
+  localStorage.removeItem('ff_feed_date');
   renderSidebar();
-  renderChannels();
   showHome();
 }
 
@@ -1187,12 +1357,8 @@ if (!getKey()) {
   showScreen('setup-screen');
 } else {
   renderSidebar();
-  renderChannels();
-  if (isDesktop()) {
-    showScreen('home-screen');
-  } else {
-    showScreen('home-screen');
-  }
+  showScreen('home-screen');
+  renderFeed(false);
 }
 
 // ── THEME SYSTEM ──
