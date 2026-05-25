@@ -1723,6 +1723,30 @@ async function fetchVideos() {
   nextPageToken = ''; // empty string = first page, null = no more pages
   try {
     await fetchUntil(PAGE_SIZE, false);
+    // Save slim version to cache — trim to essentials to avoid localStorage overflow
+    if (currentChannel && allVideos.length > 0) {
+      try {
+        const slim = allVideos.map(v => ({
+          id:v.id, title:v.title, thumb:v.thumb,
+          published:v.published, duration:v.duration, views:v.views
+        }));
+        localStorage.setItem('ys_ch_' + currentChannel.id, JSON.stringify(slim));
+        localStorage.setItem('ys_ch_ts_' + currentChannel.id, String(Date.now()));
+      } catch(e) {
+        // localStorage full — evict oldest channel caches
+        const tsKeys = Object.keys(localStorage).filter(k => k.startsWith('ys_ch_ts_'));
+        tsKeys.sort((a,b) => parseInt(localStorage.getItem(a)||0) - parseInt(localStorage.getItem(b)||0));
+        tsKeys.slice(0, 3).forEach(k => {
+          localStorage.removeItem('ys_ch_' + k.replace('ys_ch_ts_',''));
+          localStorage.removeItem(k);
+        });
+        try {
+          const slim = allVideos.map(v => ({id:v.id,title:v.title,thumb:v.thumb,published:v.published,duration:v.duration,views:v.views}));
+          localStorage.setItem('ys_ch_' + currentChannel.id, JSON.stringify(slim));
+          localStorage.setItem('ys_ch_ts_' + currentChannel.id, String(Date.now()));
+        } catch(e2) {}
+      }
+    }
     displayedCount = 0;
     renderGrid();
   } catch(e) {
