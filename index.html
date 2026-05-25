@@ -53,7 +53,8 @@
     border-bottom: 1px solid var(--border);
     flex-direction: column; gap: 4px;
   }
-  .wordmark { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); letter-spacing: -0.5px; }
+  .wordmark { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); letter-spacing: -0.5px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .wordmark:hover { opacity: 0.8; }
   .wordmark em { font-style: italic; color: var(--accent); }
   .header-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
 
@@ -321,30 +322,184 @@
   }
 
   /* ── WIN95 THEME OVERRIDES ── */
-  body.win95-theme #sidebar { background: #c0c0c0; border-right-color: #808080; }
-  body.win95-theme #main { background: #008080; }
-  body.win95-theme .wordmark { color: #000000; }
-  body.win95-theme .wordmark em { color: #000080; }
-  body.win95-theme .header-sub,
-  body.win95-theme .timer-label,
-  body.win95-theme .sidebar-ch-name,
-  body.win95-theme .section-label { color: #444444; }
-  body.win95-theme .timer-value,
-  body.win95-theme #sidebar-quota { color: #000080; }
-  body.win95-theme .channel-card {
-    background: #c0c0c0;
-    margin-bottom: 3px;
-    border-radius: 0;
-    border: 2px solid;
-    border-color: #ffffff #808080 #808080 #ffffff;
-    outline: 1px solid #000000;
-    padding: 10px 14px;
-  }
-  body.win95-theme .channel-name { color: #000000; }
-  body.win95-theme .channel-meta { color: #444444; }
-  body.win95-theme .video-tile .tile-thumb-wrap { border-radius: 0; }
+  @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
-  /* Win95 raised button — applied to EVERY interactive element */
+  body.win95-theme {
+    background: #008080 !important;
+    font-family: 'VT323', 'Courier New', monospace !important;
+    font-size: 15px !important;
+  }
+
+  /* Sidebar — Explorer left pane */
+  body.win95-theme #sidebar {
+    background: #c0c0c0 !important;
+    border-right: 2px solid !important;
+    border-color: #ffffff #808080 #808080 #ffffff !important;
+    outline: 1px solid #000 !important;
+  }
+  body.win95-theme #main { background: #008080 !important; }
+  body.win95-theme .wordmark {
+    font-family: 'VT323', monospace !important;
+    font-size: 20px !important; color: #000080 !important;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.5) !important;
+  }
+  body.win95-theme .wordmark em { color: #000080 !important; font-style: normal !important; }
+  body.win95-theme .header-sub { font-family: 'VT323', monospace !important; color: #444 !important; font-size: 12px !important; letter-spacing: 0.05em !important; }
+  body.win95-theme .timer-label,
+  body.win95-theme .section-label { font-family: 'VT323', monospace !important; color: #333 !important; font-size: 13px !important; }
+  body.win95-theme .timer-value,
+  body.win95-theme #sidebar-quota { font-family: 'VT323', monospace !important; color: #000080 !important; font-weight: bold !important; }
+  body.win95-theme .sidebar-ch-name { font-family: 'VT323', monospace !important; color: #000 !important; font-size: 14px !important; }
+
+  /* Window chrome for main content area */
+  body.win95-theme .screen.active {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #ffffff #808080 #808080 #ffffff !important;
+    outline: 1px solid #000 !important;
+    margin: 6px !important;
+    border-radius: 0 !important;
+  }
+
+  /* Title bar on screens */
+  body.win95-theme .screen.active::before {
+    content: 'YourSpace';
+    display: block;
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: #ffffff;
+    font-family: 'VT323', monospace;
+    font-size: 15px;
+    padding: 3px 6px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Win95 title bar buttons row */
+  body.win95-theme #videos-screen.active::before { content: 'YourSpace — Channel Videos'; }
+  body.win95-theme #add-screen.active::before { content: 'YourSpace — Add Channel'; }
+  body.win95-theme #settings-screen.active::before { content: 'YourSpace — Properties'; }
+  body.win95-theme #search-videos-screen.active::before { content: 'YourSpace — Search'; }
+  body.win95-theme #yourday-screen.active::before { content: 'YourSpace — YourDay'; }
+  body.win95-theme #player-screen.active::before { content: 'YourSpace — Now Playing'; }
+
+  /* Video tiles — Win95 icon style */
+  body.win95-theme .video-tile .tile-thumb-wrap {
+    border-radius: 0 !important;
+    border: 2px solid !important;
+    border-color: #ffffff #808080 #808080 #ffffff !important;
+    outline: 1px solid #000 !important;
+  }
+  body.win95-theme .tile-title {
+    font-family: 'VT323', monospace !important;
+    font-size: 13px !important;
+    color: #000 !important;
+    background: #c0c0c0 !important;
+    padding: 2px 3px !important;
+  }
+  body.win95-theme .tile-meta {
+    font-family: 'VT323', monospace !important;
+    font-size: 12px !important;
+    color: #444 !important;
+  }
+  body.win95-theme .tile-duration {
+    font-family: 'VT323', monospace !important;
+    border-radius: 0 !important;
+    background: #000080 !important;
+    color: #fff !important;
+    font-size: 11px !important;
+  }
+
+  /* Feed section headers */
+  body.win95-theme .feed-channel-header {
+    background: #000080 !important;
+    color: #fff !important;
+    font-family: 'VT323', monospace !important;
+    font-size: 14px !important;
+    padding: 3px 8px !important;
+    border: 1px solid #000 !important;
+  }
+  body.win95-theme .feed-ch-title { color: #fff !important; font-family: 'VT323', monospace !important; }
+  body.win95-theme .feed-ch-arrow { color: #aad !important; }
+  body.win95-theme .feed-channel-section { margin-bottom: 14px !important; }
+
+  /* Channel cards in sidebar */
+  body.win95-theme .sidebar-channel:hover { background: #000080 !important; }
+  body.win95-theme .sidebar-channel:hover .sidebar-ch-name { color: #fff !important; }
+  body.win95-theme .sidebar-channel.active { background: #000080 !important; }
+  body.win95-theme .sidebar-channel.active .sidebar-ch-name { color: #fff !important; }
+
+  /* Sort pills as toolbar buttons */
+  body.win95-theme .sort-bar {
+    background: #c0c0c0 !important;
+    border-bottom: 2px solid #808080 !important;
+    padding: 4px 8px !important;
+  }
+
+  /* Goal items */
+  body.win95-theme .goal-item {
+    background: #fff !important;
+    border: 2px solid !important;
+    border-color: #808080 #ffffff #ffffff #808080 !important;
+    border-radius: 0 !important;
+    font-family: 'VT323', monospace !important;
+  }
+  body.win95-theme .goal-text { font-family: 'VT323', monospace !important; color: #000 !important; font-size: 15px !important; }
+  body.win95-theme .goal-checkbox {
+    border-radius: 0 !important;
+    border: 2px solid !important;
+    border-color: #808080 #ffffff #ffffff #808080 !important;
+    background: #fff !important;
+  }
+
+  /* Settings tabs as Win95 dialog tabs */
+  body.win95-theme .settings-tab {
+    font-family: 'VT323', monospace !important;
+    font-size: 14px !important;
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-bottom: none !important;
+    border-color: #ffffff #808080 transparent #ffffff !important;
+    color: #000 !important;
+    outline: none !important;
+    margin-right: 2px !important;
+    padding: 4px 12px !important;
+    box-shadow: none !important;
+  }
+  body.win95-theme .settings-tab.active {
+    background: #c0c0c0 !important;
+    border-bottom: 2px solid #c0c0c0 !important;
+    z-index: 1 !important;
+    position: relative !important;
+  }
+  body.win95-theme .settings-section-title {
+    font-family: 'VT323', monospace !important;
+    color: #000080 !important;
+    font-size: 14px !important;
+  }
+  body.win95-theme .settings-label {
+    font-family: 'VT323', monospace !important;
+    color: #000 !important;
+    font-size: 14px !important;
+  }
+  body.win95-theme .settings-sub {
+    font-family: 'VT323', monospace !important;
+    color: #444 !important;
+    font-size: 12px !important;
+  }
+
+  /* Input fields */
+  body.win95-theme .search-input,
+  body.win95-theme .api-input,
+  body.win95-theme #goal-input {
+    font-family: 'VT323', monospace !important;
+    font-size: 14px !important;
+    border-radius: 0 !important;
+    border: 2px solid !important;
+    border-color: #808080 #ffffff #ffffff #808080 !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Win95 raised button — on ALL interactive elements */
   body.win95-theme .add-btn,
   body.win95-theme .sort-pill,
   body.win95-theme .load-more-btn,
@@ -357,16 +512,19 @@
   body.win95-theme .done-back-btn,
   body.win95-theme .back-btn,
   body.win95-theme .icon-btn,
-  body.win95-theme .empty-cta {
+  body.win95-theme .empty-cta,
+  body.win95-theme #goal-add-btn {
     background: #c0c0c0 !important;
     color: #000000 !important;
     border-radius: 0 !important;
     border: 2px solid !important;
     border-color: #ffffff #808080 #808080 #ffffff !important;
-    font-family: 'IBM Plex Mono', monospace !important;
-    box-shadow: 1px 1px 0 #000000 !important;
-    outline: 1px solid #000000 !important;
+    font-family: 'VT323', monospace !important;
+    font-size: 14px !important;
+    box-shadow: 1px 1px 0 #000 !important;
+    outline: 1px solid #000 !important;
     cursor: pointer;
+    letter-spacing: 0.02em !important;
   }
   body.win95-theme .add-btn:hover,
   body.win95-theme .sort-pill:hover,
@@ -377,9 +535,10 @@
   body.win95-theme .settings-action-btn:hover,
   body.win95-theme .api-save-btn:hover,
   body.win95-theme .done-back-btn:hover,
-  body.win95-theme .empty-cta:hover {
+  body.win95-theme .empty-cta:hover,
+  body.win95-theme #goal-add-btn:hover {
     background: #d4d0c8 !important;
-    color: #000000 !important;
+    color: #000 !important;
     border-color: #ffffff #808080 #808080 #ffffff !important;
   }
   body.win95-theme .add-btn:active,
@@ -390,66 +549,32 @@
   body.win95-theme #sidebar-search-btn:active,
   body.win95-theme .api-save-btn:active,
   body.win95-theme .done-back-btn:active,
-  body.win95-theme .empty-cta:active {
+  body.win95-theme .empty-cta:active,
+  body.win95-theme #goal-add-btn:active {
     border-color: #808080 #ffffff #ffffff #808080 !important;
     box-shadow: none !important;
-    outline: 1px solid #000000 !important;
+    outline: 1px solid #000 !important;
     transform: translate(1px, 1px);
   }
   body.win95-theme .sort-pill.active {
     background: #b0b0b0 !important;
     border-color: #808080 #ffffff #ffffff #808080 !important;
     box-shadow: inset 1px 1px 3px #00000050 !important;
-    outline: 1px solid #000000 !important;
-    color: #000000 !important;
+    outline: 1px solid #000 !important;
+    color: #000 !important;
   }
-  /* Win95 search/input fields — inset look */
-  body.win95-theme .search-input,
-  body.win95-theme .api-input {
-    border-radius: 0 !important;
+  body.win95-theme .channel-card {
+    background: #c0c0c0 !important;
     border: 2px solid !important;
-    border-color: #808080 #ffffff #ffffff #808080 !important;
-    background: #ffffff !important;
-    color: #000000 !important;
-    box-shadow: inset 1px 1px 2px #00000030 !important;
+    border-color: #ffffff #808080 #808080 #ffffff !important;
+    outline: 1px solid #000 !important;
+    border-radius: 0 !important;
+    margin-bottom: 3px !important;
   }
-
-  /* ── HOME FEED ── */
-  .feed-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 16px 20px 28px;
-    align-content: start;
-  }
-  @media (max-width: 767px) {
-    .feed-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px 16px 24px; }
-  }
-  .feed-tile { cursor: pointer; -webkit-tap-highlight-color: transparent; display: flex; flex-direction: column; gap: 7px; }
-  .feed-tile:active .tile-thumb { transform: scale(0.97); }
-  .feed-channel-badge {
-    display: flex; align-items: center; gap: 6px;
-    margin-bottom: 2px;
-  }
-  .feed-channel-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
-  .feed-channel-name { font-size: 11px; color: var(--accent2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .feed-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 32px; gap: 12px; }
-  .feed-empty-title { font-family: var(--font-body, "DM Serif Display", serif); font-size: 18px; color: var(--text); }
-  .feed-empty-sub { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 280px; }
-  .feed-loading { display: flex; flex-direction: column; align-items: center; padding: 48px 24px; gap: 12px; color: var(--muted); font-size: 13px; }
-  .feed-cache-note { font-size: 11px; color: var(--muted); padding: 0 20px 4px; flex-shrink: 0; }
-
-  /* Info tooltip */
-  .quota-tooltip {
-    position: fixed; z-index: 1000;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 10px 14px;
-    font-size: 12px; color: var(--text); line-height: 1.6;
-    max-width: 220px; box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    display: none;
-  }
-  .quota-tooltip.visible { display: block; }
-
+  body.win95-theme .channel-name { font-family: 'VT323', monospace !important; color: #000 !important; font-size: 15px !important; }
+  body.win95-theme .channel-meta { font-family: 'VT323', monospace !important; color: #444 !important; font-size: 12px !important; }
+  body.win95-theme .video-tile .tile-thumb-wrap { border-radius: 0 !important; }
+  body.win95-theme #sidebar-search-btn { text-align: left !important; width: 100% !important; padding: 5px 10px !important; }
   /* ── SETTINGS TABS ── */
   .settings-tab {
     background: none; border: none; border-bottom: 2px solid transparent;
@@ -528,7 +653,7 @@
   <!-- SIDEBAR (desktop) -->
   <div id="sidebar">
     <div class="sidebar-header">
-      <div class="wordmark">Your<em>Space</em></div>
+      <div class="wordmark" id="wordmark-home-desktop">Your<em>Space</em></div>
       <div class="header-sub">Only What You Choose</div>
     </div>
 
@@ -567,7 +692,7 @@
     <!-- Mobile header -->
     <div class="mobile-header">
       <div class="mobile-header-left">
-        <div class="wordmark">Your<em>Space</em></div>
+        <div class="wordmark" id="wordmark-home-mobile">Your<em>Space</em></div>
         <div class="header-sub" style="font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Only What You Choose</div>
       </div>
       <div class="mobile-header-right">
@@ -1668,7 +1793,12 @@ function applyTheme(t) {
   if (t.accent)   root.style.setProperty('--accent', t.accent);
   if (t.accent2)  root.style.setProperty('--accent2', t.accent2);
   // Special theme classes
+  const _wasWin95 = document.body.classList.contains('win95-theme');
   document.body.classList.toggle('win95-theme', t.presetName === 'Win95');
+  const _isWin95Now = document.body.classList.contains('win95-theme');
+  if (!_wasWin95 && _isWin95Now) {
+    document.dispatchEvent(new CustomEvent('ys-theme-changed', { detail: { isWin95: true } }));
+  }
   if (t.font) {
     const stack = t.font === 'IBM Plex Mono' ? "'IBM Plex Mono', monospace"
                 : t.font === 'Lora' ? "'Lora', Georgia, serif"
@@ -2109,6 +2239,7 @@ function completeGoal(index) {
   const goal = data.active.splice(index, 1)[0];
   data.achieved.push(goal);
   saveGoals(data);
+  playWin95Sound('ding');
   launchConfetti();
   renderGoals();
 }
@@ -2122,24 +2253,24 @@ function launchConfetti() {
   const colors = ['#6b7fff','#ff6ec7','#00fff0','#fac775','#7ab87c','#ff9f43','#ffffff','#c8b89a'];
   const totalFrames = 240; // 4 seconds at 60fps
 
-  // Pieces shoot up from bottom in a spread
-  const pieces = Array.from({ length: 120 }, () => {
-    const angle = (Math.random() * 120 + 210) * Math.PI / 180; // upward arc: 210°-330°
-    const speed = Math.random() * 18 + 8;
+  // Fast upward launch, slow natural fall
+  const pieces = Array.from({ length: 140 }, () => {
+    const angle = (Math.random() * 140 + 200) * Math.PI / 180;
+    const speed = Math.random() * 28 + 18; // high speed = shoots up fast
     return {
       x: Math.random() * canvas.width,
-      y: canvas.height + 10,
+      y: canvas.height + 5,
       vx: Math.cos(angle) * speed,
       vy: Math.sin(angle) * speed,
       r: Math.random() * 7 + 3,
       color: colors[Math.floor(Math.random() * colors.length)],
       tiltAngle: Math.random() * Math.PI * 2,
-      tiltSpeed: (Math.random() - 0.5) * 0.2,
+      tiltSpeed: (Math.random() - 0.5) * 0.15,
       shape: Math.random() > 0.5 ? 'rect' : 'circle',
-      w: Math.random() * 10 + 4,
-      h: Math.random() * 6 + 3,
+      w: Math.random() * 12 + 5,
+      h: Math.random() * 7 + 3,
       opacity: 1,
-      gravity: 0.3 + Math.random() * 0.2,
+      gravity: 0.18 + Math.random() * 0.12, // lighter gravity = longer float
     };
   });
 
@@ -2149,16 +2280,15 @@ function launchConfetti() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     pieces.forEach(p => {
-      // Physics
-      p.vy += p.gravity;
+      p.vy += p.gravity;  // gravity builds gradually
+      p.vx *= 0.992;      // slight air resistance
       p.x += p.vx;
       p.y += p.vy;
-      p.vx *= 0.99;
       p.tiltAngle += p.tiltSpeed;
 
-      // Fade out in last 60 frames
-      if (frame > totalFrames - 60) {
-        p.opacity = Math.max(0, p.opacity - (1 / 60));
+      // Only fade in the very last 40 frames (last ~0.7 seconds)
+      if (frame > totalFrames - 40) {
+        p.opacity = Math.max(0, p.opacity - (1 / 40));
       }
 
       ctx.save();
@@ -2174,16 +2304,12 @@ function launchConfetti() {
         ctx.arc(0, 0, p.r / 2, 0, Math.PI * 2);
         ctx.fill();
       }
-
       ctx.restore();
     });
 
     frame++;
-    if (frame < totalFrames) {
-      requestAnimationFrame(draw);
-    } else {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
+    if (frame < totalFrames) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   draw();
@@ -2242,6 +2368,92 @@ function addDragToSidebar() {
 }
 
 // Add drag after sidebar renders - called from renderSidebar directly
+
+// ── WORDMARK AS HOME BUTTON ──
+['wordmark-home-desktop', 'wordmark-home-mobile'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('click', () => {
+    if (currentVideoId) stopPlayer();
+    showHome();
+  });
+});
+
+// ── WIN95 SOUNDS ──
+function playWin95Sound(type) {
+  if (!document.body.classList.contains('win95-theme')) return;
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+  const sounds = {
+    click: (ctx) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.setValueAtTime(1200, ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
+      g.gain.setValueAtTime(0.15, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+      o.start(); o.stop(ctx.currentTime + 0.08);
+    },
+    ding: (ctx) => {
+      // Win95 notify — pleasant two-tone chime
+      [523, 659, 784].forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'sine';
+        o.frequency.value = freq;
+        const t = ctx.currentTime + i * 0.12;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.25, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+        o.start(t); o.stop(t + 0.4);
+      });
+    },
+    error: (ctx) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'square';
+      o.frequency.setValueAtTime(200, ctx.currentTime);
+      o.frequency.setValueAtTime(150, ctx.currentTime + 0.1);
+      g.gain.setValueAtTime(0.2, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      o.start(); o.stop(ctx.currentTime + 0.3);
+    },
+    startup: (ctx) => {
+      // Win95 startup — ascending chord
+      [[392,0],[523,0.15],[659,0.3],[784,0.45],[1047,0.65]].forEach(([freq, delay]) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.type = 'sine';
+        o.frequency.value = freq;
+        const t = ctx.currentTime + delay;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.18, t + 0.05);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+        o.start(t); o.stop(t + 0.7);
+      });
+    }
+  };
+
+  try { sounds[type] && sounds[type](ctx); } catch(e) {}
+}
+
+// Play click on Win95 buttons
+document.addEventListener('click', e => {
+  if (!document.body.classList.contains('win95-theme')) return;
+  const isBtn = e.target.closest('button, .sidebar-channel, .channel-card, .feed-channel-header');
+  if (isBtn) playWin95Sound('click');
+});
+
+// Win95 ding played inside completeGoal directly
+
+// Win95 startup sound handled via theme application check below
+document.addEventListener('ys-theme-changed', (e) => {
+  if (e.detail && e.detail.isWin95) setTimeout(() => playWin95Sound('startup'), 300);
+});
+
 </script>
 </body>
 </html>
