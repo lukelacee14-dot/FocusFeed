@@ -642,6 +642,17 @@
         </div>
 
         <div class="settings-section">
+          <div class="settings-section-title">Feed</div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-label">Refresh feed now</div>
+              <div class="settings-sub">Fetches latest videos from all your channels. Uses tokens — your feed auto-refreshes daily for free.</div>
+            </div>
+            <button class="settings-action-btn" id="refresh-feed-btn">↻ Refresh</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
           <div class="settings-section-title">Reset</div>
           <div class="settings-row">
             <div><div class="settings-label">Reset to defaults</div><div class="settings-sub">Restores the original theme</div></div>
@@ -655,10 +666,7 @@
     <div id="home-screen" class="screen">
       <div class="channels-header" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex-shrink:0">
         <span class="section-label" id="feed-status-label">Your feed</span>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button class="add-btn" id="refresh-feed-btn" title="Refresh feed">↻ Refresh</button>
-          <button class="add-btn" id="show-add-btn">+ Add channel</button>
-        </div>
+        <button class="add-btn" id="show-add-btn">+ Add channel</button>
       </div>
       <div id="feed-container" style="flex:1;overflow-y:auto"></div>
     </div>
@@ -872,7 +880,6 @@ document.getElementById('api-key-input').addEventListener('keydown', e => {
 
 // ── Button wiring ──
 document.getElementById('show-add-btn').addEventListener('click', showAdd);
-document.getElementById('refresh-feed-btn').addEventListener('click', () => renderFeed(true));
 
 // Quota info tooltip
 const quotaTooltip = document.createElement('div');
@@ -880,6 +887,11 @@ quotaTooltip.className = 'quota-tooltip';
 quotaTooltip.id = 'quota-tooltip';
 quotaTooltip.textContent = 'Tokens are like currency your API key spends to load YouTube videos. You get 10,000 free per day, resetting each morning.';
 document.body.appendChild(quotaTooltip);
+
+document.getElementById('refresh-feed-btn').addEventListener('click', () => {
+  renderFeed(true);
+  showHome();
+});
 
 document.getElementById('quota-info-btn').addEventListener('click', e => {
   e.stopPropagation();
