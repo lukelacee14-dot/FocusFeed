@@ -1155,6 +1155,21 @@ startTimer();
 // ── Navigation ──
 function isDesktop() { return window.innerWidth >= 768; }
 
+// YourPhrase helpers — must be defined before showScreen
+function hideYourPhrase() {
+  const box = document.getElementById('yourphrase-box');
+  if (box) box.style.display = 'none';
+}
+
+function showYourPhraseIfHome() {
+  const box = document.getElementById('yourphrase-box');
+  if (!box) return;
+  const dismissed = localStorage.getItem('ys_phrase_dismissed');
+  const today = new Date().toISOString().slice(0, 10);
+  if (dismissed === today) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+}
+
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -2549,16 +2564,7 @@ document.getElementById('yourphrase-close').addEventListener('click', () => {
 });
 
 // Show YourPhrase only on home screen
-function showYourPhraseIfHome() {
-  const dismissed = localStorage.getItem(PHRASE_DISMISSED_KEY);
-  const box = document.getElementById('yourphrase-box');
-  if (dismissed === getTodayStr()) { box.style.display = 'none'; return; }
-  box.style.display = 'block';
-}
-
-function hideYourPhrase() {
-  document.getElementById('yourphrase-box').style.display = 'none';
-}
+// showYourPhraseIfHome and hideYourPhrase defined early above showScreen
 
 </script>
 </body>
