@@ -206,7 +206,7 @@
       </div>
     </div>
     <div class="api-input-wrap">
-      <input class="api-input" id="api-key-input" type="password" placeholder="AIza…" autocomplete="off" spellcheck="false">
+      <input class="api-input" id="api-key-input" type="password" placeholder="Paste your API key here…" autocomplete="off" spellcheck="false">
       <button class="api-toggle" id="api-toggle-btn" title="Show/hide key">👁</button>
     </div>
     <div class="api-error" id="api-error">That doesn't look like a valid API key — it should start with "AIza" and be about 39 characters long.</div>
@@ -326,7 +326,9 @@ function showAdd() {
 function showVideosScreen() { showScreen('videos-screen'); }
 
 function showSetup() {
-  document.getElementById('api-key-input').value = getKey();
+  const hasKey = !!getKey();
+  document.getElementById('api-key-input').value = '';
+  document.getElementById('api-key-input').placeholder = hasKey ? 'Key saved 2014 paste a new one to replace it' : 'Paste your API key here2026';
   document.getElementById('api-error').classList.remove('visible');
   showScreen('setup-screen');
 }
@@ -340,6 +342,8 @@ document.getElementById('api-toggle-btn').addEventListener('click', () => {
 document.getElementById('api-save-btn').addEventListener('click', () => {
   const val = document.getElementById('api-key-input').value.trim();
   const errEl = document.getElementById('api-error');
+  // If field is empty and we already have a saved key, just proceed
+  if (val === '' && getKey()) { showHome(); return; }
   if (!val.startsWith('AIza') || val.length < 30) {
     errEl.classList.add('visible');
     return;
