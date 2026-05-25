@@ -338,12 +338,14 @@
     outline: 1px solid #000 !important;
   }
   body.win95-theme #main { background: #008080 !important; }
+  /* Wordmark stays consistent across all themes — brand identity */
   body.win95-theme .wordmark {
-    font-family: 'VT323', monospace !important;
-    font-size: 20px !important; color: #000080 !important;
-    text-shadow: 1px 1px 0 rgba(255,255,255,0.5) !important;
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 22px !important;
+    color: var(--text) !important;
+    text-shadow: none !important;
   }
-  body.win95-theme .wordmark em { color: #000080 !important; font-style: normal !important; }
+  body.win95-theme .wordmark em { color: var(--accent) !important; font-style: italic !important; }
   body.win95-theme .header-sub { font-family: 'VT323', monospace !important; color: #444 !important; font-size: 12px !important; letter-spacing: 0.05em !important; }
   body.win95-theme .timer-label,
   body.win95-theme .section-label { font-family: 'VT323', monospace !important; color: #333 !important; font-size: 13px !important; }
@@ -645,6 +647,48 @@
   .goal-text { font-size: 14px; color: var(--text); flex: 1; line-height: 1.4; }
   .goal-achieved .goal-text { color: var(--muted); text-decoration: line-through; }
   .goal-achieved .goal-checkbox { background: var(--accent); border-color: var(--accent); }
+
+  /* ── YOURPHRASE ── */
+  #yourphrase-box {
+    position: fixed;
+    bottom: 20px;
+    left: 170px;
+    max-width: 280px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    z-index: 100;
+    animation: fadeIn 0.3s ease;
+  }
+  @media (max-width: 767px) {
+    #yourphrase-box { left: 12px; bottom: 16px; max-width: calc(100vw - 24px); }
+  }
+  .yourphrase-label {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent2); margin-bottom: 6px; font-weight: 500;
+  }
+  .yourphrase-text {
+    font-size: 13px; color: var(--text); line-height: 1.6;
+    font-style: italic;
+  }
+  .yourphrase-close {
+    position: absolute; top: 8px; right: 10px;
+    background: none; border: none; color: var(--muted);
+    font-size: 14px; cursor: pointer; padding: 2px 4px;
+    line-height: 1;
+  }
+  .yourphrase-close:hover { color: var(--text); }
+  body.win95-theme #yourphrase-box {
+    background: #c0c0c0 !important;
+    border: 2px solid !important;
+    border-color: #ffffff #808080 #808080 #ffffff !important;
+    outline: 1px solid #000 !important;
+    border-radius: 0 !important;
+  }
+  body.win95-theme .yourphrase-label { font-family: 'VT323', monospace !important; color: #000080 !important; }
+  body.win95-theme .yourphrase-text { font-family: 'VT323', monospace !important; color: #000 !important; font-size: 15px !important; font-style: normal !important; }
+  body.win95-theme .yourphrase-close { font-family: 'VT323', monospace !important; color: #000 !important; }
 </style>
 </head>
 <body>
@@ -1029,6 +1073,13 @@
   </div>
 </div>
 
+<!-- YOURPHRASE BOX -->
+<div id="yourphrase-box" style="display:none">
+  <button class="yourphrase-close" id="yourphrase-close" title="Dismiss">×</button>
+  <div class="yourphrase-label">YourPhrase</div>
+  <div class="yourphrase-text" id="yourphrase-text"></div>
+</div>
+
 <script>
 // ── API Key ──
 function getKey() { return localStorage.getItem('ff_api_key') || ''; }
@@ -1107,6 +1158,7 @@ function isDesktop() { return window.innerWidth >= 768; }
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  if (id !== 'home-screen') hideYourPhrase();
 }
 
 function showHome() {
@@ -1719,6 +1771,7 @@ if (!getKey()) {
   renderSidebar();
   showScreen('home-screen');
   renderFeed(false);
+  initYourPhrase();
 }
 
 // ── THEME SYSTEM ──
@@ -2416,6 +2469,96 @@ document.addEventListener('click', e => {
 document.addEventListener('ys-theme-changed', (e) => {
   if (e.detail && e.detail.isWin95) setTimeout(() => playWin95Sound('startup'), 300);
 });
+
+
+// ── YOURPHRASE ──
+const PHRASES = [
+  "If someone's not smiling, lend them yours.",
+  "You don't have to be perfect to be amazing.",
+  "Rest is productive. Don't forget that.",
+  "One small step today is still progress.",
+  "Drink some water. Seriously.",
+  "The best time to call a friend is now.",
+  "Your attention is your most valuable resource.",
+  "Less screen, more scene.",
+  "A walk outside costs nothing and fixes a lot.",
+  "You are not your notifications.",
+  "Deep work beats busy work every time.",
+  "Sleep is not laziness. It's maintenance.",
+  "Fun fact: Honey never spoils. Archaeologists found 3000-year-old honey in Egyptian tombs.",
+  "Fun fact: A group of flamingos is called a flamboyance.",
+  "Fun fact: Otters hold hands while sleeping so they don't drift apart.",
+  "Fun fact: The shortest war in history lasted 38 minutes.",
+  "Fun fact: Bananas are berries. Strawberries are not.",
+  "Fun fact: A day on Venus is longer than a year on Venus.",
+  "Fun fact: Crows can recognise human faces and hold grudges.",
+  "Fun fact: The average person walks about 100,000 miles in their lifetime.",
+  "Tip: Stretching for 5 minutes after waking up improves circulation all day.",
+  "Tip: Looking at something 20 feet away for 20 seconds every 20 minutes reduces eye strain.",
+  "Tip: Writing down 3 things you're grateful for before bed improves sleep quality.",
+  "Tip: Eating slowly gives your brain time to register fullness.",
+  "Tip: A 20-minute nap is more restorative than 20 extra minutes of morning sleep.",
+  "Tip: Cold water on your wrists can quickly cool your whole body down.",
+  "Tip: Standing up once an hour reduces the health risks of sitting significantly.",
+  "Tip: Magnesium-rich foods like nuts and leafy greens support better sleep.",
+  "The quality of your attention determines the quality of your life.",
+  "You can't pour from an empty cup — fill yours first.",
+  "Boredom is often the beginning of creativity.",
+  "Not all those who wander are lost.",
+  "The quieter you become, the more you can hear.",
+  "Almost everything will work again if you unplug it for a few minutes — including you.",
+  "Do something today that your future self will thank you for.",
+  "You are allowed to be both a masterpiece and a work in progress.",
+  "Comparison is the thief of joy.",
+  "Start where you are. Use what you have. Do what you can.",
+  "It always seems impossible until it's done.",
+  "Fun fact: Wombats produce cube-shaped droppings — the only animal known to do so.",
+  "Fun fact: The Eiffel Tower grows about 15cm taller in summer due to heat expansion.",
+  "Fun fact: Sharks are older than trees.",
+  "Fun fact: A snail can sleep for 3 years.",
+  "Fun fact: The moon is moving away from Earth at about 3.8cm per year.",
+  "Your phone will survive without you checking it. You will too.",
+  "Presence is a present — give it to someone today.",
+  "A kind word costs nothing and can mean everything.",
+  "The people who matter most are rarely on your screen.",
+  "Sunlight before screens — even 10 minutes makes a difference.",
+  "You've survived 100% of your difficult days so far.",
+];
+
+const PHRASE_DISMISSED_KEY = 'ys_phrase_dismissed';
+
+function getTodayStr() { return new Date().toISOString().slice(0, 10); }
+
+function initYourPhrase() {
+  const dismissed = localStorage.getItem(PHRASE_DISMISSED_KEY);
+  if (dismissed === getTodayStr()) return; // already dismissed today
+
+  // Pick phrase by day of year so it changes daily
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now - start) / 86400000);
+  const phrase = PHRASES[dayOfYear % PHRASES.length];
+
+  document.getElementById('yourphrase-text').textContent = phrase;
+  document.getElementById('yourphrase-box').style.display = 'block';
+}
+
+document.getElementById('yourphrase-close').addEventListener('click', () => {
+  document.getElementById('yourphrase-box').style.display = 'none';
+  localStorage.setItem(PHRASE_DISMISSED_KEY, getTodayStr());
+});
+
+// Show YourPhrase only on home screen
+function showYourPhraseIfHome() {
+  const dismissed = localStorage.getItem(PHRASE_DISMISSED_KEY);
+  const box = document.getElementById('yourphrase-box');
+  if (dismissed === getTodayStr()) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+}
+
+function hideYourPhrase() {
+  document.getElementById('yourphrase-box').style.display = 'none';
+}
 
 </script>
 </body>
