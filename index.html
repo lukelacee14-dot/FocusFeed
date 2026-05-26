@@ -764,18 +764,95 @@
   /* ── TOY SHELF FLOATING WIDGET ── */
   .toy-window {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: min(420px, calc(100vw - 28px)); max-height: min(620px, calc(100vh - 36px));
-    background: rgba(24,24,24,0.96); border: 1px solid var(--border); border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.55); z-index: 1500; overflow: hidden;
-    display: none; flex-direction: column; backdrop-filter: blur(10px);
+    width: min(600px, calc(100vw - 28px)); max-height: min(680px, calc(100vh - 36px));
+    background: #2a1a0e;
+    border: 3px solid #1a0f06;
+    border-radius: 14px;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.75), 0 4px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+    z-index: 1500; overflow: hidden;
+    display: none; flex-direction: column;
   }
-  .toy-window.visible { display: flex; }
-  .toy-window-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); cursor: move; user-select: none; background: rgba(255,255,255,0.03); }
-  .toy-window-title { flex: 1; font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); }
-  .toy-window-subtitle { font-size: 11px; color: var(--muted); margin-top: 1px; }
-  .toy-window-btn { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 6px 9px; cursor: pointer; }
-  .toy-window-btn:hover { color: var(--text); border-color: var(--accent2); }
-  .toy-window-body { padding: 14px; overflow: auto; min-height: 260px; }
+  .toy-window.visible { display: flex; animation: shelfAppear 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes shelfAppear { from { opacity:0; transform: translate(-50%,-50%) scale(0.93); } to { opacity:1; transform: translate(-50%,-50%) scale(1); } }
+  .toy-window-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; cursor: move; user-select: none;
+    background: linear-gradient(180deg, #3d2410 0%, #2a1a0e 100%);
+    border-bottom: 2px solid #1a0f06; flex-shrink: 0;
+  }
+  .toy-window-title { flex:1; font-family:'DM Serif Display',serif; font-size:16px; color:#f4d4a0; }
+  .toy-window-subtitle { font-size:11px; color:#a07850; margin-top:1px; }
+  .toy-window-btn {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: #c09060; border-radius: 6px; font-family:'DM Sans',sans-serif;
+    font-size: 12px; padding: 5px 9px; cursor: pointer; transition: background 0.15s, color 0.15s;
+  }
+  .toy-window-btn:hover { background: rgba(255,255,255,0.16); color: #f4d4a0; }
+  .toy-window-body { overflow-y: auto; overflow-x: hidden; flex: 1; min-height: 0; }
+
+  /* ── SHELF UNIT ── */
+  .shelf-unit {
+    position: relative;
+    padding: 16px 12px 4px;
+    background:
+      radial-gradient(ellipse at 25% 30%, rgba(220,180,120,0.22) 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 70%, rgba(160,110,50,0.18) 0%, transparent 55%),
+      linear-gradient(145deg, #d4aa78 0%, #c49858 20%, #aa8040 45%, #906830 70%, #c8a060 100%);
+  }
+  .shelf-wall-texture {
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, transparent 0px, transparent 22px, rgba(0,0,0,0.035) 22px, rgba(0,0,0,0.035) 23px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 80px, rgba(255,255,255,0.02) 80px, rgba(255,255,255,0.02) 81px);
+  }
+  .shelf-row { position: relative; padding-bottom: 22px; }
+  .shelf-toys {
+    display: flex; align-items: flex-end;
+    padding: 0 4px; min-height: 90px; position: relative; z-index: 2;
+    flex-wrap: nowrap;
+  }
+  .shelf-plank {
+    height: 16px;
+    background: linear-gradient(180deg, #7a4e28 0%, #5c3618 40%, #3e2208 70%, #2e1806 100%);
+    border-radius: 1px;
+    position: relative; z-index: 3;
+    box-shadow: 0 5px 14px rgba(0,0,0,0.55), 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.4);
+  }
+  .shelf-plank::before {
+    content:''; position:absolute; inset:0; border-radius:inherit;
+    background: repeating-linear-gradient(90deg, transparent 0, transparent 22px, rgba(0,0,0,0.07) 22px, rgba(0,0,0,0.07) 23px, transparent 23px, transparent 50px, rgba(255,255,255,0.04) 50px, rgba(255,255,255,0.04) 51px);
+  }
+  .shelf-plank::after {
+    content:''; position:absolute; bottom:-8px; left:0; right:0; height:8px;
+    background: linear-gradient(180deg, #1e0e04 0%, #140a02 100%);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.65);
+  }
+  .shelf-toy {
+    display: flex; flex-direction: column; align-items: center;
+    cursor: pointer; position: relative;
+    transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), filter 0.2s;
+    padding: 2px 4px 0; user-select: none; flex-shrink: 0;
+  }
+  .shelf-toy:hover {
+    transform: translateY(-12px) rotate(var(--toy-lean,0deg)) scale(1.1);
+    filter: drop-shadow(0 10px 14px rgba(0,0,0,0.6));
+    z-index: 10;
+  }
+  .shelf-toy:active { transform: translateY(-16px) rotate(var(--toy-lean,0deg)) scale(1.13); }
+  .shelf-toy-figure { font-size: var(--toy-size,36px); line-height:1; display:block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.45)); }
+  .shelf-toy::after {
+    content:''; display:block; width:60%; height:4px;
+    background: rgba(0,0,0,0.22); border-radius:50%; margin-top:1px; filter:blur(2px);
+    transition: width 0.2s, opacity 0.2s;
+  }
+  .shelf-toy:hover::after { width:80%; opacity:0.35; }
+  .shelf-toy-label {
+    position:absolute; bottom:calc(100% + 5px); left:50%; transform:translateX(-50%);
+    background:rgba(15,8,2,0.93); color:#f4d4a0; font-size:10px; white-space:nowrap;
+    padding:3px 7px; border-radius:4px; pointer-events:none; opacity:0;
+    transition:opacity 0.15s; border:1px solid rgba(255,255,255,0.12); z-index:20;
+  }
+  .shelf-toy:hover .shelf-toy-label { opacity:1; }
+
   .toy-shelf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .toy-card { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 12px; cursor: pointer; transition: transform 0.15s, border-color 0.15s, background 0.15s; min-height: 96px; display: flex; flex-direction: column; gap: 7px; }
   .toy-card:hover { transform: translateY(-2px); border-color: var(--accent2); background: var(--surface2); }
@@ -1414,9 +1491,9 @@
 <!-- TOY SHELF FLOATING WINDOW -->
 <div id="toy-shelf-window" class="toy-window" aria-hidden="true">
   <div class="toy-window-header" id="toy-shelf-drag-handle">
-    <div>
+    <div style="flex:1">
       <div class="toy-window-title" id="toy-shelf-title">Toy Shelf</div>
-      <div class="toy-window-subtitle" id="toy-shelf-subtitle">little digital desk toys</div>
+      <div class="toy-window-subtitle" id="toy-shelf-subtitle">pick something up</div>
     </div>
     <button class="toy-window-btn" id="toy-shelf-back" style="display:none">← Shelf</button>
     <button class="toy-window-btn" id="toy-shelf-close" aria-label="Close toy shelf">×</button>
@@ -1628,7 +1705,7 @@ function renderSidebar() {
   list.querySelectorAll('.sidebar-channel').forEach(card => {
     card.addEventListener('click', e => {
       if (e.target.closest('.sidebar-ch-remove')) return;
-      openChannel(parseInt(card.dataset.index));
+      // sidebar is display/reorder only
     });
   });
   list.querySelectorAll('.sidebar-ch-remove').forEach(btn => {
@@ -1741,9 +1818,8 @@ function displayFeed(videos) {
     const chVideos = grouped[chId]; if (!chVideos || chVideos.length === 0) return;
     const ch = channels.find(c => c.id === chId); if (!ch) return;
     const section = document.createElement('div'); section.className = 'feed-channel-section';
-    section.innerHTML = `<div class="feed-channel-header" data-channel-index="${channels.indexOf(ch)}">${ch.thumb?`<img src="${ch.thumb}" class="feed-ch-avatar" alt="">`:`<div class="feed-ch-avatar-placeholder">${ch.name[0]}</div>`}<span class="feed-ch-title">${esc(ch.name)}</span><span class="feed-ch-arrow">→</span></div><div class="feed-channel-row">${chVideos.map((v,i)=>`<div class="feed-tile" data-ch="${chId}" data-vi="${i}"><div class="tile-thumb-wrap"><img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy"><div class="tile-duration">${fmtDur(v.duration)}</div><div class="tile-play"><div class="tile-play-icon"></div></div></div><div class="tile-title">${esc(v.title)}</div><div class="tile-meta">${fmtDate(v.published)}${v.views>0?' · '+fmtViews(v.views)+' views':''}</div></div>`).join('')}</div>`;
+    section.innerHTML = `<div class="feed-channel-header" data-channel-index="${channels.indexOf(ch)}">${ch.thumb?`<img src="${ch.thumb}" class="feed-ch-avatar" alt="">`:`<div class="feed-ch-avatar-placeholder">${ch.name[0]}</div>`}<span class="feed-ch-title">${esc(ch.name)}</span></div><div class="feed-channel-row">${chVideos.map((v,i)=>`<div class="feed-tile" data-ch="${chId}" data-vi="${i}"><div class="tile-thumb-wrap"><img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy"><div class="tile-duration">${fmtDur(v.duration)}</div><div class="tile-play"><div class="tile-play-icon"></div></div></div><div class="tile-title">${esc(v.title)}</div><div class="tile-meta">${fmtDate(v.published)}${v.views>0?' · '+fmtViews(v.views)+' views':''}</div></div>`).join('')}</div>`;
     container.appendChild(section);
-    section.querySelector('.feed-channel-header').addEventListener('click',function(){openChannel(parseInt(this.dataset.channelIndex));});
     section.querySelectorAll('.feed-tile').forEach(tile=>{tile.addEventListener('click',()=>{const v=grouped[tile.dataset.ch][parseInt(tile.dataset.vi)];playSearchResult(v);document.getElementById('player-back-btn').onclick=()=>{stopPlayer();showHome();};document.getElementById('done-back-btn').onclick=()=>{stopPlayer();showHome();};});});
   });
   // Xbox 360 dashboard mode
@@ -2625,17 +2701,60 @@ function closeToyShelf() {
 function renderToyShelfMenu() {
   clearToyShelfTimers();
   toyEl('toy-shelf-title').textContent = 'Toy Shelf';
-  toyEl('toy-shelf-subtitle').textContent = 'choose a little digital desk toy';
+  toyEl('toy-shelf-subtitle').textContent = 'pick something up';
   toyEl('toy-shelf-back').style.display = 'none';
-  toyEl('toy-shelf-body').innerHTML = `<div class="toy-shelf-grid">${TOY_LIST.map(t => `
-    <div class="toy-card" data-toy="${t.id}" role="button" tabindex="0">
-      <div class="toy-card-icon">${t.icon}</div>
-      <div class="toy-card-title">${t.title}</div>
-      <div class="toy-card-desc">${t.desc}</div>
-    </div>`).join('')}</div>`;
-  toyEl('toy-shelf-body').querySelectorAll('.toy-card').forEach(card => {
-    card.addEventListener('click', () => renderToy(card.dataset.toy));
-    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') renderToy(card.dataset.toy); });
+
+  // Each toy: id, emoji, size, lean (slight rotation), label
+  const shelfToys = [
+    { id:'slime',    fig:'🧪', size:40, lean:-4,  label:'Slime Jar' },
+    { id:'space',    fig:'🐶', size:38, lean:3,   label:'Space Buddy' },
+    { id:'bubble',   fig:'🫧', size:44, lean:-2,  label:'Bubble Wrap' },
+    { id:'lava',     fig:'🪔', size:42, lean:5,   label:'Lava Lamp' },
+    { id:'gravity',  fig:'🔮', size:36, lean:-3,  label:'Gravity Balls' },
+    { id:'cradle',   fig:'⚙️', size:38, lean:2,   label:'Newton\'s Cradle' },
+    { id:'shredder', fig:'📝', size:36, lean:-5,  label:'Note Shredder' },
+    { id:'clouds',   fig:'⛅', size:44, lean:3,   label:'Cloud Pusher' },
+    { id:'aquarium', fig:'🐠', size:40, lean:-2,  label:'Mini Aquarium' },
+    { id:'marble',   fig:'🟠', size:34, lean:4,   label:'Marble Run' },
+    { id:'ducks',    fig:'🦆', size:38, lean:-4,  label:'Duck Pond' },
+    { id:'blob',     fig:'🫧', size:42, lean:2,   label:'Breathing Blob' },
+    { id:'plant',    fig:'🪴', size:44, lean:-3,  label:'Desk Plant' },
+    { id:'coin',     fig:'🪙', size:36, lean:5,   label:'Coin Spinner' },
+  ];
+
+  // Split into two shelves, roughly 7 each, shuffled slightly for natural feel
+  // Offset heights to make them feel hand-placed
+  const offsets = [-4,6,-2,8,-6,4,0,-5,7,-3,5,-7,2,-4];
+  const shelf1 = shelfToys.slice(0, 7);
+  const shelf2 = shelfToys.slice(7);
+
+  function makeToy(t, i) {
+    const offset = offsets[i % offsets.length];
+    return `<div class="shelf-toy" data-toy="${t.id}"
+      style="--toy-size:${t.size}px; --toy-lean:${t.lean}deg; margin-bottom:${Math.max(0,offset)}px; margin-top:${Math.max(0,-offset)}px"
+      role="button" tabindex="0" title="${t.label}">
+      <span class="shelf-toy-figure">${t.fig}</span>
+      <span class="shelf-toy-label">${t.label}</span>
+    </div>`;
+  }
+
+  function makeShelf(toys, startIdx) {
+    return `<div class="shelf-row">
+      <div class="shelf-toys">${toys.map((t,i) => makeToy(t, startIdx+i)).join('')}</div>
+      <div class="shelf-plank"></div>
+    </div>`;
+  }
+
+  toyEl('toy-shelf-body').innerHTML = `
+    <div class="shelf-unit">
+      <div class="shelf-wall-texture"></div>
+      ${makeShelf(shelf1, 0)}
+      ${makeShelf(shelf2, 7)}
+    </div>`;
+
+  toyEl('toy-shelf-body').querySelectorAll('.shelf-toy').forEach(toy => {
+    toy.addEventListener('click', () => renderToy(toy.dataset.toy));
+    toy.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') renderToy(toy.dataset.toy); });
   });
 }
 function renderToy(id) {
