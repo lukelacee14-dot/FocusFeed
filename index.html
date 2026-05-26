@@ -84,11 +84,9 @@
   .icon-btn:hover { color: var(--text); background: var(--surface); }
 
   .sidebar-channel-scroll {
-    flex: 1; min-height: 0; overflow-y: auto !important;
+    flex: 1; overflow-y: auto; min-height: 0;
     border: 1px solid var(--border); border-radius: 8px;
-    margin: 0 12px 8px;
-    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
-    max-height: calc(100vh - 280px);
+    margin: 0 12px 8px; scrollbar-width: thin; scrollbar-color: var(--border) transparent;
   }
   .sidebar-channel-scroll::-webkit-scrollbar { width: 4px; }
   .sidebar-channel-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -525,11 +523,10 @@
   body.win95-theme .sidebar-ch-name { font-family: 'VT323',monospace !important; color: #000 !important; font-size: 14px !important; }
   body.win95-theme .screen.active { background: #c0c0c0 !important; border: 2px solid !important; border-color: #fff #808080 #808080 #fff !important; outline: 1px solid #000 !important; margin: 6px !important; border-radius: 0 !important; }
   body.win95-theme .screen.active::before { content: 'YourSpace'; display: block; background: linear-gradient(to right,#000080,#1084d0); color: #fff; font-family: 'VT323',monospace; font-size: 15px; padding: 3px 6px; }
+  body.win95-theme #videos-screen.active::before { content: 'YourSpace — Channel Videos'; }
   body.win95-theme #add-screen.active::before { content: 'YourSpace — Add Channel'; }
   body.win95-theme #settings-screen.active::before { content: 'YourSpace — Properties'; }
   body.win95-theme #search-videos-screen.active::before { content: 'YourSpace — Search'; }
-  body.win95-theme .sidebar-channel-scroll { overflow-y: auto !important; max-height: calc(100vh - 280px) !important; }
-
   body.win95-theme #yourday-screen.active::before { content: 'YourSpace — YourDay'; }
   body.win95-theme #player-screen.active::before { content: 'YourSpace — Now Playing'; }
   body.win95-theme .video-tile .tile-thumb-wrap { border-radius: 0 !important; border: 2px solid !important; border-color: #fff #808080 #808080 #fff !important; outline: 1px solid #000 !important; }
@@ -568,6 +565,7 @@
   .feed-ch-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
   .feed-ch-avatar-placeholder { width: 28px; height: 28px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--accent); flex-shrink: 0; }
   .feed-ch-title { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; }
+  .feed-ch-arrow { font-size: 12px; color: var(--muted); }
   .feed-channel-row { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 14px; padding: 4px 20px 0; }
   @media (max-width:767px) { .feed-channel-row { grid-template-columns: repeat(2,1fr); gap: 10px; padding: 4px 14px 0; } .feed-channel-header { padding: 10px 14px; } }
   .sidebar-channel.dragging { opacity: 0.4; }
@@ -1136,7 +1134,24 @@
     </div>
 
     <!-- VIDEOS -->
-
+    <div id="videos-screen" class="screen">
+      <div class="videos-top">
+        <button class="back-btn" id="videos-back-btn">← Back</button>
+        <img class="videos-channel-thumb" id="videos-thumb" src="" alt="">
+        <span class="videos-channel-name" id="videos-name"></span>
+      </div>
+      <div class="sort-bar" id="sort-bar">
+        <button class="sort-pill active" data-sort="newest">Newest</button>
+        <button class="sort-pill" data-sort="oldest">Oldest</button>
+        <button class="sort-pill" data-sort="popular">Most popular</button>
+        <button class="sort-pill" data-sort="longest">Longest</button>
+        <button class="sort-pill" data-sort="shortest">Shortest</button>
+      </div>
+      <div class="video-grid" id="video-grid"></div>
+      <div class="load-more-wrap" id="load-more-wrap" style="display:none">
+        <button class="load-more-btn" id="load-more-btn">Load more videos</button>
+      </div>
+    </div>
 
     <!-- PLAYER -->
     <div id="player-screen" class="screen">
@@ -1170,9 +1185,16 @@ function saveKey(k) { localStorage.setItem('ff_api_key', k); }
 
 // ── State ──
 let channels = JSON.parse(localStorage.getItem('ff_channels') || '[]');
+let currentChannel = null;
+let allVideos = [];
+let displayedCount = 0;
+let currentSort = 'newest';
 let searchResults = [];
 let currentVideoId = null;
+let nextPageToken = null;
+let loadingMore = false;
 let autoReturnTimer = null;
+const PAGE_SIZE = 12;
 
 function saveChannels() { localStorage.setItem('ff_channels', JSON.stringify(channels)); }
 
@@ -1239,6 +1261,7 @@ function showHome() {
   if (currentVideoId) stopPlayer();
   playXboxSound('back');
   showScreen('home-screen');
+  currentChannel = null;
   renderSidebar();
   renderChannels();
 }
@@ -1251,6 +1274,8 @@ function showAdd() {
   showScreen('add-screen');
   setTimeout(() => document.getElementById('search-input').focus(), 100);
 }
+
+function showVideosScreen() { showScreen('videos-screen'); }
 
 function showSetup() {
   const hasKey = !!getKey();
@@ -1320,15 +1345,25 @@ document.addEventListener('click', () => {
   if (tt) tt.classList.remove('visible');
 });
 document.getElementById('add-back-btn').addEventListener('click', () => { isDesktop() ? showHome() : showHome(); });
-document.getElementById('player-back-btn').addEventListener('click', () => { stopPlayer(); showHome(); });
-document.getElementById('done-back-btn').addEventListener('click', () => { stopPlayer(); showHome(); });
+document.getElementById('videos-back-btn').addEventListener('click', showHome);
+document.getElementById('player-back-btn').addEventListener('click', () => { stopPlayer(); showVideosScreen(); });
+document.getElementById('done-back-btn').addEventListener('click', () => { stopPlayer(); showVideosScreen(); });
 document.getElementById('search-btn').addEventListener('click', searchChannels);
 document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchChannels(); });
+document.getElementById('load-more-btn').addEventListener('click', loadMoreVideos);
 document.getElementById('sidebar-add-btn').addEventListener('click', showAdd);
 document.getElementById('sidebar-settings-btn').addEventListener('click', showSettings);
 document.getElementById('mobile-settings-btn').addEventListener('click', showSettings);
 
-
+document.getElementById('sort-bar').addEventListener('click', e => {
+  const pill = e.target.closest('.sort-pill');
+  if (!pill) return;
+  document.querySelectorAll('.sort-pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  currentSort = pill.dataset.sort;
+  displayedCount = 0;
+  renderGrid();
+});
 
 // ── Sidebar render ──
 function renderSidebar() {
@@ -1338,7 +1373,7 @@ function renderSidebar() {
     return;
   }
   list.innerHTML = channels.map((ch, i) => `
-    <div class="sidebar-channel" data-index="${i}">
+    <div class="sidebar-channel ${currentChannel && currentChannel.id === ch.id ? 'active' : ''}" data-index="${i}">
       ${ch.thumb ? `<img class="sidebar-ch-thumb" src="${ch.thumb}" alt="">` : `<div class="sidebar-ch-placeholder">${ch.name[0]}</div>`}
       <span class="sidebar-ch-name">${esc(ch.name)}</span>
       <button class="sidebar-ch-remove" data-remove="${i}" title="Remove">×</button>
@@ -1347,7 +1382,7 @@ function renderSidebar() {
   list.querySelectorAll('.sidebar-channel').forEach(card => {
     card.addEventListener('click', e => {
       if (e.target.closest('.sidebar-ch-remove')) return;
-      // Sidebar channels are display/reorder only — feed is on the home screen
+      openChannel(parseInt(card.dataset.index));
     });
   });
   list.querySelectorAll('.sidebar-ch-remove').forEach(btn => {
@@ -1403,34 +1438,8 @@ async function renderFeed(forceRefresh) {
   const allVideos = [];
 
   for (const ch of channels) {
-    try {
-      // Fetch latest 8 per channel, filter shorts, take 5
-      const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${ch.id}&part=snippet,id&order=date&maxResults=15&type=video`;
-      const res = await apiFetch(url, 100);
-      const data = await res.json();
-      if (!data.items || data.error) continue;
-
-      const ids = data.items.map(v => v.id.videoId).filter(Boolean);
-      if (ids.length === 0) continue;
-
-      const detailUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${ids.join(',')}&part=contentDetails,statistics,snippet`;
-      const detailRes = await apiFetch(detailUrl, ids.length);
-      const detailData = await detailRes.json();
-
-      const videos = (detailData.items || []).map(item => ({
-        id: item.id,
-        title: item.snippet.title,
-        channelName: ch.name,
-        channelThumb: ch.thumb,
-        channelId: ch.id,
-        thumb: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
-        published: item.snippet.publishedAt,
-        duration: parseDuration(item.contentDetails.duration),
-        views: parseInt(item.statistics?.viewCount || 0)
-      })).filter(v => v.duration >= 60).slice(0, 5);
-
-      allVideos.push(...videos);
-    } catch(e) { continue; }
+    const videos = await fetchChannelVideos(ch);
+    allVideos.push(...videos);
   }
 
   // Sort all by newest first
@@ -1442,6 +1451,36 @@ async function renderFeed(forceRefresh) {
 
   document.getElementById('feed-status-label').textContent = 'Your feed';
   displayFeed(allVideos);
+}
+
+// Fetch up to 5 recent long-form videos for a single channel
+async function fetchChannelVideos(ch) {
+  try {
+    const API_KEY = getKey();
+    const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${ch.id}&part=snippet,id&order=date&maxResults=15&type=video`;
+    const res = await apiFetch(url, 100);
+    const data = await res.json();
+    if (!data.items || data.error) return [];
+
+    const ids = data.items.map(v => v.id.videoId).filter(Boolean);
+    if (ids.length === 0) return [];
+
+    const detailUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${ids.join(',')}&part=contentDetails,statistics,snippet`;
+    const detailRes = await apiFetch(detailUrl, ids.length);
+    const detailData = await detailRes.json();
+
+    return (detailData.items || []).map(item => ({
+      id: item.id,
+      title: item.snippet.title,
+      channelName: ch.name,
+      channelThumb: ch.thumb,
+      channelId: ch.id,
+      thumb: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+      published: item.snippet.publishedAt,
+      duration: parseDuration(item.contentDetails.duration),
+      views: parseInt(item.statistics?.viewCount || 0)
+    })).filter(v => v.duration >= 60).slice(0, 5);
+  } catch(e) { return []; }
 }
 
 function displayFeed(videos) {
@@ -1456,8 +1495,9 @@ function displayFeed(videos) {
     const chVideos = grouped[chId]; if (!chVideos || chVideos.length === 0) return;
     const ch = channels.find(c => c.id === chId); if (!ch) return;
     const section = document.createElement('div'); section.className = 'feed-channel-section';
-    section.innerHTML = `<div class="feed-channel-header" data-channel-index="${channels.indexOf(ch)}">${ch.thumb?`<img src="${ch.thumb}" class="feed-ch-avatar" alt="">`:`<div class="feed-ch-avatar-placeholder">${ch.name[0]}</div>`}<span class="feed-ch-title">${esc(ch.name)}</span></div><div class="feed-channel-row">${chVideos.map((v,i)=>`<div class="feed-tile" data-ch="${chId}" data-vi="${i}"><div class="tile-thumb-wrap"><img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy"><div class="tile-duration">${fmtDur(v.duration)}</div><div class="tile-play"><div class="tile-play-icon"></div></div></div><div class="tile-title">${esc(v.title)}</div><div class="tile-meta">${fmtDate(v.published)}${v.views>0?' · '+fmtViews(v.views)+' views':''}</div></div>`).join('')}</div>`;
+    section.innerHTML = `<div class="feed-channel-header" data-channel-index="${channels.indexOf(ch)}">${ch.thumb?`<img src="${ch.thumb}" class="feed-ch-avatar" alt="">`:`<div class="feed-ch-avatar-placeholder">${ch.name[0]}</div>`}<span class="feed-ch-title">${esc(ch.name)}</span><span class="feed-ch-arrow">→</span></div><div class="feed-channel-row">${chVideos.map((v,i)=>`<div class="feed-tile" data-ch="${chId}" data-vi="${i}"><div class="tile-thumb-wrap"><img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy"><div class="tile-duration">${fmtDur(v.duration)}</div><div class="tile-play"><div class="tile-play-icon"></div></div></div><div class="tile-title">${esc(v.title)}</div><div class="tile-meta">${fmtDate(v.published)}${v.views>0?' · '+fmtViews(v.views)+' views':''}</div></div>`).join('')}</div>`;
     container.appendChild(section);
+    section.querySelector('.feed-channel-header').addEventListener('click',function(){openChannel(parseInt(this.dataset.channelIndex));});
     section.querySelectorAll('.feed-tile').forEach(tile=>{tile.addEventListener('click',()=>{const v=grouped[tile.dataset.ch][parseInt(tile.dataset.vi)];playSearchResult(v);document.getElementById('player-back-btn').onclick=()=>{stopPlayer();showHome();};document.getElementById('done-back-btn').onclick=()=>{stopPlayer();showHome();};});});
   });
   // Xbox 360 dashboard mode
@@ -1468,34 +1508,165 @@ function displayFeed(videos) {
 }
 
 function removeChannel(i) {
+  const removedId = channels[i].id;
   channels.splice(i, 1);
   saveChannels();
-  // Clear feed cache so it rebuilds without removed channel
-  localStorage.removeItem('ff_feed_cache');
-  localStorage.removeItem('ff_feed_date');
+  // Remove only this channel's videos from cache, keep the rest
+  try {
+    const cached = JSON.parse(localStorage.getItem('ff_feed_cache') || '[]');
+    const filtered = cached.filter(v => v.channelId !== removedId);
+    localStorage.setItem('ff_feed_cache', JSON.stringify(filtered));
+  } catch(e) {
+    localStorage.removeItem('ff_feed_cache');
+    localStorage.removeItem('ff_feed_date');
+  }
   renderSidebar();
   showHome();
-  renderFeed(true);
+  displayFeed(JSON.parse(localStorage.getItem('ff_feed_cache') || '[]'));
 }
 
+// ── Open channel ──
+async function openChannel(i) {
+  currentChannel = channels[i];
+  allVideos = []; displayedCount = 0; currentSort = 'newest'; nextPageToken = null;
 
+  document.getElementById('videos-name').textContent = currentChannel.name;
+  const thumb = document.getElementById('videos-thumb');
+  thumb.src = currentChannel.thumb || '';
+  thumb.style.display = currentChannel.thumb ? 'block' : 'none';
+  document.querySelectorAll('.sort-pill').forEach(p => p.classList.remove('active'));
+  document.querySelector('[data-sort="newest"]').classList.add('active');
+  document.getElementById('video-grid').innerHTML = `<div class="status" style="grid-column:1/-1"><div class="spinner"></div>Loading videos…</div>`;
+  document.getElementById('load-more-wrap').style.display = 'none';
 
+  renderSidebar();
+  showScreen('videos-screen');
+  const _ck='ys_ch_'+currentChannel.id, _tk='ys_ch_ts_'+currentChannel.id;
+  const _ts=parseInt(localStorage.getItem(_tk)||'0');
+  if(_ts&&(Date.now()-_ts)<10800000){try{const _cv=JSON.parse(localStorage.getItem(_ck));if(_cv&&_cv.length>0){allVideos=_cv;nextPageToken=null;document.getElementById('video-grid').innerHTML='';renderGrid();return;}}catch(e){}}
+  document.getElementById('video-grid').innerHTML=`<div class="status" style="grid-column:1/-1"><div class="spinner"></div>Loading videos…</div>`;
+  await fetchVideos();
+}
 
+// Fetch until we have `target` long-form videos or run out of pages
+// Saves the page token so load more can continue from where we stopped
+async function fetchUntil(target, appendToExisting) {
+  const API_KEY = getKey();
+  let fetched = [];
+  let maxPages = 20; // safety cap — won't infinite loop
+  let pages = 0;
 
+  while (fetched.length < target && nextPageToken !== null && pages < maxPages) {
+    const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${currentChannel.id}&part=snippet,id&order=date&maxResults=50&type=video${nextPageToken ? '&pageToken=' + nextPageToken : ''}`;
+    const res = await apiFetch(url, 100);
+    const data = await res.json();
 
+    if (data.error) throw new Error(data.error.message);
+    if (!data.items || data.items.length === 0) { nextPageToken = null; break; }
 
+    const ids = data.items.map(v => v.id.videoId).filter(Boolean);
+    const detailUrl = `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${ids.join(',')}&part=contentDetails,statistics,snippet`;
+    const detailRes = await apiFetch(detailUrl, ids.length);
+    const detailData = await detailRes.json();
 
+    const batch = (detailData.items || []).map(item => ({
+      id: item.id, title: item.snippet.title,
+      thumb: item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url,
+      published: item.snippet.publishedAt,
+      duration: parseDuration(item.contentDetails.duration),
+      views: parseInt(item.statistics?.viewCount || 0)
+    })).filter(v => v.duration >= 60);
 
+    fetched = fetched.concat(batch);
+    nextPageToken = data.nextPageToken || null;
+    pages++;
+  }
 
+  if (appendToExisting) {
+    allVideos = allVideos.concat(fetched);
+  } else {
+    allVideos = fetched;
+  }
+}
 
+async function fetchVideos() {
+  nextPageToken = ''; // empty string = first page, null = no more pages
+  try {
+    await fetchUntil(PAGE_SIZE, false);
+    displayedCount = 0;
+    renderGrid();
+  } catch(e) {
+    document.getElementById('video-grid').innerHTML = `<div class="status" style="grid-column:1/-1"><div class="error-msg">${esc(e.message) || 'Couldn\'t load videos.'}<br><br><small>Check your API key in settings ⚙</small></div></div>`;
+  }
+}
 
+async function loadMoreVideos() {
+  if (loadingMore) return;
+  // If we already have more cached locally just show them
+  const sorted = getSorted();
+  if (displayedCount < sorted.length) { renderGrid(); return; }
+  // No more pages left
+  if (nextPageToken === null) return;
+  loadingMore = true;
+  document.getElementById('load-more-btn').textContent = 'Loading…';
+  try {
+    await fetchUntil(PAGE_SIZE, true);
+    renderGrid();
+  } catch(e) {
+    document.getElementById('load-more-btn').textContent = 'Load more videos';
+  } finally {
+    loadingMore = false;
+    document.getElementById('load-more-btn').textContent = 'Load more videos';
+  }
+}
+
+function getSorted() {
+  const v = [...allVideos];
+  switch(currentSort) {
+    case 'newest':   return v.sort((a,b) => new Date(b.published) - new Date(a.published));
+    case 'oldest':   return v.sort((a,b) => new Date(a.published) - new Date(b.published));
+    case 'popular':  return v.sort((a,b) => b.views - a.views);
+    case 'longest':  return v.sort((a,b) => b.duration - a.duration);
+    case 'shortest': return v.sort((a,b) => a.duration - b.duration);
+    default: return v;
+  }
+}
+
+function renderGrid() {
+  const grid = document.getElementById('video-grid');
+  const sorted = getSorted();
+  if (sorted.length === 0) {
+    grid.innerHTML = `<div class="status" style="grid-column:1/-1">No long-form videos found.</div>`;
+    document.getElementById('load-more-wrap').style.display = 'none';
+    return;
+  }
+  displayedCount = Math.min(displayedCount + PAGE_SIZE, sorted.length);
+  const visible = sorted.slice(0, displayedCount);
+  grid.innerHTML = visible.map((v, i) => `
+    <div class="video-tile" data-index="${i}">
+      <div class="tile-thumb-wrap">
+        <img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy">
+        <div class="tile-duration">${fmtDur(v.duration)}</div>
+        <div class="tile-play"><div class="tile-play-icon"></div></div>
+      </div>
+      <div class="tile-title">${esc(v.title)}</div>
+      <div class="tile-meta">${fmtDate(v.published)}${v.views > 0 ? ' · ' + fmtViews(v.views) + ' views' : ''}</div>
+    </div>`).join('');
+
+  grid.querySelectorAll('.video-tile').forEach(tile => {
+    tile.addEventListener('click', () => { playVideo(visible[parseInt(tile.dataset.index)]); });
+  });
+
+  const hasMore = displayedCount < sorted.length || nextPageToken !== null;
+  document.getElementById('load-more-wrap').style.display = hasMore ? 'flex' : 'none';
+}
 
 // ── Player ──
 function playVideo(v) {
   currentVideoId = v.id;
   document.getElementById('player-title').textContent = v.title;
   document.getElementById('player-meta').textContent = fmtDate(v.published) + (v.views > 0 ? ' · ' + fmtViews(v.views) + ' views' : '');
-  document.getElementById('player-channel-label').textContent = '';
+  document.getElementById('player-channel-label').textContent = currentChannel.name;
   document.getElementById('done-banner').classList.remove('visible');
   document.getElementById('done-progress').classList.remove('visible');
   document.getElementById('player-frame').src =
@@ -1522,7 +1693,7 @@ window.addEventListener('message', e => {
       }));
       autoReturnTimer = setTimeout(() => {
         if (document.getElementById('player-screen').classList.contains('active')) {
-          stopPlayer(); showHome();
+          stopPlayer(); showVideosScreen();
         }
       }, 4000);
     }
@@ -1579,16 +1750,29 @@ async function searchChannels() {
   }
 }
 
-function addChannel(i) {
+async function addChannel(i) {
   const ch = searchResults[i];
   if (!ch || channels.some(c => c.id === ch.id)) return;
   channels.push({ id: ch.id, name: ch.name, thumb: ch.thumb });
   saveChannels();
-  // Clear feed cache so new channel appears
-  localStorage.removeItem('ff_feed_cache');
-  localStorage.removeItem('ff_feed_date');
   renderSidebar();
   showHome();
+
+  // Fetch only the new channel's videos and merge into existing cache
+  document.getElementById('feed-status-label').textContent = `Loading ${ch.name}…`;
+  const newVideos = await fetchChannelVideos({ id: ch.id, name: ch.name, thumb: ch.thumb });
+
+  // Load existing cache and merge
+  let cached = [];
+  try { cached = JSON.parse(localStorage.getItem('ff_feed_cache') || '[]'); } catch(e) {}
+  const merged = [...cached, ...newVideos];
+  merged.sort((a, b) => new Date(b.published) - new Date(a.published));
+
+  localStorage.setItem('ff_feed_cache', JSON.stringify(merged));
+  localStorage.setItem('ff_feed_date', new Date().toISOString().slice(0, 10));
+
+  document.getElementById('feed-status-label').textContent = 'Your feed';
+  displayFeed(merged);
 }
 
 // ── Helpers ──
@@ -1835,7 +2019,7 @@ document.getElementById('settings-api-save').addEventListener('click', () => {
 });
 
 document.getElementById('settings-back-btn').addEventListener('click', () => {
-  showHome();
+  if (currentChannel) { showVideosScreen(); } else { showHome(); }
 });
 
 // BG colour picker
@@ -2023,6 +2207,7 @@ async function runVideoSearch() {
 }
 
 function playSearchResult(v) {
+  // Reuse player screen — set currentChannel to null so back goes to search
   currentVideoId = v.id;
   document.getElementById('player-title').textContent = v.title;
   document.getElementById('player-meta').textContent = v.channelName + ' · ' + fmtDate(v.published) + (v.views > 0 ? ' · ' + fmtViews(v.views) + ' views' : '');
@@ -2043,7 +2228,7 @@ function playSearchResult(v) {
 document.getElementById('sidebar-search-btn').addEventListener('click', showVideoSearch);
 document.getElementById('mobile-search-btn').addEventListener('click', showVideoSearch);
 document.getElementById('search-videos-back-btn').addEventListener('click', () => {
-  showHome();
+  currentChannel ? showVideosScreen() : showHome();
 });
 document.getElementById('video-search-btn').addEventListener('click', runVideoSearch);
 document.getElementById('video-search-input').addEventListener('keydown', e => {
