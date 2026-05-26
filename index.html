@@ -1131,6 +1131,482 @@ body.crt-theme #main {
 /* Win95 label on the bottom bar of CRT concept — not applicable, CRT is standalone */
 body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !important; font-size: 11px !important; }
 
+
+/* ══════════════════════════════════════════
+   ARCADE THEME
+   ══════════════════════════════════════════ */
+
+/* Load Press Start 2P pixel font */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+/* ── Body & global background ── */
+body.arcade-theme {
+  background: #08081a !important;
+  background-image:
+    radial-gradient(ellipse at 15% 50%, #1a004a 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 20%, #001a3a 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 90%, #1a0030 0%, transparent 50%) !important;
+}
+
+/* Starfield dots on body */
+body.arcade-theme::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 8%,  rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 22%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 82% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 92% 35%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 5%  80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 48% 92%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 63% 5%,  rgba(255,255,255,0.6) 0%, transparent 100%);
+}
+
+/* ── ARCADE SIDEBAR ── */
+body.arcade-theme #sidebar {
+  background: linear-gradient(180deg, #0a0820 0%, #0d0a28 60%, #0a0820 100%) !important;
+  border-right: 2px solid #ff00ff !important;
+  box-shadow: 4px 0 20px rgba(255,0,255,0.25), inset -1px 0 0 rgba(255,0,255,0.1) !important;
+  position: relative;
+  z-index: 10;
+}
+
+/* Neon top border glow */
+body.arcade-theme #sidebar::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
+  box-shadow: 0 0 12px rgba(255,0,255,0.8), 0 0 24px rgba(0,255,255,0.4);
+  pointer-events: none; z-index: 5;
+}
+
+/* Coin slot decoration at bottom of sidebar */
+body.arcade-theme #sidebar::after {
+  content: 'INSERT COIN';
+  position: absolute; bottom: 68px; left: 0; right: 0;
+  text-align: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 7px;
+  color: #ff00ff;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 8px rgba(255,0,255,0.8);
+  pointer-events: none; z-index: 5;
+  animation: arcadeBlink 1.2s step-end infinite;
+}
+
+@keyframes arcadeBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes arcadeNeonPulse { 0%,100%{opacity:1;text-shadow:0 0 8px currentColor,0 0 16px currentColor} 50%{opacity:0.85;text-shadow:0 0 4px currentColor,0 0 8px currentColor} }
+@keyframes arcadeScanline { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
+@keyframes arcadeMarquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── Wordmark ── */
+body.arcade-theme .wordmark {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 11px !important;
+  line-height: 1.6 !important;
+  color: #ff00ff !important;
+  text-shadow: 0 0 8px rgba(255,0,255,0.9), 0 0 20px rgba(255,0,255,0.4), 2px 2px 0 #660066 !important;
+  letter-spacing: 0.02em !important;
+  animation: arcadeNeonPulse 2s ease-in-out infinite !important;
+}
+body.arcade-theme .wordmark em {
+  color: #00ffff !important;
+  text-shadow: 0 0 8px rgba(0,255,255,0.9), 0 0 20px rgba(0,255,255,0.4), 2px 2px 0 #006666 !important;
+  font-style: normal !important;
+}
+body.arcade-theme .header-sub {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 5px !important;
+  color: #9966ff !important;
+  letter-spacing: 0.12em !important;
+  text-shadow: 0 0 6px rgba(153,102,255,0.6) !important;
+}
+
+/* ── Timer & quota ── */
+body.arcade-theme .timer-label {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 6px !important;
+  color: #9988cc !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+body.arcade-theme .timer-value {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 10px !important;
+  color: #ffff00 !important;
+  text-shadow: 0 0 8px rgba(255,255,0,0.8), 0 0 16px rgba(255,255,0,0.3) !important;
+}
+body.arcade-theme #sidebar-quota {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 8px !important;
+  color: #ff6600 !important;
+  text-shadow: 0 0 6px rgba(255,102,0,0.6) !important;
+}
+
+/* ── Search button ── */
+body.arcade-theme #sidebar-search-btn {
+  background: rgba(0,0,0,0.6) !important;
+  border: 1px solid #ff00ff !important;
+  border-radius: 2px !important;
+  color: #cc88ff !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 7px !important;
+  box-shadow: 0 0 8px rgba(255,0,255,0.2), inset 0 0 8px rgba(255,0,255,0.05) !important;
+  letter-spacing: 0.04em !important;
+}
+body.arcade-theme #sidebar-search-btn:hover {
+  border-color: #00ffff !important;
+  color: #00ffff !important;
+  box-shadow: 0 0 12px rgba(0,255,255,0.3) !important;
+}
+
+/* ── Section label ── */
+body.arcade-theme .section-label {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 6px !important;
+  color: #ff00ff !important;
+  letter-spacing: 0.15em !important;
+  text-shadow: 0 0 6px rgba(255,0,255,0.6) !important;
+}
+
+/* ── Channel list ── */
+body.arcade-theme .sidebar-channel-scroll {
+  border: 1px solid rgba(255,0,255,0.3) !important;
+  border-radius: 2px !important;
+  background: rgba(0,0,0,0.4) !important;
+  box-shadow: inset 0 0 12px rgba(255,0,255,0.05) !important;
+}
+body.arcade-theme .sidebar-channel {
+  border-bottom: 1px solid rgba(255,0,255,0.1) !important;
+  border-radius: 0 !important;
+  padding: 7px 10px !important;
+}
+body.arcade-theme .sidebar-ch-name {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 7px !important;
+  color: #cc88ff !important;
+  text-shadow: 0 0 4px rgba(204,136,255,0.4) !important;
+}
+body.arcade-theme .sidebar-ch-thumb,
+body.arcade-theme .sidebar-ch-placeholder {
+  border: 1px solid rgba(255,0,255,0.4) !important;
+  box-shadow: 0 0 6px rgba(255,0,255,0.2) !important;
+}
+body.arcade-theme .sidebar-ch-placeholder {
+  background: rgba(255,0,255,0.1) !important;
+  color: #ff00ff !important;
+}
+
+/* ── Sidebar bottom buttons ── */
+body.arcade-theme .sidebar-bottom {
+  background: rgba(0,0,0,0.5) !important;
+  border-top: 2px solid #ff00ff !important;
+  box-shadow: 0 -4px 16px rgba(255,0,255,0.2) !important;
+}
+body.arcade-theme .sidebar-bottom-btn,
+body.arcade-theme .sidebar-add-btn {
+  background: rgba(255,0,255,0.08) !important;
+  border: 1px solid rgba(255,0,255,0.4) !important;
+  border-radius: 2px !important;
+  color: #ff00ff !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 6px !important;
+  letter-spacing: 0.04em !important;
+  box-shadow: 0 0 8px rgba(255,0,255,0.1) !important;
+}
+body.arcade-theme .sidebar-bottom-btn:hover,
+body.arcade-theme .sidebar-add-btn:hover {
+  background: rgba(255,0,255,0.2) !important;
+  box-shadow: 0 0 14px rgba(255,0,255,0.35) !important;
+  color: #ff66ff !important;
+}
+body.arcade-theme #sidebar-settings-btn {
+  background: rgba(0,255,255,0.06) !important;
+  border: 1px solid rgba(0,255,255,0.35) !important;
+  border-radius: 2px !important;
+  color: #00ffff !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 6px !important;
+  letter-spacing: 0.04em !important;
+  box-shadow: 0 0 8px rgba(0,255,255,0.1) !important;
+}
+body.arcade-theme #sidebar-settings-btn:hover {
+  background: rgba(0,255,255,0.15) !important;
+  box-shadow: 0 0 14px rgba(0,255,255,0.3) !important;
+}
+
+/* ── ARCADE MAIN AREA ── */
+body.arcade-theme #main {
+  position: relative;
+  background: transparent !important;
+  z-index: 1;
+}
+
+/* Neon screen frame around main */
+body.arcade-theme #main::before {
+  content: '';
+  position: fixed;
+  top: 0; left: var(--sidebar); right: 0; bottom: 0;
+  pointer-events: none; z-index: 200;
+  box-shadow:
+    inset 0 0 40px rgba(255,0,255,0.08),
+    inset 0 0 2px rgba(255,0,255,0.6),
+    inset 0 0 80px rgba(0,0,50,0.4);
+  border-left: 2px solid #ff00ff;
+}
+
+/* Scanline effect over main */
+body.arcade-theme #main::after {
+  content: '';
+  position: fixed;
+  top: 0; left: var(--sidebar); right: 0; bottom: 0;
+  pointer-events: none; z-index: 201;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+  );
+}
+
+/* ── Feed header label ── */
+body.arcade-theme #feed-status-label {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 9px !important;
+  color: #ffff00 !important;
+  text-shadow: 0 0 10px rgba(255,255,0,0.8), 0 0 20px rgba(255,255,0,0.3) !important;
+  letter-spacing: 0.12em !important;
+  animation: arcadeNeonPulse 3s ease-in-out infinite !important;
+}
+
+/* ── Add channel button ── */
+body.arcade-theme #show-add-btn {
+  background: rgba(255,0,255,0.12) !important;
+  border: 2px solid #ff00ff !important;
+  border-radius: 2px !important;
+  color: #ff00ff !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 7px !important;
+  box-shadow: 0 0 12px rgba(255,0,255,0.35), inset 0 0 8px rgba(255,0,255,0.08) !important;
+  letter-spacing: 0.04em !important;
+  padding: 8px 14px !important;
+}
+body.arcade-theme #show-add-btn:hover {
+  background: rgba(255,0,255,0.25) !important;
+  box-shadow: 0 0 20px rgba(255,0,255,0.6), inset 0 0 12px rgba(255,0,255,0.15) !important;
+}
+
+/* ── Feed channel section headers ── */
+body.arcade-theme .feed-channel-header {
+  background: linear-gradient(90deg, rgba(255,0,255,0.25) 0%, rgba(255,0,255,0.08) 60%, transparent 100%) !important;
+  border-bottom: 2px solid #ff00ff !important;
+  box-shadow: 0 0 12px rgba(255,0,255,0.2), 0 2px 0 rgba(255,0,255,0.1) !important;
+  padding: 8px 14px !important;
+}
+body.arcade-theme .feed-ch-title {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 9px !important;
+  color: #ff00ff !important;
+  text-shadow: 0 0 10px rgba(255,0,255,0.9), 0 0 20px rgba(255,0,255,0.4) !important;
+  letter-spacing: 0.08em !important;
+}
+body.arcade-theme .feed-ch-arrow {
+  color: #00ffff !important;
+  text-shadow: 0 0 8px rgba(0,255,255,0.8) !important;
+  font-size: 14px !important;
+}
+body.arcade-theme .feed-ch-avatar {
+  border: 2px solid rgba(255,0,255,0.5) !important;
+  box-shadow: 0 0 8px rgba(255,0,255,0.3) !important;
+  border-radius: 4px !important;
+}
+
+/* ── Feed tiles ── */
+body.arcade-theme .feed-tile .tile-thumb-wrap {
+  border: 1px solid rgba(255,0,255,0.2) !important;
+  border-radius: 2px !important;
+  box-shadow: 0 0 8px rgba(255,0,255,0.1) !important;
+}
+body.arcade-theme .feed-tile:hover .tile-thumb-wrap {
+  border-color: #ff00ff !important;
+  box-shadow: 0 0 16px rgba(255,0,255,0.4), 0 0 4px rgba(255,0,255,0.6) !important;
+}
+body.arcade-theme .tile-title {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 7px !important;
+  color: #e0d0ff !important;
+  line-height: 1.7 !important;
+}
+body.arcade-theme .tile-meta {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 6px !important;
+  color: #9966ff !important;
+}
+body.arcade-theme .tile-duration {
+  background: rgba(0,0,0,0.85) !important;
+  border: 1px solid rgba(255,0,255,0.4) !important;
+  color: #ff00ff !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 7px !important;
+  text-shadow: 0 0 6px rgba(255,0,255,0.6) !important;
+}
+
+/* ── Sort pills ── */
+body.arcade-theme .sort-pill {
+  background: rgba(0,0,0,0.6) !important;
+  border: 1px solid rgba(255,0,255,0.4) !important;
+  border-radius: 2px !important;
+  color: #cc88ff !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 7px !important;
+}
+body.arcade-theme .sort-pill:hover {
+  border-color: #ff00ff !important;
+  color: #ff00ff !important;
+  box-shadow: 0 0 8px rgba(255,0,255,0.3) !important;
+}
+body.arcade-theme .sort-pill.active {
+  background: rgba(255,0,255,0.2) !important;
+  border-color: #ff00ff !important;
+  color: #ff00ff !important;
+  box-shadow: 0 0 12px rgba(255,0,255,0.4) !important;
+}
+
+/* ── Back buttons ── */
+body.arcade-theme .back-btn {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 8px !important;
+  color: #00ffff !important;
+  text-shadow: 0 0 6px rgba(0,255,255,0.6) !important;
+}
+
+/* ── Videos screen channel name ── */
+body.arcade-theme .videos-channel-name {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 10px !important;
+  color: #ff00ff !important;
+  text-shadow: 0 0 10px rgba(255,0,255,0.7) !important;
+}
+
+/* ── Settings tabs ── */
+body.arcade-theme .settings-tab {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 7px !important;
+  color: #9966ff !important;
+}
+body.arcade-theme .settings-tab.active {
+  color: #ff00ff !important;
+  border-bottom-color: #ff00ff !important;
+  text-shadow: 0 0 8px rgba(255,0,255,0.6) !important;
+}
+
+/* ── Arcade cabinet joystick decoration (purely decorative, desktop only) ── */
+@media (min-width: 768px) {
+  body.arcade-theme #app {
+    position: relative;
+  }
+
+  /* Bottom control panel bar */
+  body.arcade-theme #app::after {
+    content: '';
+    position: fixed;
+    bottom: 0; left: 0; right: 0; height: 90px;
+    background: linear-gradient(180deg, #0a0820 0%, #0e0a2a 40%, #0a0820 100%);
+    border-top: 3px solid #ff00ff;
+    box-shadow: 0 -4px 24px rgba(255,0,255,0.4), 0 -1px 0 rgba(0,255,255,0.2);
+    z-index: 300;
+    pointer-events: none;
+  }
+
+  /* Push main content up so it doesn't go under the panel */
+  body.arcade-theme #main {
+    padding-bottom: 90px;
+  }
+  body.arcade-theme #sidebar {
+    padding-bottom: 90px;
+  }
+
+  /* Decorative button row rendered via pseudo-element text */
+  body.arcade-theme #main::before {
+    content: '';
+    position: fixed;
+    bottom: 0; left: var(--sidebar); right: 0; height: 90px;
+    background:
+      /* Left joystick base */
+      radial-gradient(circle at 12% 55%, #1a1a3a 0%, transparent 30%),
+      /* Right joystick base */
+      radial-gradient(circle at 88% 55%, #1a1a3a 0%, transparent 30%),
+      /* 3 red buttons left cluster */
+      radial-gradient(circle at 32% 52%, #cc0000 0%, #880000 60%, transparent 62%),
+      radial-gradient(circle at 38% 52%, #cc0000 0%, #880000 60%, transparent 62%),
+      radial-gradient(circle at 35% 68%, #cc0000 0%, #880000 60%, transparent 62%),
+      /* 2 yellow centre buttons */
+      radial-gradient(circle at 49% 52%, #ccaa00 0%, #887700 55%, transparent 57%),
+      radial-gradient(circle at 51% 68%, #ccaa00 0%, #887700 55%, transparent 57%),
+      /* 3 blue buttons right cluster */
+      radial-gradient(circle at 62% 52%, #0044cc 0%, #002288 60%, transparent 62%),
+      radial-gradient(circle at 68% 52%, #0044cc 0%, #002288 60%, transparent 62%),
+      radial-gradient(circle at 65% 68%, #0044cc 0%, #002288 60%, transparent 62%);
+    z-index: 301;
+    pointer-events: none;
+  }
+
+  /* Joystick balls — left & right via box shadow trick on a ::after */
+  body.arcade-theme #main::after {
+    content: '';
+    position: fixed;
+    bottom: 38px; left: calc(var(--sidebar) + 8%);
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff6666, #cc0000 50%, #880000);
+    box-shadow:
+      0 4px 8px rgba(0,0,0,0.6),
+      0 0 12px rgba(200,0,0,0.4),
+      /* right joystick ball */
+      calc(76vw - var(--sidebar)) 0 0 0 #cc0000,
+      calc(76vw - var(--sidebar)) 4px 8px rgba(0,0,0,0.6);
+    z-index: 302;
+    pointer-events: none;
+  }
+}
+
+/* ── POWER ON label ── */
+@media (min-width: 768px) {
+  body.arcade-theme #sidebar::before {
+    content: 'POWER ON ▶';
+    position: absolute;
+    bottom: 75px; left: 0; right: 0;
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 5px;
+    color: #00ff88;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 6px rgba(0,255,136,0.8);
+    pointer-events: none; z-index: 5;
+  }
+}
+
+/* Marquee text on bottom panel */
+@media (min-width: 768px) {
+  body.arcade-theme #app::before {
+    content: '◄ MOVE ► ·········· SELECT ·········· BACK ··········◄ MOVE ► ·········· SELECT ·········· BACK ··········';
+    position: fixed;
+    bottom: 6px; left: 0; right: 0;
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: rgba(255,0,255,0.5);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    overflow: hidden;
+    z-index: 303;
+    pointer-events: none;
+    animation: arcadeNeonPulse 2s ease-in-out infinite;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1884,7 +2360,7 @@ function renderSidebar() {
     </div>`).join('');
 
   list.querySelectorAll('.sidebar-channel').forEach(card => {
-    // Sidebar channels are display-only — clicking does nothing (no API calls)
+    // Sidebar channels are display-only — no click navigation (saves API quota)
   });
   list.querySelectorAll('.sidebar-ch-remove').forEach(btn => {
     btn.addEventListener('click', e => { e.stopPropagation(); removeChannel(parseInt(btn.dataset.remove)); });
@@ -2358,6 +2834,14 @@ const PRESETS = [
     font: 'IBM Plex Mono',
     bgPattern: 'none', bgPatternSize: 'auto'
   },
+  {
+    name: 'Arcade',
+    bg: '#08081a', surface: '#0e0e2a', surface2: '#141440', border: '#ff00ff44',
+    text: '#ffffff', muted: '#9988cc', accent: '#ff00ff', accent2: '#cc00cc',
+    font: 'Orbitron',
+    bgPattern: 'radial-gradient(ellipse at 20% 50%, #1a004a 0%, #08081a 60%), radial-gradient(ellipse at 80% 20%, #001a3a 0%, transparent 50%)',
+    bgPatternSize: '100% 100%, 100% 100%'
+  },
 ];
 
 const ACCENTS = [
@@ -2408,6 +2892,7 @@ function applyTheme(t) {
   document.body.classList.toggle('win95-theme', t.presetName === 'Win95');
   document.body.classList.toggle('xbox-theme', t.presetName === 'Xbox 360');
   document.body.classList.toggle('crt-theme', t.presetName === 'CRT TV');
+  document.body.classList.toggle('arcade-theme', t.presetName === 'Arcade');
   if (!_wasW && document.body.classList.contains('win95-theme')) setTimeout(()=>playWin95Sound('startup'),300);
   if (!_wasXbox && document.body.classList.contains('xbox-theme')) setTimeout(()=>playXboxSound('startup'),300);
   document.body.classList.toggle('xbox-theme', t.presetName === 'Xbox 360');
