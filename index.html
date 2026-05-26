@@ -931,15 +931,8 @@
     filter: drop-shadow(0 3px 5px rgba(0,0,0,0.45));
   }
 
-  /* Shadow puddle under toy */
-  .shelf-toy-shadow {
-    width: 65%; height: 5px;
-    background: radial-gradient(ellipse, rgba(0,0,0,0.35) 0%, transparent 70%);
-    margin-top: 1px;
-    transition: width 0.22s, opacity 0.22s;
-    border-radius: 50%;
-  }
-  .shelf-toy:hover .shelf-toy-shadow { width: 85%; opacity: 0.4; }
+  /* No shadow puddle under toys */
+  .shelf-toy-shadow { display: none; }
 
   /* Tooltip label */
   .shelf-toy-label {
@@ -1003,9 +996,9 @@
   @keyframes earthGlow { from{box-shadow:0 0 20px rgba(74,158,255,0.4),0 0 40px rgba(74,158,255,0.15),inset -8px -4px 0 rgba(0,0,0,0.3)} to{box-shadow:0 0 30px rgba(74,158,255,0.6),0 0 60px rgba(74,158,255,0.25),inset -8px -4px 0 rgba(0,0,0,0.3)} }
   /* Moon surface */
   .space-moon-surface {
-    position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 100px;
     background: radial-gradient(ellipse at 50% 100%, #d4cbb0 0%, #c0b890 40%, #a89e72 100%);
-    border-radius: 50% 50% 0 0 / 25% 25% 0 0;
+    border-radius: 55% 55% 0 0 / 30% 30% 0 0;
   }
   .space-moon-surface::before {
     content:''; position:absolute; inset:0; border-radius:inherit;
@@ -1021,14 +1014,14 @@
   }
   /* Dog container */
   .space-dog-container {
-    position: absolute; bottom: 52px;
+    position: absolute; bottom: 30px;
     transition: left 0.05s linear;
     cursor: pointer;
   }
   .space-dog-img {
-    width: 180px; height: auto;
+    width: 200px; height: auto;
     display: block;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
     transition: transform 0.3s ease;
   }
   /* Sleeping - gentle breathing */
@@ -2928,32 +2921,19 @@ function renderToyShelfMenu() {
   toyEl('toy-shelf-back').style.display = 'none';
 
   // Toys with personality data — size, lean, vertical offset for natural placement
+  // Just dog and Newton's cradle for now — correctly proportioned
+  // Dog plush is like a melon-sized toy, cradle is a desk object about half the height
   const shelfToys = [
-    { id:'slime',    fig:'🧪', size:58, lean:-5,  yOff:0,  label:'Slime Jar' },
-    { id:'space',    fig:'<img src="images/corgi.png" class="shelf-toy-img" style="width:64px;height:64px;object-fit:contain">', size:64, lean:4,   yOff:4,  label:'Space Buddy' },
-    { id:'bubble',   fig:'🫧', size:60, lean:-2,  yOff:-2, label:'Bubble Wrap' },
-    { id:'lava',     fig:'<img src="images/laval lamp.png" class="shelf-toy-img" style="width:44px;height:76px;object-fit:contain">', size:64, lean:6,   yOff:0,  label:'Lava Lamp' },
-    { id:'gravity',  fig:'🔮', size:54, lean:-4,  yOff:2,  label:'Gravity Balls' },
-    { id:'cradle',   fig:'<img src="images/newton cradle.png" class="shelf-toy-img" style="width:74px;height:60px;object-fit:contain">', size:54, lean:3,   yOff:0,  label:'Newton\'s Cradle' },
-    { id:'shredder', fig:'📋', size:52, lean:-6,  yOff:3,  label:'Note Shredder' },
-    { id:'clouds',   fig:'⛅', size:62, lean:4,   yOff:-4, label:'Cloud Pusher' },
-    { id:'aquarium', fig:'🐠', size:58, lean:-3,  yOff:0,  label:'Mini Aquarium' },
-    { id:'marble',   fig:'🟠', size:52, lean:5,   yOff:2,  label:'Marble Run' },
-    { id:'ducks',    fig:'🦆', size:56, lean:-4,  yOff:0,  label:'Duck Pond' },
-    { id:'blob',     fig:'🫧', size:60, lean:3,   yOff:-2, label:'Breathing Blob' },
-    { id:'plant',    fig:'🪴', size:64, lean:-3,  yOff:0,  label:'Desk Plant' },
-    { id:'coin',     fig:'🪙', size:52, lean:6,   yOff:4,  label:'Coin Spinner' },
+    { id:'space',  fig:'<img src="images/corgi.png" class="shelf-toy-img" style="width:110px;height:110px;object-fit:contain;display:block">', lean:2,  label:'Space Buddy' },
+    { id:'cradle', fig:'<img src="images/newton cradle.png" class="shelf-toy-img" style="width:130px;height:90px;object-fit:contain;display:block">', lean:-1, label:'Newton\'s Cradle' },
   ];
 
   function makeToy(t) {
-    const figContent = t.fig.startsWith('<') 
-      ? t.fig  // already HTML (img tag)
-      : `<span class="shelf-toy-figure" style="font-size:${t.size}px">${t.fig}</span>`;
+    const figContent = t.fig.startsWith('<') ? t.fig : `<span style="font-size:64px;line-height:1;display:block">${t.fig}</span>`;
     return `<div class="shelf-toy" data-toy="${t.id}"
-      style="--toy-size:${t.size}px;--toy-lean:${t.lean}deg;margin-bottom:${Math.max(0,t.yOff)}px;margin-top:${Math.max(0,-t.yOff)}px"
+      style="--toy-lean:${t.lean}deg;display:flex;flex-direction:column;align-items:center;padding:0 16px 0;cursor:pointer;flex-shrink:0;position:relative;transition:transform 0.24s cubic-bezier(0.34,1.56,0.64,1),filter 0.2s;user-select:none;vertical-align:bottom"
       role="button" tabindex="0">
       ${figContent}
-      <div class="shelf-toy-shadow"></div>
       <span class="shelf-toy-label">${t.label}</span>
     </div>`;
   }
@@ -2964,7 +2944,7 @@ function renderToyShelfMenu() {
       <div class="shelf-with-brackets">
         <div class="shelf-bracket left"></div>
         <div class="shelf-bracket right"></div>
-        <div class="shelf-toys">${toys.map(makeToy).join('')}</div>
+        <div class="shelf-toys" style="align-items:flex-end;gap:0;padding:0 24px">${toys.map(makeToy).join('')}</div>
         <div class="shelf-plank"></div>
       </div>
     </div>`;
@@ -2972,8 +2952,7 @@ function renderToyShelfMenu() {
 
   toyEl('toy-shelf-body').innerHTML = `
     <div class="shelf-room">
-      ${makeShelf(shelfToys.slice(0, 7))}
-      ${makeShelf(shelfToys.slice(7))}
+      ${makeShelf(shelfToys)}
       <div class="shelf-room-floor"></div>
     </div>`;
 
