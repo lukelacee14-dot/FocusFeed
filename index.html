@@ -549,7 +549,7 @@
   /* ── XBOX 360 THEME ── */
   body.xbox-theme { font-family: 'Exo 2','Inter',sans-serif !important; }
 
-  /* Sidebar — grey panel */
+  /* Sidebar — grey */
   body.xbox-theme #sidebar { background: linear-gradient(to bottom,#d8d6cf,#c8c6bf,#b8b6b0) !important; border-right: 2px solid #a0a098 !important; }
   body.xbox-theme .wordmark { font-family: 'DM Serif Display',serif !important; color: #1a1a1a !important; text-shadow: none !important; }
   body.xbox-theme .wordmark em { color: #6a3a00 !important; }
@@ -569,98 +569,159 @@
   html body.xbox-theme #yourday-sidebar-btn:hover, html body.xbox-theme #sidebar-search-btn:hover {
     background: #504840 !important; color: #ffc030 !important; transform: translateY(-1px) !important;
   }
-  body.xbox-theme .icon-btn { color: #3a2400 !important; background: linear-gradient(to bottom,#c8b890,#b0a078) !important; border: 1px solid #6a4a10 !important; border-radius: 3px !important; }
-  body.xbox-theme .back-btn { color: #f0a500 !important; }
-  body.xbox-theme .search-input, body.xbox-theme .api-input, body.xbox-theme #goal-input { background: rgba(0,0,0,0.6) !important; border: 1px solid rgba(240,165,0,0.4) !important; color: #fff !important; border-radius: 2px !important; }
-  body.xbox-theme .search-btn, body.xbox-theme .api-save-btn, body.xbox-theme #goal-add-btn { background: #d4920a !important; color: #000 !important; border-radius: 2px !important; font-weight: 600 !important; }
-  body.xbox-theme .load-more-btn, body.xbox-theme .done-back-btn, body.xbox-theme .empty-cta, body.xbox-theme .settings-action-btn { background: rgba(240,165,0,0.12) !important; color: #f0a500 !important; border: 1px solid rgba(240,165,0,0.4) !important; border-radius: 2px !important; }
-  body.xbox-theme .sort-pill { background: rgba(0,0,0,0.5) !important; color: rgba(255,255,255,0.6) !important; border: 1px solid rgba(240,165,0,0.3) !important; border-radius: 2px !important; }
-  body.xbox-theme .sort-pill.active { background: #d4920a !important; color: #000 !important; }
-  body.xbox-theme .tile-title { color: #fff !important; }
-  body.xbox-theme .tile-meta { color: #c8a060 !important; }
-  body.xbox-theme .tile-duration { background: rgba(200,140,0,0.85) !important; color: #000 !important; border-radius: 1px !important; font-weight: 600 !important; }
-  body.xbox-theme .channel-card { background: rgba(0,0,0,0.4) !important; border: 1px solid rgba(240,165,0,0.2) !important; }
-  body.xbox-theme .channel-name { color: #fff !important; }
-  body.xbox-theme .channel-meta { color: #c8a060 !important; }
-  body.xbox-theme .goal-item { background: rgba(0,0,0,0.5) !important; border: 1px solid rgba(240,165,0,0.25) !important; }
-  body.xbox-theme .goal-checkbox { border-color: #f0a500 !important; }
-  body.xbox-theme .goal-achieved .goal-checkbox { background: #f0a500 !important; }
+  body.xbox-theme .back-btn { color: #555 !important; }
+  body.xbox-theme .search-input, body.xbox-theme .api-input, body.xbox-theme #goal-input { background: rgba(0,0,0,0.15) !important; border: 1px solid #aaa !important; color: #111 !important; border-radius: 4px !important; }
+  body.xbox-theme .search-btn, body.xbox-theme .api-save-btn, body.xbox-theme #goal-add-btn { background: #555 !important; color: #fff !important; border-radius: 4px !important; font-weight: 600 !important; }
+  body.xbox-theme .load-more-btn, body.xbox-theme .done-back-btn, body.xbox-theme .empty-cta, body.xbox-theme .settings-action-btn { background: #ddd !important; color: #333 !important; border: 1px solid #aaa !important; border-radius: 4px !important; }
+  body.xbox-theme .sort-pill { background: rgba(255,255,255,0.5) !important; color: #333 !important; border: 1px solid #aaa !important; border-radius: 4px !important; }
+  body.xbox-theme .sort-pill.active { background: #555 !important; color: #fff !important; }
   body.xbox-theme .screen.active { background: transparent !important; border: none !important; outline: none !important; margin: 0 !important; }
 
-  /* Xbox home layout */
-  body.xbox-theme #home-screen { position: relative; overflow: hidden; transition: background 0.4s ease; }
+  /* ── XBOX HOME LAYOUT ── */
+  /* Whole page background = grey */
+  body.xbox-theme #home-screen {
+    background: #c8c6c0 !important;
+    position: relative;
+    overflow: hidden;
+  }
   body.xbox-theme .channels-header { display: none !important; }
   body.xbox-theme #feed-container { display: none !important; }
 
-  #xbox-layout { display: none; flex: 1; overflow: hidden; min-height: 0; }
-  body.xbox-theme #xbox-layout { display: flex; height: 100%; align-items: stretch; }
-
-  /* Side tabs — stacked vertically, all visible, within boundary */
-  .xbox-side-tabs {
-    flex-shrink: 0;
-    align-self: stretch;
+  #xbox-layout {
+    display: none;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+  }
+  body.xbox-theme #xbox-layout {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px 0;
-    width: 60px;
+    height: 100%;
+    align-items: stretch;
+    background: #c8c6c0;
+  }
+
+  /* ── LEFT TAB STACK ── */
+  .xbox-left-tabs {
+    position: relative;
+    flex-shrink: 0;
+    width: 72px;
+    align-self: stretch;
     overflow: hidden;
   }
-  .xbox-side-tab {
-    width: 52px;
-    height: 60px;
+
+  /* LEFT tabs: full height, stacked like book spines fanning rightward */
+  /* Tab 1 = frontmost (rightmost), most visible */
+  /* Each tab behind has smaller left offset = more hidden */
+  .xbox-left-tabs .xbox-side-tab {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 200px; /* tall rotated content, effectively the height */
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to right,#e0deda,#ceccc6,#bcbab4);
-    border: 1.5px solid #aaa8a2;
-    box-sizing: border-box;
+    background: linear-gradient(to right, #dddbd5, #cccac4, #bcbab4);
+    border-right: 2px solid #b0aead;
+    border-top: 1px solid #e8e6e0;
+    border-bottom: 1px solid #a8a6a0;
+    border-radius: 0 12px 12px 0;
     cursor: pointer;
-    transition: transform 0.15s ease, filter 0.15s ease;
-    flex-shrink: 0;
-    box-shadow: 3px 0 8px rgba(0,0,0,0.25);
+    box-shadow: 3px 0 8px rgba(0,0,0,0.2);
+    transition: filter 0.15s;
+    overflow: hidden;
   }
+  /* Stack: each tab overlaps behind the previous, showing only a strip */
+  /* Right-most = front (index 1), each behind shows ~18px strip */
+  .xbox-left-tabs .xbox-side-tab:nth-child(1) { left: 36px; z-index: 4; filter: brightness(1); }
+  .xbox-left-tabs .xbox-side-tab:nth-child(2) { left: 18px; z-index: 3; filter: brightness(0.94); }
+  .xbox-left-tabs .xbox-side-tab:nth-child(3) { left: 4px;  z-index: 2; filter: brightness(0.88); }
+  .xbox-left-tabs .xbox-side-tab:nth-child(4) { left: -8px; z-index: 1; filter: brightness(0.82); }
+  .xbox-left-tabs .xbox-side-tab:hover { filter: brightness(1.06) !important; }
+
+  /* ── RIGHT TAB STACK ── */
+  .xbox-right-tabs {
+    position: relative;
+    flex-shrink: 0;
+    width: 72px;
+    align-self: stretch;
+    overflow: hidden;
+  }
+  .xbox-right-tabs .xbox-side-tab {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to left, #dddbd5, #cccac4, #bcbab4);
+    border-left: 2px solid #b0aead;
+    border-top: 1px solid #e8e6e0;
+    border-bottom: 1px solid #a8a6a0;
+    border-radius: 12px 0 0 12px;
+    cursor: pointer;
+    box-shadow: -3px 0 8px rgba(0,0,0,0.2);
+    transition: filter 0.15s;
+    overflow: hidden;
+  }
+  .xbox-right-tabs .xbox-side-tab:nth-child(1) { right: 36px; z-index: 4; filter: brightness(1); }
+  .xbox-right-tabs .xbox-side-tab:nth-child(2) { right: 18px; z-index: 3; filter: brightness(0.94); }
+  .xbox-right-tabs .xbox-side-tab:nth-child(3) { right: 4px;  z-index: 2; filter: brightness(0.88); }
+  .xbox-right-tabs .xbox-side-tab:nth-child(4) { right: -8px; z-index: 1; filter: brightness(0.82); }
+  .xbox-right-tabs .xbox-side-tab:hover { filter: brightness(1.06) !important; }
+
+  /* Tab label — vertical text with coloured bubble */
   .xbox-tab-label {
     writing-mode: vertical-rl;
     text-orientation: mixed;
     font-family: 'Exo 2', sans-serif;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 8px 4px;
-    border-radius: 6px;
+    padding: 10px 5px;
+    border-radius: 8px;
     white-space: nowrap;
     overflow: hidden;
-    max-height: 54px;
+    max-height: 100px;
     text-overflow: ellipsis;
+    flex-shrink: 0;
   }
-  .xbox-left-tabs { align-items: flex-start; }
-  .xbox-left-tabs .xbox-side-tab { border-radius: 0 10px 10px 0; border-left: none; }
-  .xbox-left-tabs .xbox-side-tab:hover { transform: translateX(4px); filter: brightness(1.08); }
-  .xbox-right-tabs { align-items: flex-end; }
-  .xbox-right-tabs .xbox-side-tab { border-radius: 10px 0 0 10px; border-right: none; box-shadow: -3px 0 8px rgba(0,0,0,0.25); }
-  .xbox-right-tabs .xbox-side-tab:hover { transform: translateX(-4px); filter: brightness(1.08); }
 
-  /* Xbox centre content */
-  .xbox-centre { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; max-width: 720px; margin: 0 auto; }
-  .xbox-channel-header { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 20px 10px; border-bottom: 1px solid rgba(255,200,80,0.25); flex-shrink: 0; }
-  .xbox-channel-icon { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,200,80,0.5); flex-shrink: 0; }
-  .xbox-channel-icon-placeholder { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.4); border: 2px solid rgba(255,200,80,0.5); display: flex; align-items: center; justify-content: center; color: #f0a500; font-size: 15px; font-weight: 600; flex-shrink: 0; }
-  .xbox-channel-name-text { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 0.08em; text-transform: uppercase; font-family: 'Exo 2',sans-serif; text-shadow: 0 1px 8px rgba(0,0,0,0.6); }
-  .xbox-video-list { flex: 1; overflow-y: auto; padding: 10px 16px 16px; scrollbar-width: thin; scrollbar-color: rgba(240,165,0,0.4) transparent; }
-  .xbox-video-item { display: flex; gap: 12px; align-items: center; padding: 8px 12px; margin-bottom: 7px; background: rgba(255,180,20,0.1); border: 1px solid rgba(255,220,80,0.2); border-radius: 12px; cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.12s; }
-  .xbox-video-item:hover { background: rgba(255,180,20,0.2); border-color: rgba(255,220,80,0.5); transform: translateX(2px); }
-  .xbox-video-item:first-child { background: rgba(255,180,20,0.15); border-color: rgba(255,220,80,0.35); padding: 10px 12px; }
-  .xbox-video-thumb { width: 100px; flex-shrink: 0; aspect-ratio: 16/9; object-fit: cover; border-radius: 8px; border: 1px solid rgba(240,165,0,0.2); }
+  /* ── CENTRE COLOURED PANEL ── */
+  .xbox-centre {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+    /* colour set dynamically via JS */
+    border-radius: 4px;
+    margin: 8px 0;
+  }
+  .xbox-channel-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 20px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    background: rgba(0,0,0,0.15);
+  }
+  .xbox-channel-icon { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.5); flex-shrink: 0; }
+  .xbox-channel-icon-placeholder { width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; font-weight: 600; flex-shrink: 0; }
+  .xbox-channel-name-text { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 0.08em; text-transform: uppercase; font-family: 'Exo 2',sans-serif; text-shadow: 0 1px 8px rgba(0,0,0,0.4); }
+  .xbox-video-list { flex: 1; overflow-y: auto; padding: 10px 16px 16px; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; }
+  .xbox-video-item { display: flex; gap: 12px; align-items: center; padding: 8px 12px; margin-bottom: 7px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; cursor: pointer; transition: background 0.15s, transform 0.12s; }
+  .xbox-video-item:hover { background: rgba(255,255,255,0.22); transform: translateX(2px); }
+  .xbox-video-item:first-child { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); padding: 10px 12px; }
+  .xbox-video-thumb { width: 100px; flex-shrink: 0; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
   .xbox-video-item:first-child .xbox-video-thumb { width: 130px; }
   .xbox-video-details { flex: 1; min-width: 0; }
   .xbox-video-title { font-size: 13px; font-weight: 500; color: #fff; line-height: 1.4; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .xbox-video-item:first-child .xbox-video-title { font-size: 15px; }
-  .xbox-video-meta { font-size: 11px; color: #c8a060; margin-bottom: 3px; }
-  .xbox-video-dur { display: inline-block; background: rgba(180,120,0,0.7); color: #ffe080; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 2px; }
-  .xbox-no-videos { padding: 40px 20px; text-align: center; color: rgba(255,255,255,0.4); font-size: 13px; }
+  .xbox-video-meta { font-size: 11px; color: rgba(255,255,255,0.7); margin-bottom: 3px; }
+  .xbox-video-dur { display: inline-block; background: rgba(0,0,0,0.35); color: #fff; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 3px; }
+  .xbox-no-videos { padding: 40px 20px; text-align: center; color: rgba(255,255,255,0.5); font-size: 13px; }
 </style>
 </head>
 <body>
@@ -2341,9 +2402,16 @@ function renderXboxDashboard(videos) {
 
   const activeColour = XBOX_COLOURS[xboxActiveChannel % XBOX_COLOURS.length];
 
+  // Apply colour to centre panel only — background stays grey
+  const _centre = document.querySelector('.xbox-centre');
+  if (_centre) {
+    _centre.style.background = activeColour.bg;
+    _centre.style.backgroundSize = '100% 100%';
+    _centre.style.transition = 'background 0.4s ease';
+  }
+  // Reset home screen to grey
   const _hs = document.getElementById('home-screen');
-  if (_hs) _hs.setAttribute('style', 'background:' + activeColour.bg + ';background-size:100% 100%;transition:background 0.4s ease;');
-  if (document.body.classList.contains('xbox-theme')) document.body.style.backgroundImage = 'none';
+  if (_hs) _hs.style.background = '';
 
   const leftEl = document.getElementById('xbox-left-tabs');
   const rightEl = document.getElementById('xbox-right-tabs');
