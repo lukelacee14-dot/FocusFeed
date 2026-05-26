@@ -764,94 +764,200 @@
   /* ── TOY SHELF FLOATING WIDGET ── */
   .toy-window {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: min(600px, calc(100vw - 28px)); max-height: min(680px, calc(100vh - 36px));
-    background: #2a1a0e;
-    border: 3px solid #1a0f06;
+    width: min(620px, calc(100vw - 28px)); max-height: min(700px, calc(100vh - 36px));
+    background: #1e1208;
+    border: 3px solid #0e0804;
     border-radius: 14px;
-    box-shadow: 0 24px 70px rgba(0,0,0,0.75), 0 4px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+    box-shadow: 0 28px 80px rgba(0,0,0,0.8), 0 6px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
     z-index: 1500; overflow: hidden;
     display: none; flex-direction: column;
   }
-  .toy-window.visible { display: flex; animation: shelfAppear 0.3s cubic-bezier(0.34,1.56,0.64,1); }
-  @keyframes shelfAppear { from { opacity:0; transform: translate(-50%,-50%) scale(0.93); } to { opacity:1; transform: translate(-50%,-50%) scale(1); } }
+  .toy-window.visible { display: flex; animation: shelfAppear 0.32s cubic-bezier(0.34,1.46,0.64,1); }
+  @keyframes shelfAppear { from { opacity:0; transform:translate(-50%,-50%) scale(0.91) translateY(10px); } to { opacity:1; transform:translate(-50%,-50%) scale(1) translateY(0); } }
+
   .toy-window-header {
     display: flex; align-items: center; gap: 10px;
-    padding: 10px 14px; cursor: move; user-select: none;
-    background: linear-gradient(180deg, #3d2410 0%, #2a1a0e 100%);
-    border-bottom: 2px solid #1a0f06; flex-shrink: 0;
+    padding: 10px 14px; cursor: move; user-select: none; flex-shrink: 0;
+    background: linear-gradient(180deg, #2e1a0a 0%, #1e1208 100%);
+    border-bottom: 2px solid #0e0804;
   }
-  .toy-window-title { flex:1; font-family:'DM Serif Display',serif; font-size:16px; color:#f4d4a0; }
-  .toy-window-subtitle { font-size:11px; color:#a07850; margin-top:1px; }
+  .toy-window-title { flex:1; font-family:'DM Serif Display',serif; font-size:16px; color:#f0c882; }
+  .toy-window-subtitle { font-size:11px; color:#8a6030; margin-top:1px; }
   .toy-window-btn {
-    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-    color: #c09060; border-radius: 6px; font-family:'DM Sans',sans-serif;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.13);
+    color: #a07840; border-radius: 6px; font-family:'DM Sans',sans-serif;
     font-size: 12px; padding: 5px 9px; cursor: pointer; transition: background 0.15s, color 0.15s;
   }
-  .toy-window-btn:hover { background: rgba(255,255,255,0.16); color: #f4d4a0; }
+  .toy-window-btn:hover { background: rgba(255,255,255,0.14); color: #f0c882; }
   .toy-window-body { overflow-y: auto; overflow-x: hidden; flex: 1; min-height: 0; }
 
-  /* ── SHELF UNIT ── */
-  .shelf-unit {
+  /* ── SHELF ROOM ── */
+  .shelf-room {
     position: relative;
-    padding: 16px 12px 4px;
+    padding: 0;
+    overflow: hidden;
     background:
-      radial-gradient(ellipse at 25% 30%, rgba(220,180,120,0.22) 0%, transparent 55%),
-      radial-gradient(ellipse at 75% 70%, rgba(160,110,50,0.18) 0%, transparent 55%),
-      linear-gradient(145deg, #d4aa78 0%, #c49858 20%, #aa8040 45%, #906830 70%, #c8a060 100%);
+      /* ceiling shadow */
+      linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 18%),
+      /* floor shadow */
+      linear-gradient(0deg, rgba(0,0,0,0.2) 0%, transparent 12%),
+      /* ambient light from left */
+      radial-gradient(ellipse at 15% 40%, rgba(255,220,140,0.18) 0%, transparent 55%),
+      /* wall base colour — warm cream like a bedroom */
+      linear-gradient(160deg, #f5e8cc 0%, #ecdbb8 40%, #e2cfa0 70%, #d8c490 100%);
   }
-  .shelf-wall-texture {
-    position: absolute; inset: 0; pointer-events: none;
-    background: repeating-linear-gradient(0deg, transparent 0px, transparent 22px, rgba(0,0,0,0.035) 22px, rgba(0,0,0,0.035) 23px),
-                repeating-linear-gradient(90deg, transparent 0px, transparent 80px, rgba(255,255,255,0.02) 80px, rgba(255,255,255,0.02) 81px);
+
+  /* Subtle wallpaper/paint texture */
+  .shelf-room::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0,0,0,0.015) 3px, rgba(0,0,0,0.015) 4px),
+      repeating-linear-gradient(90deg, transparent 0, transparent 60px, rgba(0,0,0,0.012) 60px, rgba(0,0,0,0.012) 61px);
   }
-  .shelf-row { position: relative; padding-bottom: 22px; }
+
+  /* Subtle shadow on wall behind each shelf (recessed look) */
+  .shelf-section {
+    position: relative; z-index: 1;
+    padding: 24px 20px 0;
+  }
+  .shelf-section:first-child { padding-top: 28px; }
+  .shelf-section:last-child { padding-bottom: 20px; }
+
+  /* Bracket on each side of shelf */
+  .shelf-with-brackets {
+    position: relative;
+  }
+  .shelf-bracket {
+    position: absolute;
+    bottom: 0;
+    width: 16px;
+    background: linear-gradient(135deg, #5a3a1a 0%, #3a2208 50%, #2a1806 100%);
+    box-shadow: inset -1px 0 0 rgba(255,255,255,0.08), 2px 2px 6px rgba(0,0,0,0.5);
+    border-radius: 2px 2px 0 0;
+    z-index: 5;
+  }
+  .shelf-bracket.left {
+    left: 0;
+    height: 54px;
+    clip-path: polygon(0 0, 100% 30%, 100% 100%, 0 100%);
+  }
+  .shelf-bracket.right {
+    right: 0;
+    height: 54px;
+    clip-path: polygon(0 30%, 100% 0, 100% 100%, 0 100%);
+  }
+  /* Bracket screw detail */
+  .shelf-bracket::after {
+    content: '•';
+    position: absolute;
+    top: 6px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 6px;
+    color: rgba(255,255,255,0.2);
+  }
+
+  /* Toys area */
   .shelf-toys {
-    display: flex; align-items: flex-end;
-    padding: 0 4px; min-height: 90px; position: relative; z-index: 2;
-    flex-wrap: nowrap;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 20px;
+    min-height: 96px;
+    position: relative; z-index: 2;
   }
+
+  /* The wooden plank */
   .shelf-plank {
-    height: 16px;
-    background: linear-gradient(180deg, #7a4e28 0%, #5c3618 40%, #3e2208 70%, #2e1806 100%);
-    border-radius: 1px;
-    position: relative; z-index: 3;
-    box-shadow: 0 5px 14px rgba(0,0,0,0.55), 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.4);
+    position: relative; z-index: 4;
+    height: 18px;
+    margin: 0 0;
+    background: linear-gradient(180deg,
+      #8b5e2a 0%, #7a4e20 15%, #6a4018 35%,
+      #5a3210 55%, #4a2808 75%, #3a1e06 90%, #2e1604 100%
+    );
+    box-shadow:
+      0 6px 18px rgba(0,0,0,0.65),
+      0 2px 5px rgba(0,0,0,0.5),
+      inset 0 2px 0 rgba(255,255,255,0.16),
+      inset 0 1px 0 rgba(255,200,100,0.1),
+      inset 0 -2px 0 rgba(0,0,0,0.5);
+    border-radius: 2px 2px 0 0;
   }
+  /* Wood grain */
   .shelf-plank::before {
-    content:''; position:absolute; inset:0; border-radius:inherit;
-    background: repeating-linear-gradient(90deg, transparent 0, transparent 22px, rgba(0,0,0,0.07) 22px, rgba(0,0,0,0.07) 23px, transparent 23px, transparent 50px, rgba(255,255,255,0.04) 50px, rgba(255,255,255,0.04) 51px);
+    content: ''; position: absolute; inset: 0; border-radius: inherit;
+    background:
+      repeating-linear-gradient(90deg,
+        transparent 0, transparent 14px,
+        rgba(0,0,0,0.06) 14px, rgba(0,0,0,0.06) 15px,
+        transparent 15px, transparent 32px,
+        rgba(255,255,255,0.04) 32px, rgba(255,255,255,0.04) 33px,
+        transparent 33px, transparent 55px,
+        rgba(0,0,0,0.04) 55px, rgba(0,0,0,0.04) 56px
+      );
   }
+  /* Front lip shadow */
   .shelf-plank::after {
-    content:''; position:absolute; bottom:-8px; left:0; right:0; height:8px;
-    background: linear-gradient(180deg, #1e0e04 0%, #140a02 100%);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.65);
+    content: ''; position: absolute;
+    bottom: -10px; left: 0; right: 0; height: 10px;
+    background: linear-gradient(180deg, #1a0c02 0%, #0e0804 60%, transparent 100%);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.7);
   }
+
+  /* Individual toy */
   .shelf-toy {
     display: flex; flex-direction: column; align-items: center;
     cursor: pointer; position: relative;
-    transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), filter 0.2s;
-    padding: 2px 4px 0; user-select: none; flex-shrink: 0;
+    transition: transform 0.24s cubic-bezier(0.34,1.56,0.64,1), filter 0.2s;
+    padding: 2px 3px 0; user-select: none; flex-shrink: 0;
   }
   .shelf-toy:hover {
-    transform: translateY(-12px) rotate(var(--toy-lean,0deg)) scale(1.1);
-    filter: drop-shadow(0 10px 14px rgba(0,0,0,0.6));
+    transform: translateY(-14px) rotate(var(--toy-lean,0deg)) scale(1.12);
+    filter: drop-shadow(0 12px 16px rgba(0,0,0,0.65)) brightness(1.05);
     z-index: 10;
   }
-  .shelf-toy:active { transform: translateY(-16px) rotate(var(--toy-lean,0deg)) scale(1.13); }
-  .shelf-toy-figure { font-size: var(--toy-size,36px); line-height:1; display:block; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.45)); }
-  .shelf-toy::after {
-    content:''; display:block; width:60%; height:4px;
-    background: rgba(0,0,0,0.22); border-radius:50%; margin-top:1px; filter:blur(2px);
-    transition: width 0.2s, opacity 0.2s;
+  .shelf-toy:active { transform: translateY(-18px) rotate(var(--toy-lean,0deg)) scale(1.15); }
+
+  .shelf-toy-img {
+    width: var(--toy-size, 44px);
+    height: var(--toy-size, 44px);
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));
   }
-  .shelf-toy:hover::after { width:80%; opacity:0.35; }
+  .shelf-toy-figure {
+    font-size: var(--toy-size, 40px);
+    line-height: 1; display: block;
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.45));
+  }
+
+  /* Shadow puddle under toy */
+  .shelf-toy-shadow {
+    width: 65%; height: 5px;
+    background: radial-gradient(ellipse, rgba(0,0,0,0.35) 0%, transparent 70%);
+    margin-top: 1px;
+    transition: width 0.22s, opacity 0.22s;
+    border-radius: 50%;
+  }
+  .shelf-toy:hover .shelf-toy-shadow { width: 85%; opacity: 0.4; }
+
+  /* Tooltip label */
   .shelf-toy-label {
-    position:absolute; bottom:calc(100% + 5px); left:50%; transform:translateX(-50%);
-    background:rgba(15,8,2,0.93); color:#f4d4a0; font-size:10px; white-space:nowrap;
-    padding:3px 7px; border-radius:4px; pointer-events:none; opacity:0;
-    transition:opacity 0.15s; border:1px solid rgba(255,255,255,0.12); z-index:20;
+    position: absolute; bottom: calc(100% + 6px);
+    left: 50%; transform: translateX(-50%);
+    background: rgba(10,5,2,0.93); color: #f0c882;
+    font-size: 10px; white-space: nowrap; padding: 3px 8px;
+    border-radius: 4px; pointer-events: none; opacity: 0;
+    transition: opacity 0.15s; border: 1px solid rgba(255,200,80,0.15); z-index: 20;
+    font-family: 'DM Sans', sans-serif;
   }
-  .shelf-toy:hover .shelf-toy-label { opacity:1; }
+  .shelf-toy:hover .shelf-toy-label { opacity: 1; }
+
+  /* Room floor strip at bottom */
+  .shelf-room-floor {
+    height: 12px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 100%);
+  }
 
   .toy-shelf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .toy-card { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 12px; cursor: pointer; transition: transform 0.15s, border-color 0.15s, background 0.15s; min-height: 96px; display: flex; flex-direction: column; gap: 7px; }
@@ -872,12 +978,128 @@
   .slime-jar.jiggle { animation: toyJiggle 0.35s ease; }
   @keyframes toyJiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
 
-  .space-terrarium { width: 190px; height: 140px; border: 2px solid var(--border); border-radius: 22px; position: relative; overflow: hidden; background: radial-gradient(circle at 30% 20%, #354085, #101326 65%); }
-  .space-star { position:absolute; width:2px; height:2px; background:#fff; border-radius:50%; animation: twinkle 1.8s infinite alternate; }
-  @keyframes twinkle { from{opacity:.25} to{opacity:1} }
-  .space-buddy { position:absolute; bottom:24px; left:70px; font-size:42px; animation: buddyBreathe 2.4s ease-in-out infinite; cursor:pointer; }
-  @keyframes buddyBreathe { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-4px) scale(1.03)} }
-  .space-ground { position:absolute; bottom:0; left:0; right:0; height:36px; background:rgba(255,255,255,.12); border-radius:50% 50% 0 0; }
+  /* ── SPACE DOG TOY ── */
+  .space-scene {
+    width: 100%; height: 340px; position: relative; overflow: hidden;
+    background: radial-gradient(ellipse at 50% 0%, #1a2a6c 0%, #0a0e2a 45%, #050810 100%);
+  }
+  /* Stars layer */
+  .space-star { position:absolute; border-radius:50%; background:#fff; animation: twinkle 1.8s infinite alternate; }
+  @keyframes twinkle { from{opacity:.15} to{opacity:1} }
+  /* Earth in background */
+  .space-earth {
+    position: absolute; top: 20px; right: 30px;
+    width: 70px; height: 70px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #4a9eff 0%, #1a6fd4 40%, #0d4a9a 70%, #08306e 100%);
+    box-shadow: 0 0 20px rgba(74,158,255,0.4), 0 0 40px rgba(74,158,255,0.15), inset -8px -4px 0 rgba(0,0,0,0.3);
+    animation: earthGlow 4s ease-in-out infinite alternate;
+  }
+  .space-earth::after {
+    content:''; position:absolute; inset:0; border-radius:50%;
+    background: radial-gradient(ellipse at 30% 25%, rgba(255,255,255,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 60% 60%, rgba(34,139,34,0.4) 0%, transparent 40%),
+                radial-gradient(ellipse at 20% 70%, rgba(34,139,34,0.3) 0%, transparent 30%);
+  }
+  @keyframes earthGlow { from{box-shadow:0 0 20px rgba(74,158,255,0.4),0 0 40px rgba(74,158,255,0.15),inset -8px -4px 0 rgba(0,0,0,0.3)} to{box-shadow:0 0 30px rgba(74,158,255,0.6),0 0 60px rgba(74,158,255,0.25),inset -8px -4px 0 rgba(0,0,0,0.3)} }
+  /* Moon surface */
+  .space-moon-surface {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 90px;
+    background: radial-gradient(ellipse at 50% 100%, #c8c0a8 0%, #b0a88a 40%, #9a9070 100%);
+    border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+  }
+  .space-moon-surface::before {
+    content:''; position:absolute; inset:0; border-radius:inherit;
+    background: radial-gradient(ellipse at 30% 60%, rgba(0,0,0,0.15) 0%, transparent 40%),
+                radial-gradient(ellipse at 70% 40%, rgba(0,0,0,0.1) 0%, transparent 30%),
+                radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.08) 0%, transparent 25%);
+  }
+  /* Craters */
+  .space-crater {
+    position: absolute; border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, rgba(0,0,0,0.2), rgba(0,0,0,0.05));
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  /* Dog container */
+  .space-dog-container {
+    position: absolute; bottom: 68px;
+    transition: left 0.05s linear;
+    cursor: pointer;
+  }
+  .space-dog-img {
+    width: 160px; height: auto;
+    display: block;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.6));
+    transition: transform 0.3s ease;
+  }
+  /* Sleeping - gentle breathing */
+  .space-dog-img.state-sleep {
+    animation: dogBreathe 3.2s ease-in-out infinite;
+  }
+  @keyframes dogBreathe {
+    0%,100% { transform: scale(1) translateY(0); }
+    50% { transform: scale(1.03) translateY(-3px); }
+  }
+  /* Sitting - subtle tail wag bob */
+  .space-dog-img.state-sit {
+    animation: dogSitBob 2s ease-in-out infinite;
+  }
+  @keyframes dogSitBob {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  /* Wag - faster bounce */
+  .space-dog-img.state-wag {
+    animation: dogWagBounce 0.4s ease-in-out infinite;
+  }
+  @keyframes dogWagBounce {
+    0%,100% { transform: rotate(-2deg) translateY(0); }
+    50% { transform: rotate(2deg) translateY(-6px); }
+  }
+  /* Bark - forward lunge */
+  .space-dog-img.state-bark {
+    animation: dogBark 0.35s ease-in-out infinite;
+  }
+  @keyframes dogBark {
+    0%,100% { transform: translateX(0) rotate(0deg); }
+    50% { transform: translateX(8px) rotate(3deg); }
+  }
+  /* Running - horizontal slide handled by JS, image just bounces */
+  .space-dog-img.state-run {
+    animation: dogRunBounce 0.25s ease-in-out infinite;
+  }
+  @keyframes dogRunBounce {
+    0%,100% { transform: translateY(0) scaleY(1); }
+    50% { transform: translateY(-8px) scaleY(0.95); }
+  }
+  /* Speech bubble */
+  .space-speech {
+    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    background: rgba(255,255,255,0.95); color: #333;
+    font-size: 12px; font-family: 'DM Sans',sans-serif;
+    padding: 6px 10px; border-radius: 10px; white-space: nowrap;
+    opacity: 0; transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .space-speech::after {
+    content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    border: 6px solid transparent; border-top-color: rgba(255,255,255,0.95);
+  }
+  .space-speech.visible { opacity: 1; }
+  /* Action bar */
+  .space-actions {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    display: flex; justify-content: center; gap: 8px;
+    padding: 10px; background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(6px);
+  }
+  .space-btn {
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    color: #e0d0ff; font-family: 'DM Sans',sans-serif; font-size: 11px;
+    padding: 6px 12px; border-radius: 20px; cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .space-btn:hover { background: rgba(255,255,255,0.22); transform: translateY(-1px); }
+  .space-btn:active { transform: translateY(0); }
 
   .bubble-grid { display:grid; grid-template-columns:repeat(6,34px); gap:8px; }
   .bubble { width:34px; height:34px; border-radius:50%; border:1px solid rgba(255,255,255,.4); background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.9), rgba(107,127,255,.35) 45%, rgba(107,127,255,.12)); cursor:pointer; box-shadow: inset -4px -4px 10px rgba(0,0,0,.2); }
@@ -1491,9 +1713,9 @@
 <!-- TOY SHELF FLOATING WINDOW -->
 <div id="toy-shelf-window" class="toy-window" aria-hidden="true">
   <div class="toy-window-header" id="toy-shelf-drag-handle">
-    <div style="flex:1">
+    <div>
       <div class="toy-window-title" id="toy-shelf-title">Toy Shelf</div>
-      <div class="toy-window-subtitle" id="toy-shelf-subtitle">pick something up</div>
+      <div class="toy-window-subtitle" id="toy-shelf-subtitle">little digital desk toys</div>
     </div>
     <button class="toy-window-btn" id="toy-shelf-back" style="display:none">← Shelf</button>
     <button class="toy-window-btn" id="toy-shelf-close" aria-label="Close toy shelf">×</button>
@@ -1705,7 +1927,7 @@ function renderSidebar() {
   list.querySelectorAll('.sidebar-channel').forEach(card => {
     card.addEventListener('click', e => {
       if (e.target.closest('.sidebar-ch-remove')) return;
-      // sidebar is display/reorder only
+      openChannel(parseInt(card.dataset.index));
     });
   });
   list.querySelectorAll('.sidebar-ch-remove').forEach(btn => {
@@ -1818,8 +2040,9 @@ function displayFeed(videos) {
     const chVideos = grouped[chId]; if (!chVideos || chVideos.length === 0) return;
     const ch = channels.find(c => c.id === chId); if (!ch) return;
     const section = document.createElement('div'); section.className = 'feed-channel-section';
-    section.innerHTML = `<div class="feed-channel-header" data-channel-index="${channels.indexOf(ch)}">${ch.thumb?`<img src="${ch.thumb}" class="feed-ch-avatar" alt="">`:`<div class="feed-ch-avatar-placeholder">${ch.name[0]}</div>`}<span class="feed-ch-title">${esc(ch.name)}</span></div><div class="feed-channel-row">${chVideos.map((v,i)=>`<div class="feed-tile" data-ch="${chId}" data-vi="${i}"><div class="tile-thumb-wrap"><img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy"><div class="tile-duration">${fmtDur(v.duration)}</div><div class="tile-play"><div class="tile-play-icon"></div></div></div><div class="tile-title">${esc(v.title)}</div><div class="tile-meta">${fmtDate(v.published)}${v.views>0?' · '+fmtViews(v.views)+' views':''}</div></div>`).join('')}</div>`;
+    section.innerHTML = `<div class="feed-channel-header" data-channel-index="${channels.indexOf(ch)}">${ch.thumb?`<img src="${ch.thumb}" class="feed-ch-avatar" alt="">`:`<div class="feed-ch-avatar-placeholder">${ch.name[0]}</div>`}<span class="feed-ch-title">${esc(ch.name)}</span><span class="feed-ch-arrow">→</span></div><div class="feed-channel-row">${chVideos.map((v,i)=>`<div class="feed-tile" data-ch="${chId}" data-vi="${i}"><div class="tile-thumb-wrap"><img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy"><div class="tile-duration">${fmtDur(v.duration)}</div><div class="tile-play"><div class="tile-play-icon"></div></div></div><div class="tile-title">${esc(v.title)}</div><div class="tile-meta">${fmtDate(v.published)}${v.views>0?' · '+fmtViews(v.views)+' views':''}</div></div>`).join('')}</div>`;
     container.appendChild(section);
+    section.querySelector('.feed-channel-header').addEventListener('click',function(){openChannel(parseInt(this.dataset.channelIndex));});
     section.querySelectorAll('.feed-tile').forEach(tile=>{tile.addEventListener('click',()=>{const v=grouped[tile.dataset.ch][parseInt(tile.dataset.vi)];playSearchResult(v);document.getElementById('player-back-btn').onclick=()=>{stopPlayer();showHome();};document.getElementById('done-back-btn').onclick=()=>{stopPlayer();showHome();};});});
   });
   // Xbox 360 dashboard mode
@@ -2704,57 +2927,59 @@ function renderToyShelfMenu() {
   toyEl('toy-shelf-subtitle').textContent = 'pick something up';
   toyEl('toy-shelf-back').style.display = 'none';
 
-  // Each toy: id, emoji, size, lean (slight rotation), label
+  // Toys with personality data — size, lean, vertical offset for natural placement
   const shelfToys = [
-    { id:'slime',    fig:'🧪', size:40, lean:-4,  label:'Slime Jar' },
-    { id:'space',    fig:'🐶', size:38, lean:3,   label:'Space Buddy' },
-    { id:'bubble',   fig:'🫧', size:44, lean:-2,  label:'Bubble Wrap' },
-    { id:'lava',     fig:'🪔', size:42, lean:5,   label:'Lava Lamp' },
-    { id:'gravity',  fig:'🔮', size:36, lean:-3,  label:'Gravity Balls' },
-    { id:'cradle',   fig:'⚙️', size:38, lean:2,   label:'Newton\'s Cradle' },
-    { id:'shredder', fig:'📝', size:36, lean:-5,  label:'Note Shredder' },
-    { id:'clouds',   fig:'⛅', size:44, lean:3,   label:'Cloud Pusher' },
-    { id:'aquarium', fig:'🐠', size:40, lean:-2,  label:'Mini Aquarium' },
-    { id:'marble',   fig:'🟠', size:34, lean:4,   label:'Marble Run' },
-    { id:'ducks',    fig:'🦆', size:38, lean:-4,  label:'Duck Pond' },
-    { id:'blob',     fig:'🫧', size:42, lean:2,   label:'Breathing Blob' },
-    { id:'plant',    fig:'🪴', size:44, lean:-3,  label:'Desk Plant' },
-    { id:'coin',     fig:'🪙', size:36, lean:5,   label:'Coin Spinner' },
+    { id:'slime',    fig:'🧪', size:42, lean:-5,  yOff:0,  label:'Slime Jar' },
+    { id:'space',    fig:'<img src="images/corgi.png" class="shelf-toy-img" style="width:44px;height:44px;object-fit:contain">', size:40, lean:4,   yOff:4,  label:'Space Buddy' },
+    { id:'bubble',   fig:'🫧', size:46, lean:-2,  yOff:-2, label:'Bubble Wrap' },
+    { id:'lava',     fig:'<img src="images/laval_lamp.png" class="shelf-toy-img" style="width:36px;height:56px;object-fit:contain">', size:44, lean:6,   yOff:0,  label:'Lava Lamp' },
+    { id:'gravity',  fig:'🔮', size:38, lean:-4,  yOff:2,  label:'Gravity Balls' },
+    { id:'cradle',   fig:'<img src="images/newton_cradle.png" class="shelf-toy-img" style="width:52px;height:44px;object-fit:contain">', size:38, lean:3,   yOff:0,  label:'Newton\'s Cradle' },
+    { id:'shredder', fig:'📋', size:36, lean:-6,  yOff:3,  label:'Note Shredder' },
+    { id:'clouds',   fig:'⛅', size:46, lean:4,   yOff:-4, label:'Cloud Pusher' },
+    { id:'aquarium', fig:'🐠', size:42, lean:-3,  yOff:0,  label:'Mini Aquarium' },
+    { id:'marble',   fig:'🟠', size:36, lean:5,   yOff:2,  label:'Marble Run' },
+    { id:'ducks',    fig:'🦆', size:40, lean:-4,  yOff:0,  label:'Duck Pond' },
+    { id:'blob',     fig:'🫧', size:44, lean:3,   yOff:-2, label:'Breathing Blob' },
+    { id:'plant',    fig:'🪴', size:48, lean:-3,  yOff:0,  label:'Desk Plant' },
+    { id:'coin',     fig:'🪙', size:36, lean:6,   yOff:4,  label:'Coin Spinner' },
   ];
 
-  // Split into two shelves, roughly 7 each, shuffled slightly for natural feel
-  // Offset heights to make them feel hand-placed
-  const offsets = [-4,6,-2,8,-6,4,0,-5,7,-3,5,-7,2,-4];
-  const shelf1 = shelfToys.slice(0, 7);
-  const shelf2 = shelfToys.slice(7);
-
-  function makeToy(t, i) {
-    const offset = offsets[i % offsets.length];
+  function makeToy(t) {
+    const figContent = t.fig.startsWith('<') 
+      ? t.fig  // already HTML (img tag)
+      : `<span class="shelf-toy-figure" style="font-size:${t.size}px">${t.fig}</span>`;
     return `<div class="shelf-toy" data-toy="${t.id}"
-      style="--toy-size:${t.size}px; --toy-lean:${t.lean}deg; margin-bottom:${Math.max(0,offset)}px; margin-top:${Math.max(0,-offset)}px"
-      role="button" tabindex="0" title="${t.label}">
-      <span class="shelf-toy-figure">${t.fig}</span>
+      style="--toy-size:${t.size}px;--toy-lean:${t.lean}deg;margin-bottom:${Math.max(0,t.yOff)}px;margin-top:${Math.max(0,-t.yOff)}px"
+      role="button" tabindex="0">
+      ${figContent}
+      <div class="shelf-toy-shadow"></div>
       <span class="shelf-toy-label">${t.label}</span>
     </div>`;
   }
 
-  function makeShelf(toys, startIdx) {
-    return `<div class="shelf-row">
-      <div class="shelf-toys">${toys.map((t,i) => makeToy(t, startIdx+i)).join('')}</div>
-      <div class="shelf-plank"></div>
+  function makeShelf(toys) {
+    return `
+    <div class="shelf-section">
+      <div class="shelf-with-brackets">
+        <div class="shelf-bracket left"></div>
+        <div class="shelf-bracket right"></div>
+        <div class="shelf-toys">${toys.map(makeToy).join('')}</div>
+        <div class="shelf-plank"></div>
+      </div>
     </div>`;
   }
 
   toyEl('toy-shelf-body').innerHTML = `
-    <div class="shelf-unit">
-      <div class="shelf-wall-texture"></div>
-      ${makeShelf(shelf1, 0)}
-      ${makeShelf(shelf2, 7)}
+    <div class="shelf-room">
+      ${makeShelf(shelfToys.slice(0, 7))}
+      ${makeShelf(shelfToys.slice(7))}
+      <div class="shelf-room-floor"></div>
     </div>`;
 
   toyEl('toy-shelf-body').querySelectorAll('.shelf-toy').forEach(toy => {
     toy.addEventListener('click', () => renderToy(toy.dataset.toy));
-    toy.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') renderToy(toy.dataset.toy); });
+    toy.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') renderToy(toy.dataset.toy); });
   });
 }
 function renderToy(id) {
@@ -2766,7 +2991,25 @@ function renderToy(id) {
   const body = toyEl('toy-shelf-body');
   const views = {
     slime: `<div class="toy-stage"><div class="slime-jar" id="slime-jar"><div class="slime-fill" id="slime-fill"></div></div><div class="toy-help">The jar slowly fills itself. Click the jar to jiggle it, or empty it when full.</div><div class="toy-action-row"><button class="toy-action" id="slime-empty">Empty jar</button><button class="toy-action" id="slime-drop">Drop blob</button></div></div>`,
-    space: `<div class="toy-stage"><div class="space-terrarium" id="space-terrarium"><div class="space-ground"></div><div class="space-buddy" id="space-buddy">🐶</div></div><div class="toy-help">Click your space buddy to give it a tiny zero-gravity bounce.</div></div>`,
+    space: `<div class="space-scene" id="space-scene">
+      <!-- Stars added by JS -->
+      <div class="space-earth"></div>
+      <div class="space-moon-surface">
+        <div class="space-crater" style="width:22px;height:22px;left:15%;top:40%"></div>
+        <div class="space-crater" style="width:14px;height:14px;left:55%;top:55%"></div>
+        <div class="space-crater" style="width:18px;height:18px;left:75%;top:35%"></div>
+      </div>
+      <div class="space-dog-container" id="space-dog-wrap" style="left:120px">
+        <div class="space-speech" id="space-speech"></div>
+        <img class="space-dog-img state-sleep" id="space-dog-img" src="images/dog_sleeping.png" alt="Space Buddy">
+      </div>
+      <div class="space-actions">
+        <button class="space-btn" id="space-btn-wake">👋 Wake up</button>
+        <button class="space-btn" id="space-btn-play">🎾 Play</button>
+        <button class="space-btn" id="space-btn-run">🏃 Run!</button>
+        <button class="space-btn" id="space-btn-bark">🔊 Bark</button>
+      </div>
+    </div>`,
     bubble: `<div class="toy-stage"><div class="bubble-grid" id="bubble-grid"></div><div class="toy-action-row"><button class="toy-action" id="bubble-reset">Regenerate bubbles</button></div></div>`,
     zen: `<div class="toy-stage"><div class="zen-tray" id="zen-tray"><div class="zen-rake"></div></div><div class="toy-help">Drag or click across the tray to leave little sand marks.</div><div class="toy-action-row"><button class="toy-action" id="zen-smooth">Smooth sand</button></div></div>`,
     lava: `<div class="toy-stage"><div class="lava-lamp" id="lava-lamp"></div><div class="toy-action-row"><button class="toy-action" id="lava-shake">Shake lamp</button></div></div>`,
@@ -2795,9 +3038,130 @@ function initToy(id) {
     toyShelfTimers.push(setInterval(drop, 5000));
   }
   if (id === 'space') {
-    const terrarium = toyEl('space-terrarium');
-    for (let i=0;i<18;i++){ const st=document.createElement('div'); st.className='space-star'; st.style.left=Math.random()*180+'px'; st.style.top=Math.random()*82+'px'; st.style.animationDelay=Math.random()*1.8+'s'; terrarium.appendChild(st); }
-    toyEl('space-buddy').onclick = e => { e.currentTarget.animate([{transform:'translateY(0) scale(1)'},{transform:'translateY(-28px) scale(1.1)'},{transform:'translateY(0) scale(1)'}],{duration:520,easing:'ease-out'}); };
+    const scene = toyEl('space-scene');
+    const img = toyEl('space-dog-img');
+    const speech = toyEl('space-speech');
+    const wrap = toyEl('space-dog-wrap');
+
+    // Add stars
+    for (let i = 0; i < 60; i++) {
+      const st = document.createElement('div');
+      st.className = 'space-star';
+      const size = Math.random() * 2.5 + 0.5;
+      st.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*65}%;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s`;
+      scene.insertBefore(st, scene.firstChild);
+    }
+
+    // Shooting star occasionally
+    function shootingStar() {
+      const s = document.createElement('div');
+      s.style.cssText = `position:absolute;top:${Math.random()*40}%;left:-40px;width:40px;height:2px;background:linear-gradient(90deg,transparent,#fff);border-radius:1px;animation:none;transition:none`;
+      scene.insertBefore(s, scene.firstChild);
+      s.animate([{transform:'translateX(0) translateY(0)',opacity:1},{transform:'translateX(500px) translateY(60px)',opacity:0}],{duration:600,easing:'linear'}).onfinish = () => s.remove();
+    }
+    toyShelfTimers.push(setInterval(shootingStar, 6000));
+
+    let dogState = 'sleep';
+    let runTimer = null;
+
+    function setDogState(state, imgSrc, speechText) {
+      dogState = state;
+      img.className = `space-dog-img state-${state}`;
+      img.src = imgSrc;
+      if (speechText) {
+        speech.textContent = speechText;
+        speech.classList.add('visible');
+        setTimeout(() => speech.classList.remove('visible'), 2500);
+      }
+    }
+
+    function stopRun() {
+      if (runTimer) { clearInterval(runTimer); runTimer = null; }
+    }
+
+    // Wake / sitting
+    toyEl('space-btn-wake').addEventListener('click', () => {
+      stopRun();
+      const isSleeping = dogState === 'sleep';
+      if (isSleeping) {
+        setDogState('sit', 'images/corgi.png', '!!');
+      } else {
+        setDogState('wag', 'images/tail_wag.png', '🐾');
+        setTimeout(() => {
+          if (dogState === 'wag') setDogState('sit', 'images/sitting_up.png', null);
+        }, 2000);
+      }
+    });
+
+    // Play — wag tail
+    toyEl('space-btn-play').addEventListener('click', () => {
+      stopRun();
+      setDogState('wag', 'images/tail_wag.png', '🎾 !!');
+      setTimeout(() => {
+        if (dogState === 'wag') setDogState('sit', 'images/corgi.png', null);
+      }, 2500);
+    });
+
+    // Run — zoom left off screen, come in from right
+    toyEl('space-btn-run').addEventListener('click', () => {
+      stopRun();
+      const sceneW = scene.offsetWidth;
+      let pos = parseInt(wrap.style.left) || 120;
+      setDogState('run', 'images/running_left.png', null);
+      img.style.transform = 'scaleX(1)';
+
+      runTimer = setInterval(() => {
+        pos -= 10;
+        if (pos < -180) {
+          // come in from right
+          pos = sceneW + 20;
+          img.src = 'images/runnin_in.png';
+          img.style.transform = 'scaleX(-1)'; // flip to face left
+        }
+        if (pos < sceneW * 0.4 && img.src.includes('runnin_in')) {
+          // slow down and stop
+          stopRun();
+          pos = Math.max(60, pos);
+          wrap.style.left = pos + 'px';
+          img.style.transform = '';
+          setDogState('sit', 'images/corgi.png', '😄');
+          return;
+        }
+        wrap.style.left = pos + 'px';
+      }, 30);
+      toyShelfTimers.push(runTimer);
+    });
+
+    // Bark
+    toyEl('space-btn-bark').addEventListener('click', () => {
+      stopRun();
+      setDogState('bark', 'images/barking.png', 'WOOF WOOF!');
+      setTimeout(() => {
+        if (dogState === 'bark') setDogState('sit', 'images/corgi.png', null);
+      }, 2000);
+    });
+
+    // Click dog directly
+    wrap.addEventListener('click', () => {
+      if (dogState === 'sleep') {
+        toyEl('space-btn-wake').click();
+      } else {
+        setDogState('wag', 'images/tail_wag.png', '🐾');
+        setTimeout(() => {
+          if (dogState === 'wag') setDogState('sit', 'images/corgi.png', null);
+        }, 2000);
+      }
+    });
+
+    // Also swap shelf icon to use real image
+    const shelfIcon = document.querySelector('.shelf-toy[data-toy="space"] .shelf-toy-figure');
+    if (shelfIcon) {
+      const shelfImg = document.createElement('img');
+      shelfImg.src = 'images/corgi.png';
+      shelfImg.className = 'shelf-toy-img';
+      shelfImg.style.cssText = '--toy-size:52px;width:52px;height:52px;object-fit:contain';
+      shelfIcon.replaceWith(shelfImg);
+    }
   }
   if (id === 'bubble') {
     const grid = toyEl('bubble-grid');
