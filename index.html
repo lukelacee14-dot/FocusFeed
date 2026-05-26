@@ -2891,7 +2891,10 @@ let toyWindowWasPositioned = false;
 
 function toyEl(id) { return document.getElementById(id); }
 function clearToyShelfTimers() {
-  toyShelfTimers.forEach(t => clearInterval(t));
+  toyShelfTimers.forEach(t => {
+    if (t && t._cancel) t._cancel();
+    else clearInterval(t);
+  });
   toyShelfTimers = [];
   if (toyGravityLoop) { cancelAnimationFrame(toyGravityLoop); toyGravityLoop = null; }
 }
@@ -2921,11 +2924,9 @@ function renderToyShelfMenu() {
   toyEl('toy-shelf-back').style.display = 'none';
 
   // Toys with personality data — size, lean, vertical offset for natural placement
-  // Just dog and Newton's cradle for now — correctly proportioned
-  // Dog plush is like a melon-sized toy, cradle is a desk object about half the height
+  // Just Newton's cradle on the shelf for now
   const shelfToys = [
-    { id:'space',  fig:'<img src="images/corgi.png" class="shelf-toy-img" style="width:110px;height:110px;object-fit:contain;display:block">', lean:2,  label:'Space Buddy' },
-    { id:'cradle', fig:'<img src="images/newton cradle.png" class="shelf-toy-img" style="width:130px;height:90px;object-fit:contain;display:block">', lean:-1, label:'Newton\'s Cradle' },
+    { id:'cradle', fig:'<img src="images/newton cradle.png" class="shelf-toy-img" style="width:140px;height:100px;object-fit:contain;display:block">', lean:-1, label:"Newton's Cradle" },
   ];
 
   function makeToy(t) {
@@ -2993,7 +2994,7 @@ function renderToy(id) {
     zen: `<div class="toy-stage"><div class="zen-tray" id="zen-tray"><div class="zen-rake"></div></div><div class="toy-help">Drag or click across the tray to leave little sand marks.</div><div class="toy-action-row"><button class="toy-action" id="zen-smooth">Smooth sand</button></div></div>`,
     lava: `<div class="toy-stage"><div class="lava-lamp" id="lava-lamp"></div><div class="toy-action-row"><button class="toy-action" id="lava-shake">Shake lamp</button></div></div>`,
     gravity: `<div class="toy-stage"><div class="gravity-box" id="gravity-box"></div><div class="toy-action-row"><button class="toy-action" id="gravity-add">Add ball</button><button class="toy-action" id="gravity-flip">Flip gravity</button></div></div>`,
-    cradle: `<div class="toy-stage"><div class="cradle">${[0,1,2,3,4].map(i=>`<div class="cradle-ball" style="left:${45+i*30}px"></div>`).join('')}</div><div class="toy-help">A tiny Newton’s cradle for background motion.</div></div>`,
+    cradle: `<div class="toy-stage" style="flex-direction:column;gap:12px"><canvas id="cradle-canvas" width="340" height="260" style="cursor:grab;border-radius:8px;display:block;background:#111"></canvas><div class="toy-help">Click and drag the left or right ball to pull it back, then release.</div></div>`,
     shredder: `<div class="toy-stage"><div class="shredder-wrap"><textarea class="shred-note" id="shred-note" placeholder="write a thought here..."></textarea><div class="shredder"><div class="shredder-slot"></div></div><button class="toy-action" id="shred-btn">Shred it</button><div class="shred-pile" id="shred-pile"></div></div></div>`,
     clouds: `<div class="toy-stage"><div class="cloud-box" id="cloud-box"><div class="cloud" style="top:25px;left:24px">☁️</div><div class="cloud" style="top:75px;left:130px;font-size:56px;animation-duration:9s">☁️</div><div class="cloud" style="top:105px;left:50px;font-size:36px;animation-duration:6s">☁️</div></div><div class="toy-help">Click clouds to nudge them across the sky.</div></div>`,
     aquarium: `<div class="toy-stage"><div class="aquarium"><div class="fish" style="top:45px">🐠</div><div class="fish">🐟</div><div class="aquarium-plant" style="left:14px">🌿</div><div class="aquarium-plant" style="right:12px">🌱</div></div><div class="toy-action-row"><button class="toy-action" id="fish-food">Drop food</button></div></div>`,
@@ -3146,6 +3147,210 @@ function initToy(id) {
     const grid = toyEl('bubble-grid');
     const make = () => { grid.innerHTML = Array.from({length:36},()=>'<button class="bubble" aria-label="bubble"></button>').join(''); grid.querySelectorAll('.bubble').forEach(b=>b.onclick=()=>b.classList.add('popped')); };
     make(); toyEl('bubble-reset').onclick = make;
+  }
+  if (id === 'cradle') {
+    const canvas = toyEl('cradle-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    // Cradle config
+    const N = 5;
+    const ballR = 22;
+    const ropeLen = 140;
+    const spacing = ballR * 2 + 2;
+    const pivotY = 60;
+    const pivotX0 = W/2 - (N-1)*spacing/2;
+
+    // Physics state — angle from vertical for each ball (radians)
+    const angles = new Array(N).fill(0);
+    const vels = new Array(N).fill(0);
+    const gravity = 0.004;
+    const damping = 0.9995;
+    const restitution = 0.97;
+
+    let dragging = -1;
+    let dragAngle = 0;
+    let lastTime = null;
+    let animId = null;
+
+    function ballCenter(i) {
+      const px = pivotX0 + i * spacing;
+      return {
+        x: px + Math.sin(angles[i]) * ropeLen,
+        y: pivotY + Math.cos(angles[i]) * ropeLen
+      };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Frame — top bar
+      const frameLeft = pivotX0 - 30;
+      const frameRight = pivotX0 + (N-1)*spacing + 30;
+
+      // Legs
+      ctx.strokeStyle = '#a08060';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      // Front legs
+      ctx.beginPath(); ctx.moveTo(frameLeft, pivotY); ctx.lineTo(frameLeft, H - 40); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(frameRight, pivotY); ctx.lineTo(frameRight, H - 40); ctx.stroke();
+      // Back legs (slightly behind)
+      ctx.strokeStyle = '#8a6a44';
+      ctx.beginPath(); ctx.moveTo(frameLeft+12, pivotY+8); ctx.lineTo(frameLeft+12, H-46); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(frameRight-12, pivotY+8); ctx.lineTo(frameRight-12, H-46); ctx.stroke();
+
+      // Base
+      ctx.strokeStyle = '#a08060';
+      ctx.lineWidth = 8;
+      ctx.beginPath(); ctx.moveTo(frameLeft-4, H-40); ctx.lineTo(frameRight+4, H-40); ctx.stroke();
+
+      // Top bar
+      const grad = ctx.createLinearGradient(0, pivotY-6, 0, pivotY+6);
+      grad.addColorStop(0, '#d0a870');
+      grad.addColorStop(0.5, '#c09050');
+      grad.addColorStop(1, '#8a6030');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(frameLeft-4, pivotY-6, frameRight-frameLeft+8, 12, 4);
+      ctx.fill();
+
+      // Ropes and balls
+      for (let i = 0; i < N; i++) {
+        const px = pivotX0 + i*spacing;
+        const bc = ballCenter(i);
+
+        // Rope (two strings)
+        ctx.strokeStyle = 'rgba(200,180,140,0.8)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(px-4, pivotY); ctx.lineTo(bc.x-4, bc.y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(px+4, pivotY); ctx.lineTo(bc.x+4, bc.y); ctx.stroke();
+
+        // Ball shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        ctx.beginPath();
+        ctx.ellipse(bc.x + 2, bc.y + ballR + 2, ballR*0.7, 4, 0, 0, Math.PI*2);
+        ctx.fill();
+
+        // Ball
+        const ballGrad = ctx.createRadialGradient(bc.x-6, bc.y-6, 2, bc.x, bc.y, ballR);
+        ballGrad.addColorStop(0, '#f0f0f0');
+        ballGrad.addColorStop(0.3, '#c8c8c8');
+        ballGrad.addColorStop(0.7, '#888');
+        ballGrad.addColorStop(1, '#555');
+        ctx.fillStyle = ballGrad;
+        ctx.beginPath();
+        ctx.arc(bc.x, bc.y, ballR, 0, Math.PI*2);
+        ctx.fill();
+
+        // Specular highlight
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.beginPath();
+        ctx.ellipse(bc.x-7, bc.y-7, 7, 5, -0.5, 0, Math.PI*2);
+        ctx.fill();
+      }
+    }
+
+    function physics(dt) {
+      for (let i = 0; i < N; i++) {
+        if (i === dragging) continue;
+        vels[i] += -gravity * Math.sin(angles[i]) * dt;
+        vels[i] *= Math.pow(damping, dt);
+        angles[i] += vels[i] * dt;
+      }
+
+      // Collision detection — transfer momentum between touching balls
+      // Simple: if ball swings through rest, check neighbours
+      for (let i = 0; i < N-1; i++) {
+        const ci = ballCenter(i);
+        const cj = ballCenter(i+1);
+        const dist = Math.hypot(ci.x-cj.x, ci.y-cj.y);
+        if (dist < ballR*2 - 1) {
+          // Transfer velocity
+          const vi = vels[i], vj = vels[i+1];
+          vels[i] = vj * restitution;
+          vels[i+1] = vi * restitution;
+        }
+      }
+    }
+
+    function loop(ts) {
+      if (!lastTime) lastTime = ts;
+      const dt = Math.min(ts - lastTime, 32);
+      lastTime = ts;
+      physics(dt);
+      draw();
+      animId = requestAnimationFrame(loop);
+    }
+
+    function getHitBall(mx, my) {
+      for (let i = 0; i < N; i++) {
+        const bc = ballCenter(i);
+        if (Math.hypot(mx-bc.x, my-bc.y) < ballR + 8) return i;
+      }
+      return -1;
+    }
+
+    function getAngleFromMouse(i, mx, my) {
+      const px = pivotX0 + i*spacing;
+      return Math.atan2(mx-px, my-pivotY);
+    }
+
+    canvas.addEventListener('mousedown', e => {
+      const r = canvas.getBoundingClientRect();
+      const mx = e.clientX-r.left, my = e.clientY-r.top;
+      const hit = getHitBall(mx, my);
+      if (hit === 0 || hit === N-1) {
+        dragging = hit;
+        vels[hit] = 0;
+        canvas.style.cursor = 'grabbing';
+      }
+    });
+
+    canvas.addEventListener('mousemove', e => {
+      if (dragging === -1) return;
+      const r = canvas.getBoundingClientRect();
+      const mx = e.clientX-r.left, my = e.clientY-r.top;
+      const a = getAngleFromMouse(dragging, mx, my);
+      angles[dragging] = Math.max(-Math.PI/2, Math.min(Math.PI/2, a));
+    });
+
+    canvas.addEventListener('mouseup', e => {
+      if (dragging === -1) return;
+      vels[dragging] = 0;
+      dragging = -1;
+      canvas.style.cursor = 'grab';
+    });
+
+    // Touch support
+    canvas.addEventListener('touchstart', e => {
+      e.preventDefault();
+      const r = canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      const mx = t.clientX-r.left, my = t.clientY-r.top;
+      const hit = getHitBall(mx, my);
+      if (hit === 0 || hit === N-1) { dragging = hit; vels[hit] = 0; }
+    }, {passive:false});
+
+    canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+      if (dragging === -1) return;
+      const r = canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      const mx = t.clientX-r.left, my = t.clientY-r.top;
+      const a = getAngleFromMouse(dragging, mx, my);
+      angles[dragging] = Math.max(-Math.PI/2, Math.min(Math.PI/2, a));
+    }, {passive:false});
+
+    canvas.addEventListener('touchend', e => {
+      vels[dragging] = 0; dragging = -1;
+    });
+
+    // Give left ball a little starting kick
+    angles[0] = -0.7;
+
+    animId = requestAnimationFrame(loop);
+    toyShelfTimers.push({ _cancel: () => cancelAnimationFrame(animId) });
   }
   if (id === 'zen') {
     const tray = toyEl('zen-tray'); let drawing = false;
