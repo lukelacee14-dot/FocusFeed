@@ -2932,9 +2932,9 @@ function renderToyShelfMenu() {
     { id:'slime',    fig:'🧪', size:42, lean:-5,  yOff:0,  label:'Slime Jar' },
     { id:'space',    fig:'<img src="images/corgi.png" class="shelf-toy-img" style="width:44px;height:44px;object-fit:contain">', size:40, lean:4,   yOff:4,  label:'Space Buddy' },
     { id:'bubble',   fig:'🫧', size:46, lean:-2,  yOff:-2, label:'Bubble Wrap' },
-    { id:'lava',     fig:'<img src="images/laval_lamp.png" class="shelf-toy-img" style="width:36px;height:56px;object-fit:contain">', size:44, lean:6,   yOff:0,  label:'Lava Lamp' },
+    { id:'lava',     fig:'<img src="images/laval lamp.png" class="shelf-toy-img" style="width:36px;height:56px;object-fit:contain">', size:44, lean:6,   yOff:0,  label:'Lava Lamp' },
     { id:'gravity',  fig:'🔮', size:38, lean:-4,  yOff:2,  label:'Gravity Balls' },
-    { id:'cradle',   fig:'<img src="images/newton_cradle.png" class="shelf-toy-img" style="width:52px;height:44px;object-fit:contain">', size:38, lean:3,   yOff:0,  label:'Newton\'s Cradle' },
+    { id:'cradle',   fig:'<img src="images/newton cradle.png" class="shelf-toy-img" style="width:52px;height:44px;object-fit:contain">', size:38, lean:3,   yOff:0,  label:'Newton\'s Cradle' },
     { id:'shredder', fig:'📋', size:36, lean:-6,  yOff:3,  label:'Note Shredder' },
     { id:'clouds',   fig:'⛅', size:46, lean:4,   yOff:-4, label:'Cloud Pusher' },
     { id:'aquarium', fig:'🐠', size:42, lean:-3,  yOff:0,  label:'Mini Aquarium' },
@@ -3001,7 +3001,7 @@ function renderToy(id) {
       </div>
       <div class="space-dog-container" id="space-dog-wrap" style="left:120px">
         <div class="space-speech" id="space-speech"></div>
-        <img class="space-dog-img state-sleep" id="space-dog-img" src="images/dog_sleeping.png" alt="Space Buddy">
+        <img class="space-dog-img state-sleep" id="space-dog-img" src="images/dog sleeping.png" alt="Space Buddy">
       </div>
       <div class="space-actions">
         <button class="space-btn" id="space-btn-wake">👋 Wake up</button>
@@ -3086,9 +3086,9 @@ function initToy(id) {
       if (isSleeping) {
         setDogState('sit', 'images/corgi.png', '!!');
       } else {
-        setDogState('wag', 'images/tail_wag.png', '🐾');
+        setDogState('wag', 'images/tail wag.png', '🐾');
         setTimeout(() => {
-          if (dogState === 'wag') setDogState('sit', 'images/sitting_up.png', null);
+          if (dogState === 'wag') setDogState('sit', 'images/sitting up.png', null);
         }, 2000);
       }
     });
@@ -3096,7 +3096,7 @@ function initToy(id) {
     // Play — wag tail
     toyEl('space-btn-play').addEventListener('click', () => {
       stopRun();
-      setDogState('wag', 'images/tail_wag.png', '🎾 !!');
+      setDogState('wag', 'images/tail wag.png', '🎾 !!');
       setTimeout(() => {
         if (dogState === 'wag') setDogState('sit', 'images/corgi.png', null);
       }, 2500);
@@ -3107,7 +3107,7 @@ function initToy(id) {
       stopRun();
       const sceneW = scene.offsetWidth;
       let pos = parseInt(wrap.style.left) || 120;
-      setDogState('run', 'images/running_left.png', null);
+      setDogState('run', 'images/running left.png', null);
       img.style.transform = 'scaleX(1)';
 
       runTimer = setInterval(() => {
@@ -3115,7 +3115,7 @@ function initToy(id) {
         if (pos < -180) {
           // come in from right
           pos = sceneW + 20;
-          img.src = 'images/runnin_in.png';
+          img.src = 'images/runnin in.png';
           img.style.transform = 'scaleX(-1)'; // flip to face left
         }
         if (pos < sceneW * 0.4 && img.src.includes('runnin_in')) {
@@ -3146,7 +3146,7 @@ function initToy(id) {
       if (dogState === 'sleep') {
         toyEl('space-btn-wake').click();
       } else {
-        setDogState('wag', 'images/tail_wag.png', '🐾');
+        setDogState('wag', 'images/tail wag.png', '🐾');
         setTimeout(() => {
           if (dogState === 'wag') setDogState('sit', 'images/corgi.png', null);
         }, 2000);
