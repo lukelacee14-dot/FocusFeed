@@ -3153,205 +3153,230 @@ function initToy(id) {
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
 
-    // Cradle config
     const N = 5;
-    const ballR = 22;
-    const ropeLen = 140;
+    const ballR = 20;
+    const ropeLen = 130;
     const spacing = ballR * 2 + 2;
-    const pivotY = 60;
+    const pivotY = 55;
     const pivotX0 = W/2 - (N-1)*spacing/2;
 
-    // Physics state — angle from vertical for each ball (radians)
+    // State: angle from vertical, angular velocity
     const angles = new Array(N).fill(0);
-    const vels = new Array(N).fill(0);
-    const gravity = 0.004;
-    const damping = 0.9995;
-    const restitution = 0.97;
+    const vels   = new Array(N).fill(0);
 
-    let dragging = -1;
-    let dragAngle = 0;
-    let lastTime = null;
-    let animId = null;
+    // Physics constants — tuned for realistic feel
+    const g        = 9.8;          // gravity (scaled)
+    const L        = ropeLen / 60; // rope length in physics units
+    const damping  = 0.9988;       // air resistance per frame
+    const loss     = 0.965;        // energy lost per collision
+
+    let dragging   = -1;
+    let animId     = null;
+    let lastTs     = null;
+    let running    = false;
 
     function ballCenter(i) {
-      const px = pivotX0 + i * spacing;
       return {
-        x: px + Math.sin(angles[i]) * ropeLen,
-        y: pivotY + Math.cos(angles[i]) * ropeLen
+        x: pivotX0 + i*spacing + Math.sin(angles[i]) * ropeLen,
+        y: pivotY  + Math.cos(angles[i]) * ropeLen
       };
     }
 
     function draw() {
       ctx.clearRect(0, 0, W, H);
 
-      // Frame — top bar
-      const frameLeft = pivotX0 - 30;
-      const frameRight = pivotX0 + (N-1)*spacing + 30;
+      const frameL = pivotX0 - 28;
+      const frameR = pivotX0 + (N-1)*spacing + 28;
 
-      // Legs
-      ctx.strokeStyle = '#a08060';
-      ctx.lineWidth = 6;
+      // Frame legs
       ctx.lineCap = 'round';
-      // Front legs
-      ctx.beginPath(); ctx.moveTo(frameLeft, pivotY); ctx.lineTo(frameLeft, H - 40); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(frameRight, pivotY); ctx.lineTo(frameRight, H - 40); ctx.stroke();
-      // Back legs (slightly behind)
-      ctx.strokeStyle = '#8a6a44';
-      ctx.beginPath(); ctx.moveTo(frameLeft+12, pivotY+8); ctx.lineTo(frameLeft+12, H-46); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(frameRight-12, pivotY+8); ctx.lineTo(frameRight-12, H-46); ctx.stroke();
+      [[frameL, frameL+10],[frameR, frameR-10]].forEach(([x1,x2]) => {
+        ctx.strokeStyle = '#8a6030'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.moveTo(x2, pivotY+6); ctx.lineTo(x2, H-38); ctx.stroke();
+        ctx.strokeStyle = '#a07840'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.moveTo(x1, pivotY); ctx.lineTo(x1, H-36); ctx.stroke();
+      });
 
-      // Base
-      ctx.strokeStyle = '#a08060';
-      ctx.lineWidth = 8;
-      ctx.beginPath(); ctx.moveTo(frameLeft-4, H-40); ctx.lineTo(frameRight+4, H-40); ctx.stroke();
+      // Base bar
+      ctx.strokeStyle = '#a07840'; ctx.lineWidth = 7;
+      ctx.beginPath(); ctx.moveTo(frameL-2, H-36); ctx.lineTo(frameR+2, H-36); ctx.stroke();
 
       // Top bar
-      const grad = ctx.createLinearGradient(0, pivotY-6, 0, pivotY+6);
-      grad.addColorStop(0, '#d0a870');
-      grad.addColorStop(0.5, '#c09050');
-      grad.addColorStop(1, '#8a6030');
-      ctx.fillStyle = grad;
+      const tg = ctx.createLinearGradient(0, pivotY-5, 0, pivotY+7);
+      tg.addColorStop(0, '#d4a860'); tg.addColorStop(0.5,'#b08040'); tg.addColorStop(1,'#806020');
+      ctx.fillStyle = tg;
       ctx.beginPath();
-      ctx.roundRect(frameLeft-4, pivotY-6, frameRight-frameLeft+8, 12, 4);
+      ctx.roundRect(frameL-2, pivotY-5, frameR-frameL+4, 12, 3);
       ctx.fill();
 
-      // Ropes and balls
+      // Ropes + balls
       for (let i = 0; i < N; i++) {
         const px = pivotX0 + i*spacing;
         const bc = ballCenter(i);
 
-        // Rope (two strings)
-        ctx.strokeStyle = 'rgba(200,180,140,0.8)';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.moveTo(px-4, pivotY); ctx.lineTo(bc.x-4, bc.y); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(px+4, pivotY); ctx.lineTo(bc.x+4, bc.y); ctx.stroke();
+        // Two strings
+        ctx.strokeStyle = 'rgba(210,190,150,0.75)'; ctx.lineWidth = 1.2;
+        [-3,3].forEach(ox => {
+          ctx.beginPath(); ctx.moveTo(px+ox, pivotY+6); ctx.lineTo(bc.x+ox, bc.y-ballR+2); ctx.stroke();
+        });
 
-        // Ball shadow
-        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        // Soft shadow on base
+        ctx.fillStyle = 'rgba(0,0,0,0.12)';
         ctx.beginPath();
-        ctx.ellipse(bc.x + 2, bc.y + ballR + 2, ballR*0.7, 4, 0, 0, Math.PI*2);
+        ctx.ellipse(bc.x+1, H-36, ballR*0.65, 3.5, 0, 0, Math.PI*2);
         ctx.fill();
 
         // Ball
-        const ballGrad = ctx.createRadialGradient(bc.x-6, bc.y-6, 2, bc.x, bc.y, ballR);
-        ballGrad.addColorStop(0, '#f0f0f0');
-        ballGrad.addColorStop(0.3, '#c8c8c8');
-        ballGrad.addColorStop(0.7, '#888');
-        ballGrad.addColorStop(1, '#555');
-        ctx.fillStyle = ballGrad;
-        ctx.beginPath();
-        ctx.arc(bc.x, bc.y, ballR, 0, Math.PI*2);
-        ctx.fill();
+        const bg = ctx.createRadialGradient(bc.x-6, bc.y-6, 1, bc.x, bc.y, ballR);
+        bg.addColorStop(0, '#f4f4f4');
+        bg.addColorStop(0.25,'#d8d8d8');
+        bg.addColorStop(0.6, '#a0a0a0');
+        bg.addColorStop(1,   '#505050');
+        ctx.fillStyle = bg;
+        ctx.beginPath(); ctx.arc(bc.x, bc.y, ballR, 0, Math.PI*2); ctx.fill();
 
-        // Specular highlight
-        ctx.fillStyle = 'rgba(255,255,255,0.6)';
-        ctx.beginPath();
-        ctx.ellipse(bc.x-7, bc.y-7, 7, 5, -0.5, 0, Math.PI*2);
-        ctx.fill();
-      }
-    }
+        // Highlight
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.beginPath(); ctx.ellipse(bc.x-6, bc.y-6, 6, 4, -0.4, 0, Math.PI*2); ctx.fill();
 
-    function physics(dt) {
-      for (let i = 0; i < N; i++) {
-        if (i === dragging) continue;
-        vels[i] += -gravity * Math.sin(angles[i]) * dt;
-        vels[i] *= Math.pow(damping, dt);
-        angles[i] += vels[i] * dt;
-      }
-
-      // Collision detection — transfer momentum between touching balls
-      // Simple: if ball swings through rest, check neighbours
-      for (let i = 0; i < N-1; i++) {
-        const ci = ballCenter(i);
-        const cj = ballCenter(i+1);
-        const dist = Math.hypot(ci.x-cj.x, ci.y-cj.y);
-        if (dist < ballR*2 - 1) {
-          // Transfer velocity
-          const vi = vels[i], vj = vels[i+1];
-          vels[i] = vj * restitution;
-          vels[i+1] = vi * restitution;
+        // Drag hint on outer balls when idle
+        if (!running && (i===0||i===N-1)) {
+          ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.arc(bc.x, bc.y, ballR+5, 0, Math.PI*2); ctx.stroke();
         }
       }
     }
 
-    function loop(ts) {
-      if (!lastTime) lastTime = ts;
-      const dt = Math.min(ts - lastTime, 32);
-      lastTime = ts;
-      physics(dt);
-      draw();
-      animId = requestAnimationFrame(loop);
+    function step(dt) {
+      // dt capped to avoid spiral on tab switch
+      const dtCapped = Math.min(dt, 20);
+      const steps = 4;
+      const subDt = dtCapped / steps;
+
+      for (let s = 0; s < steps; s++) {
+        // Pendulum acceleration for non-dragged balls
+        for (let i = 0; i < N; i++) {
+          if (i === dragging) continue;
+          const acc = -(g / L) * Math.sin(angles[i]);
+          vels[i]   += acc * subDt * 0.001;
+          vels[i]   *= damping;
+          angles[i] += vels[i] * subDt;
+        }
+
+        // Collision — detect when adjacent balls overlap
+        for (let i = 0; i < N-1; i++) {
+          const ci = ballCenter(i);
+          const cj = ballCenter(i+1);
+          const d  = Math.hypot(ci.x-cj.x, ci.y-cj.y);
+          if (d < ballR*2 - 0.5) {
+            // Exchange velocities with energy loss
+            const vi = vels[i], vj = vels[i+1];
+            vels[i]   = vj * loss;
+            vels[i+1] = vi * loss;
+          }
+        }
+      }
+
+      // Stop animation when everything is nearly at rest
+      const motion = vels.reduce((s,v) => s + Math.abs(v), 0);
+      if (motion < 0.00008 && dragging === -1) {
+        // Snap to rest
+        for (let i = 0; i < N; i++) { angles[i] = 0; vels[i] = 0; }
+        running = false;
+        draw();
+        return false; // stop loop
+      }
+      return true;
     }
 
-    function getHitBall(mx, my) {
-      for (let i = 0; i < N; i++) {
-        const bc = ballCenter(i);
-        if (Math.hypot(mx-bc.x, my-bc.y) < ballR + 8) return i;
+    function loop(ts) {
+      if (!lastTs) lastTs = ts;
+      const dt = ts - lastTs;
+      lastTs = ts;
+      const keepGoing = step(dt);
+      draw();
+      if (keepGoing || dragging !== -1) {
+        animId = requestAnimationFrame(loop);
+      } else {
+        animId = null;
+      }
+    }
+
+    function startLoop() {
+      if (!animId) { lastTs = null; animId = requestAnimationFrame(loop); }
+    }
+
+    function getHit(mx, my) {
+      // Only allow dragging outer balls
+      for (const i of [0, N-1]) {
+        if (Math.hypot(mx - ballCenter(i).x, my - ballCenter(i).y) < ballR+10) return i;
       }
       return -1;
     }
 
-    function getAngleFromMouse(i, mx, my) {
+    function angleFromMouse(i, mx, my) {
       const px = pivotX0 + i*spacing;
-      return Math.atan2(mx-px, my-pivotY);
+      const a = Math.atan2(mx-px, my-pivotY);
+      // Outer ball: left ball pulls left (negative), right ball pulls right (positive)
+      const maxAngle = Math.PI * 0.55;
+      return Math.max(-maxAngle, Math.min(maxAngle, a));
     }
 
     canvas.addEventListener('mousedown', e => {
       const r = canvas.getBoundingClientRect();
-      const mx = e.clientX-r.left, my = e.clientY-r.top;
-      const hit = getHitBall(mx, my);
-      if (hit === 0 || hit === N-1) {
-        dragging = hit;
-        vels[hit] = 0;
-        canvas.style.cursor = 'grabbing';
-      }
+      const hit = getHit(e.clientX-r.left, e.clientY-r.top);
+      if (hit === -1) return;
+      dragging = hit;
+      vels[hit] = 0;
+      canvas.style.cursor = 'grabbing';
+      startLoop();
     });
 
-    canvas.addEventListener('mousemove', e => {
+    window.addEventListener('mousemove', e => {
       if (dragging === -1) return;
       const r = canvas.getBoundingClientRect();
-      const mx = e.clientX-r.left, my = e.clientY-r.top;
-      const a = getAngleFromMouse(dragging, mx, my);
-      angles[dragging] = Math.max(-Math.PI/2, Math.min(Math.PI/2, a));
+      angles[dragging] = angleFromMouse(dragging, e.clientX-r.left, e.clientY-r.top);
+      draw();
     });
 
-    canvas.addEventListener('mouseup', e => {
+    window.addEventListener('mouseup', () => {
       if (dragging === -1) return;
-      vels[dragging] = 0;
+      running = true;
       dragging = -1;
       canvas.style.cursor = 'grab';
+      startLoop();
     });
 
-    // Touch support
     canvas.addEventListener('touchstart', e => {
       e.preventDefault();
       const r = canvas.getBoundingClientRect();
       const t = e.touches[0];
-      const mx = t.clientX-r.left, my = t.clientY-r.top;
-      const hit = getHitBall(mx, my);
-      if (hit === 0 || hit === N-1) { dragging = hit; vels[hit] = 0; }
+      const hit = getHit(t.clientX-r.left, t.clientY-r.top);
+      if (hit === -1) return;
+      dragging = hit; vels[hit] = 0;
+      startLoop();
     }, {passive:false});
 
-    canvas.addEventListener('touchmove', e => {
-      e.preventDefault();
+    window.addEventListener('touchmove', e => {
       if (dragging === -1) return;
       const r = canvas.getBoundingClientRect();
       const t = e.touches[0];
-      const mx = t.clientX-r.left, my = t.clientY-r.top;
-      const a = getAngleFromMouse(dragging, mx, my);
-      angles[dragging] = Math.max(-Math.PI/2, Math.min(Math.PI/2, a));
+      angles[dragging] = angleFromMouse(dragging, t.clientX-r.left, t.clientY-r.top);
+      draw();
     }, {passive:false});
 
-    canvas.addEventListener('touchend', e => {
-      vels[dragging] = 0; dragging = -1;
+    window.addEventListener('touchend', () => {
+      if (dragging === -1) return;
+      running = true; dragging = -1;
+      startLoop();
     });
 
-    // Give left ball a little starting kick
-    angles[0] = -0.7;
+    toyShelfTimers.push({ _cancel: () => { if (animId) cancelAnimationFrame(animId); animId = null; } });
 
-    animId = requestAnimationFrame(loop);
-    toyShelfTimers.push({ _cancel: () => cancelAnimationFrame(animId) });
+    // Draw idle state immediately
+    draw();
   }
+
   if (id === 'zen') {
     const tray = toyEl('zen-tray'); let drawing = false;
     const dot = e => { const r=tray.getBoundingClientRect(); const d=document.createElement('div'); d.className='zen-dot'; d.style.left=(e.clientX-r.left-3)+'px'; d.style.top=(e.clientY-r.top-3)+'px'; tray.appendChild(d); };
