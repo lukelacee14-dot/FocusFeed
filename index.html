@@ -861,8 +861,8 @@
   .shelf-toys {
     display: flex;
     align-items: flex-end;
-    padding: 0 20px;
-    min-height: 96px;
+    padding: 0 16px;
+    min-height: 130px;
     position: relative; z-index: 2;
   }
 
@@ -919,14 +919,14 @@
   .shelf-toy:active { transform: translateY(-18px) rotate(var(--toy-lean,0deg)) scale(1.15); }
 
   .shelf-toy-img {
-    width: var(--toy-size, 44px);
-    height: var(--toy-size, 44px);
+    width: var(--toy-size, 64px);
+    height: var(--toy-size, 64px);
     object-fit: contain;
     display: block;
-    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
   }
   .shelf-toy-figure {
-    font-size: var(--toy-size, 40px);
+    font-size: var(--toy-size, 52px);
     line-height: 1; display: block;
     filter: drop-shadow(0 3px 5px rgba(0,0,0,0.45));
   }
@@ -1003,9 +1003,9 @@
   @keyframes earthGlow { from{box-shadow:0 0 20px rgba(74,158,255,0.4),0 0 40px rgba(74,158,255,0.15),inset -8px -4px 0 rgba(0,0,0,0.3)} to{box-shadow:0 0 30px rgba(74,158,255,0.6),0 0 60px rgba(74,158,255,0.25),inset -8px -4px 0 rgba(0,0,0,0.3)} }
   /* Moon surface */
   .space-moon-surface {
-    position: absolute; bottom: 0; left: 0; right: 0; height: 90px;
-    background: radial-gradient(ellipse at 50% 100%, #c8c0a8 0%, #b0a88a 40%, #9a9070 100%);
-    border-radius: 50% 50% 0 0 / 30% 30% 0 0;
+    position: absolute; bottom: 0; left: 0; right: 0; height: 80px;
+    background: radial-gradient(ellipse at 50% 100%, #d4cbb0 0%, #c0b890 40%, #a89e72 100%);
+    border-radius: 50% 50% 0 0 / 25% 25% 0 0;
   }
   .space-moon-surface::before {
     content:''; position:absolute; inset:0; border-radius:inherit;
@@ -1021,14 +1021,14 @@
   }
   /* Dog container */
   .space-dog-container {
-    position: absolute; bottom: 68px;
+    position: absolute; bottom: 52px;
     transition: left 0.05s linear;
     cursor: pointer;
   }
   .space-dog-img {
-    width: 160px; height: auto;
+    width: 180px; height: auto;
     display: block;
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.6));
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8));
     transition: transform 0.3s ease;
   }
   /* Sleeping - gentle breathing */
@@ -2929,20 +2929,20 @@ function renderToyShelfMenu() {
 
   // Toys with personality data — size, lean, vertical offset for natural placement
   const shelfToys = [
-    { id:'slime',    fig:'🧪', size:42, lean:-5,  yOff:0,  label:'Slime Jar' },
-    { id:'space',    fig:'<img src="images/corgi.png" class="shelf-toy-img" style="width:44px;height:44px;object-fit:contain">', size:40, lean:4,   yOff:4,  label:'Space Buddy' },
-    { id:'bubble',   fig:'🫧', size:46, lean:-2,  yOff:-2, label:'Bubble Wrap' },
-    { id:'lava',     fig:'<img src="images/laval lamp.png" class="shelf-toy-img" style="width:36px;height:56px;object-fit:contain">', size:44, lean:6,   yOff:0,  label:'Lava Lamp' },
-    { id:'gravity',  fig:'🔮', size:38, lean:-4,  yOff:2,  label:'Gravity Balls' },
-    { id:'cradle',   fig:'<img src="images/newton cradle.png" class="shelf-toy-img" style="width:52px;height:44px;object-fit:contain">', size:38, lean:3,   yOff:0,  label:'Newton\'s Cradle' },
-    { id:'shredder', fig:'📋', size:36, lean:-6,  yOff:3,  label:'Note Shredder' },
-    { id:'clouds',   fig:'⛅', size:46, lean:4,   yOff:-4, label:'Cloud Pusher' },
-    { id:'aquarium', fig:'🐠', size:42, lean:-3,  yOff:0,  label:'Mini Aquarium' },
-    { id:'marble',   fig:'🟠', size:36, lean:5,   yOff:2,  label:'Marble Run' },
-    { id:'ducks',    fig:'🦆', size:40, lean:-4,  yOff:0,  label:'Duck Pond' },
-    { id:'blob',     fig:'🫧', size:44, lean:3,   yOff:-2, label:'Breathing Blob' },
-    { id:'plant',    fig:'🪴', size:48, lean:-3,  yOff:0,  label:'Desk Plant' },
-    { id:'coin',     fig:'🪙', size:36, lean:6,   yOff:4,  label:'Coin Spinner' },
+    { id:'slime',    fig:'🧪', size:58, lean:-5,  yOff:0,  label:'Slime Jar' },
+    { id:'space',    fig:'<img src="images/corgi.png" class="shelf-toy-img" style="width:64px;height:64px;object-fit:contain">', size:64, lean:4,   yOff:4,  label:'Space Buddy' },
+    { id:'bubble',   fig:'🫧', size:60, lean:-2,  yOff:-2, label:'Bubble Wrap' },
+    { id:'lava',     fig:'<img src="images/laval lamp.png" class="shelf-toy-img" style="width:44px;height:76px;object-fit:contain">', size:64, lean:6,   yOff:0,  label:'Lava Lamp' },
+    { id:'gravity',  fig:'🔮', size:54, lean:-4,  yOff:2,  label:'Gravity Balls' },
+    { id:'cradle',   fig:'<img src="images/newton cradle.png" class="shelf-toy-img" style="width:74px;height:60px;object-fit:contain">', size:54, lean:3,   yOff:0,  label:'Newton\'s Cradle' },
+    { id:'shredder', fig:'📋', size:52, lean:-6,  yOff:3,  label:'Note Shredder' },
+    { id:'clouds',   fig:'⛅', size:62, lean:4,   yOff:-4, label:'Cloud Pusher' },
+    { id:'aquarium', fig:'🐠', size:58, lean:-3,  yOff:0,  label:'Mini Aquarium' },
+    { id:'marble',   fig:'🟠', size:52, lean:5,   yOff:2,  label:'Marble Run' },
+    { id:'ducks',    fig:'🦆', size:56, lean:-4,  yOff:0,  label:'Duck Pond' },
+    { id:'blob',     fig:'🫧', size:60, lean:3,   yOff:-2, label:'Breathing Blob' },
+    { id:'plant',    fig:'🪴', size:64, lean:-3,  yOff:0,  label:'Desk Plant' },
+    { id:'coin',     fig:'🪙', size:52, lean:6,   yOff:4,  label:'Coin Spinner' },
   ];
 
   function makeToy(t) {
