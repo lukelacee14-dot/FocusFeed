@@ -764,194 +764,18 @@
   /* ── TOY SHELF FLOATING WIDGET ── */
   .toy-window {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: min(620px, calc(100vw - 28px)); max-height: min(700px, calc(100vh - 36px));
-    background: #1e1208;
-    border: 3px solid #0e0804;
-    border-radius: 14px;
-    box-shadow: 0 28px 80px rgba(0,0,0,0.8), 0 6px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
-    z-index: 1500; overflow: hidden;
-    display: none; flex-direction: column;
+    width: min(420px, calc(100vw - 28px)); max-height: min(620px, calc(100vh - 36px));
+    background: rgba(24,24,24,0.96); border: 1px solid var(--border); border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.55); z-index: 1500; overflow: hidden;
+    display: none; flex-direction: column; backdrop-filter: blur(10px);
   }
-  .toy-window.visible { display: flex; animation: shelfAppear 0.32s cubic-bezier(0.34,1.46,0.64,1); }
-  @keyframes shelfAppear { from { opacity:0; transform:translate(-50%,-50%) scale(0.91) translateY(10px); } to { opacity:1; transform:translate(-50%,-50%) scale(1) translateY(0); } }
-
-  .toy-window-header {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 14px; cursor: move; user-select: none; flex-shrink: 0;
-    background: linear-gradient(180deg, #2e1a0a 0%, #1e1208 100%);
-    border-bottom: 2px solid #0e0804;
-  }
-  .toy-window-title { flex:1; font-family:'DM Serif Display',serif; font-size:16px; color:#f0c882; }
-  .toy-window-subtitle { font-size:11px; color:#8a6030; margin-top:1px; }
-  .toy-window-btn {
-    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.13);
-    color: #a07840; border-radius: 6px; font-family:'DM Sans',sans-serif;
-    font-size: 12px; padding: 5px 9px; cursor: pointer; transition: background 0.15s, color 0.15s;
-  }
-  .toy-window-btn:hover { background: rgba(255,255,255,0.14); color: #f0c882; }
-  .toy-window-body { overflow-y: auto; overflow-x: hidden; flex: 1; min-height: 0; }
-
-  /* ── SHELF ROOM ── */
-  .shelf-room {
-    position: relative;
-    padding: 0;
-    overflow: hidden;
-    background:
-      /* ceiling shadow */
-      linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 18%),
-      /* floor shadow */
-      linear-gradient(0deg, rgba(0,0,0,0.2) 0%, transparent 12%),
-      /* ambient light from left */
-      radial-gradient(ellipse at 15% 40%, rgba(255,220,140,0.18) 0%, transparent 55%),
-      /* wall base colour — warm cream like a bedroom */
-      linear-gradient(160deg, #f5e8cc 0%, #ecdbb8 40%, #e2cfa0 70%, #d8c490 100%);
-  }
-
-  /* Subtle wallpaper/paint texture */
-  .shelf-room::before {
-    content: '';
-    position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    background:
-      repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0,0,0,0.015) 3px, rgba(0,0,0,0.015) 4px),
-      repeating-linear-gradient(90deg, transparent 0, transparent 60px, rgba(0,0,0,0.012) 60px, rgba(0,0,0,0.012) 61px);
-  }
-
-  /* Subtle shadow on wall behind each shelf (recessed look) */
-  .shelf-section {
-    position: relative; z-index: 1;
-    padding: 24px 20px 0;
-  }
-  .shelf-section:first-child { padding-top: 28px; }
-  .shelf-section:last-child { padding-bottom: 20px; }
-
-  /* Bracket on each side of shelf */
-  .shelf-with-brackets {
-    position: relative;
-  }
-  .shelf-bracket {
-    position: absolute;
-    bottom: 0;
-    width: 16px;
-    background: linear-gradient(135deg, #5a3a1a 0%, #3a2208 50%, #2a1806 100%);
-    box-shadow: inset -1px 0 0 rgba(255,255,255,0.08), 2px 2px 6px rgba(0,0,0,0.5);
-    border-radius: 2px 2px 0 0;
-    z-index: 5;
-  }
-  .shelf-bracket.left {
-    left: 0;
-    height: 54px;
-    clip-path: polygon(0 0, 100% 30%, 100% 100%, 0 100%);
-  }
-  .shelf-bracket.right {
-    right: 0;
-    height: 54px;
-    clip-path: polygon(0 30%, 100% 0, 100% 100%, 0 100%);
-  }
-  /* Bracket screw detail */
-  .shelf-bracket::after {
-    content: '•';
-    position: absolute;
-    top: 6px; left: 50%;
-    transform: translateX(-50%);
-    font-size: 6px;
-    color: rgba(255,255,255,0.2);
-  }
-
-  /* Toys area */
-  .shelf-toys {
-    display: flex;
-    align-items: flex-end;
-    padding: 0 16px;
-    min-height: 130px;
-    position: relative; z-index: 2;
-  }
-
-  /* The wooden plank */
-  .shelf-plank {
-    position: relative; z-index: 4;
-    height: 18px;
-    margin: 0 0;
-    background: linear-gradient(180deg,
-      #8b5e2a 0%, #7a4e20 15%, #6a4018 35%,
-      #5a3210 55%, #4a2808 75%, #3a1e06 90%, #2e1604 100%
-    );
-    box-shadow:
-      0 6px 18px rgba(0,0,0,0.65),
-      0 2px 5px rgba(0,0,0,0.5),
-      inset 0 2px 0 rgba(255,255,255,0.16),
-      inset 0 1px 0 rgba(255,200,100,0.1),
-      inset 0 -2px 0 rgba(0,0,0,0.5);
-    border-radius: 2px 2px 0 0;
-  }
-  /* Wood grain */
-  .shelf-plank::before {
-    content: ''; position: absolute; inset: 0; border-radius: inherit;
-    background:
-      repeating-linear-gradient(90deg,
-        transparent 0, transparent 14px,
-        rgba(0,0,0,0.06) 14px, rgba(0,0,0,0.06) 15px,
-        transparent 15px, transparent 32px,
-        rgba(255,255,255,0.04) 32px, rgba(255,255,255,0.04) 33px,
-        transparent 33px, transparent 55px,
-        rgba(0,0,0,0.04) 55px, rgba(0,0,0,0.04) 56px
-      );
-  }
-  /* Front lip shadow */
-  .shelf-plank::after {
-    content: ''; position: absolute;
-    bottom: -10px; left: 0; right: 0; height: 10px;
-    background: linear-gradient(180deg, #1a0c02 0%, #0e0804 60%, transparent 100%);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.7);
-  }
-
-  /* Individual toy */
-  .shelf-toy {
-    display: flex; flex-direction: column; align-items: center;
-    cursor: pointer; position: relative;
-    transition: transform 0.24s cubic-bezier(0.34,1.56,0.64,1), filter 0.2s;
-    padding: 2px 3px 0; user-select: none; flex-shrink: 0;
-  }
-  .shelf-toy:hover {
-    transform: translateY(-14px) rotate(var(--toy-lean,0deg)) scale(1.12);
-    filter: drop-shadow(0 12px 16px rgba(0,0,0,0.65)) brightness(1.05);
-    z-index: 10;
-  }
-  .shelf-toy:active { transform: translateY(-18px) rotate(var(--toy-lean,0deg)) scale(1.15); }
-
-  .shelf-toy-img {
-    width: var(--toy-size, 64px);
-    height: var(--toy-size, 64px);
-    object-fit: contain;
-    display: block;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
-  }
-  .shelf-toy-figure {
-    font-size: var(--toy-size, 52px);
-    line-height: 1; display: block;
-    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.45));
-  }
-
-  /* No shadow puddle under toys */
-  .shelf-toy-shadow { display: none; }
-
-  /* Tooltip label */
-  .shelf-toy-label {
-    position: absolute; bottom: calc(100% + 6px);
-    left: 50%; transform: translateX(-50%);
-    background: rgba(10,5,2,0.93); color: #f0c882;
-    font-size: 10px; white-space: nowrap; padding: 3px 8px;
-    border-radius: 4px; pointer-events: none; opacity: 0;
-    transition: opacity 0.15s; border: 1px solid rgba(255,200,80,0.15); z-index: 20;
-    font-family: 'DM Sans', sans-serif;
-  }
-  .shelf-toy:hover .shelf-toy-label { opacity: 1; }
-
-  /* Room floor strip at bottom */
-  .shelf-room-floor {
-    height: 12px;
-    background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 100%);
-  }
-
+  .toy-window.visible { display: flex; }
+  .toy-window-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--border); cursor: move; user-select: none; background: rgba(255,255,255,0.03); }
+  .toy-window-title { flex: 1; font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); }
+  .toy-window-subtitle { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .toy-window-btn { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 6px 9px; cursor: pointer; }
+  .toy-window-btn:hover { color: var(--text); border-color: var(--accent2); }
+  .toy-window-body { padding: 14px; overflow: auto; min-height: 260px; }
   .toy-shelf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .toy-card { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 12px; cursor: pointer; transition: transform 0.15s, border-color 0.15s, background 0.15s; min-height: 96px; display: flex; flex-direction: column; gap: 7px; }
   .toy-card:hover { transform: translateY(-2px); border-color: var(--accent2); background: var(--surface2); }
@@ -971,128 +795,12 @@
   .slime-jar.jiggle { animation: toyJiggle 0.35s ease; }
   @keyframes toyJiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
 
-  /* ── SPACE DOG TOY ── */
-  .space-scene {
-    width: 100%; height: 340px; position: relative; overflow: hidden;
-    background: radial-gradient(ellipse at 50% 0%, #1a2a6c 0%, #0a0e2a 45%, #050810 100%);
-  }
-  /* Stars layer */
-  .space-star { position:absolute; border-radius:50%; background:#fff; animation: twinkle 1.8s infinite alternate; }
-  @keyframes twinkle { from{opacity:.15} to{opacity:1} }
-  /* Earth in background */
-  .space-earth {
-    position: absolute; top: 20px; right: 30px;
-    width: 70px; height: 70px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #4a9eff 0%, #1a6fd4 40%, #0d4a9a 70%, #08306e 100%);
-    box-shadow: 0 0 20px rgba(74,158,255,0.4), 0 0 40px rgba(74,158,255,0.15), inset -8px -4px 0 rgba(0,0,0,0.3);
-    animation: earthGlow 4s ease-in-out infinite alternate;
-  }
-  .space-earth::after {
-    content:''; position:absolute; inset:0; border-radius:50%;
-    background: radial-gradient(ellipse at 30% 25%, rgba(255,255,255,0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 60% 60%, rgba(34,139,34,0.4) 0%, transparent 40%),
-                radial-gradient(ellipse at 20% 70%, rgba(34,139,34,0.3) 0%, transparent 30%);
-  }
-  @keyframes earthGlow { from{box-shadow:0 0 20px rgba(74,158,255,0.4),0 0 40px rgba(74,158,255,0.15),inset -8px -4px 0 rgba(0,0,0,0.3)} to{box-shadow:0 0 30px rgba(74,158,255,0.6),0 0 60px rgba(74,158,255,0.25),inset -8px -4px 0 rgba(0,0,0,0.3)} }
-  /* Moon surface */
-  .space-moon-surface {
-    position: absolute; bottom: 0; left: 0; right: 0; height: 100px;
-    background: radial-gradient(ellipse at 50% 100%, #d4cbb0 0%, #c0b890 40%, #a89e72 100%);
-    border-radius: 55% 55% 0 0 / 30% 30% 0 0;
-  }
-  .space-moon-surface::before {
-    content:''; position:absolute; inset:0; border-radius:inherit;
-    background: radial-gradient(ellipse at 30% 60%, rgba(0,0,0,0.15) 0%, transparent 40%),
-                radial-gradient(ellipse at 70% 40%, rgba(0,0,0,0.1) 0%, transparent 30%),
-                radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.08) 0%, transparent 25%);
-  }
-  /* Craters */
-  .space-crater {
-    position: absolute; border-radius: 50%;
-    background: radial-gradient(circle at 40% 40%, rgba(0,0,0,0.2), rgba(0,0,0,0.05));
-    border: 1px solid rgba(0,0,0,0.1);
-  }
-  /* Dog container */
-  .space-dog-container {
-    position: absolute; bottom: 30px;
-    transition: left 0.05s linear;
-    cursor: pointer;
-  }
-  .space-dog-img {
-    width: 200px; height: auto;
-    display: block;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
-    transition: transform 0.3s ease;
-  }
-  /* Sleeping - gentle breathing */
-  .space-dog-img.state-sleep {
-    animation: dogBreathe 3.2s ease-in-out infinite;
-  }
-  @keyframes dogBreathe {
-    0%,100% { transform: scale(1) translateY(0); }
-    50% { transform: scale(1.03) translateY(-3px); }
-  }
-  /* Sitting - subtle tail wag bob */
-  .space-dog-img.state-sit {
-    animation: dogSitBob 2s ease-in-out infinite;
-  }
-  @keyframes dogSitBob {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-  }
-  /* Wag - faster bounce */
-  .space-dog-img.state-wag {
-    animation: dogWagBounce 0.4s ease-in-out infinite;
-  }
-  @keyframes dogWagBounce {
-    0%,100% { transform: rotate(-2deg) translateY(0); }
-    50% { transform: rotate(2deg) translateY(-6px); }
-  }
-  /* Bark - forward lunge */
-  .space-dog-img.state-bark {
-    animation: dogBark 0.35s ease-in-out infinite;
-  }
-  @keyframes dogBark {
-    0%,100% { transform: translateX(0) rotate(0deg); }
-    50% { transform: translateX(8px) rotate(3deg); }
-  }
-  /* Running - horizontal slide handled by JS, image just bounces */
-  .space-dog-img.state-run {
-    animation: dogRunBounce 0.25s ease-in-out infinite;
-  }
-  @keyframes dogRunBounce {
-    0%,100% { transform: translateY(0) scaleY(1); }
-    50% { transform: translateY(-8px) scaleY(0.95); }
-  }
-  /* Speech bubble */
-  .space-speech {
-    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
-    background: rgba(255,255,255,0.95); color: #333;
-    font-size: 12px; font-family: 'DM Sans',sans-serif;
-    padding: 6px 10px; border-radius: 10px; white-space: nowrap;
-    opacity: 0; transition: opacity 0.3s;
-    pointer-events: none;
-  }
-  .space-speech::after {
-    content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%);
-    border: 6px solid transparent; border-top-color: rgba(255,255,255,0.95);
-  }
-  .space-speech.visible { opacity: 1; }
-  /* Action bar */
-  .space-actions {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    display: flex; justify-content: center; gap: 8px;
-    padding: 10px; background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(6px);
-  }
-  .space-btn {
-    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
-    color: #e0d0ff; font-family: 'DM Sans',sans-serif; font-size: 11px;
-    padding: 6px 12px; border-radius: 20px; cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-  }
-  .space-btn:hover { background: rgba(255,255,255,0.22); transform: translateY(-1px); }
-  .space-btn:active { transform: translateY(0); }
+  .space-terrarium { width: 190px; height: 140px; border: 2px solid var(--border); border-radius: 22px; position: relative; overflow: hidden; background: radial-gradient(circle at 30% 20%, #354085, #101326 65%); }
+  .space-star { position:absolute; width:2px; height:2px; background:#fff; border-radius:50%; animation: twinkle 1.8s infinite alternate; }
+  @keyframes twinkle { from{opacity:.25} to{opacity:1} }
+  .space-buddy { position:absolute; bottom:24px; left:70px; font-size:42px; animation: buddyBreathe 2.4s ease-in-out infinite; cursor:pointer; }
+  @keyframes buddyBreathe { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-4px) scale(1.03)} }
+  .space-ground { position:absolute; bottom:0; left:0; right:0; height:36px; background:rgba(255,255,255,.12); border-radius:50% 50% 0 0; }
 
   .bubble-grid { display:grid; grid-template-columns:repeat(6,34px); gap:8px; }
   .bubble { width:34px; height:34px; border-radius:50%; border:1px solid rgba(255,255,255,.4); background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.9), rgba(107,127,255,.35) 45%, rgba(107,127,255,.12)); cursor:pointer; box-shadow: inset -4px -4px 10px rgba(0,0,0,.2); }
@@ -2891,10 +2599,7 @@ let toyWindowWasPositioned = false;
 
 function toyEl(id) { return document.getElementById(id); }
 function clearToyShelfTimers() {
-  toyShelfTimers.forEach(t => {
-    if (t && t._cancel) t._cancel();
-    else clearInterval(t);
-  });
+  toyShelfTimers.forEach(t => { if (t && t._cancel) t._cancel(); else clearInterval(t); });
   toyShelfTimers = [];
   if (toyGravityLoop) { cancelAnimationFrame(toyGravityLoop); toyGravityLoop = null; }
 }
@@ -2920,46 +2625,17 @@ function closeToyShelf() {
 function renderToyShelfMenu() {
   clearToyShelfTimers();
   toyEl('toy-shelf-title').textContent = 'Toy Shelf';
-  toyEl('toy-shelf-subtitle').textContent = 'pick something up';
+  toyEl('toy-shelf-subtitle').textContent = 'choose a little digital desk toy';
   toyEl('toy-shelf-back').style.display = 'none';
-
-  // Toys with personality data — size, lean, vertical offset for natural placement
-  // Just Newton's cradle on the shelf for now
-  const shelfToys = [
-    { id:'cradle', fig:'<img src="images/newton cradle.png" class="shelf-toy-img" style="width:140px;height:100px;object-fit:contain;display:block">', lean:-1, label:"Newton's Cradle" },
-  ];
-
-  function makeToy(t) {
-    const figContent = t.fig.startsWith('<') ? t.fig : `<span style="font-size:64px;line-height:1;display:block">${t.fig}</span>`;
-    return `<div class="shelf-toy" data-toy="${t.id}"
-      style="--toy-lean:${t.lean}deg;display:flex;flex-direction:column;align-items:center;padding:0 16px 0;cursor:pointer;flex-shrink:0;position:relative;transition:transform 0.24s cubic-bezier(0.34,1.56,0.64,1),filter 0.2s;user-select:none;vertical-align:bottom"
-      role="button" tabindex="0">
-      ${figContent}
-      <span class="shelf-toy-label">${t.label}</span>
-    </div>`;
-  }
-
-  function makeShelf(toys) {
-    return `
-    <div class="shelf-section">
-      <div class="shelf-with-brackets">
-        <div class="shelf-bracket left"></div>
-        <div class="shelf-bracket right"></div>
-        <div class="shelf-toys" style="align-items:flex-end;gap:0;padding:0 24px">${toys.map(makeToy).join('')}</div>
-        <div class="shelf-plank"></div>
-      </div>
-    </div>`;
-  }
-
-  toyEl('toy-shelf-body').innerHTML = `
-    <div class="shelf-room">
-      ${makeShelf(shelfToys)}
-      <div class="shelf-room-floor"></div>
-    </div>`;
-
-  toyEl('toy-shelf-body').querySelectorAll('.shelf-toy').forEach(toy => {
-    toy.addEventListener('click', () => renderToy(toy.dataset.toy));
-    toy.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') renderToy(toy.dataset.toy); });
+  toyEl('toy-shelf-body').innerHTML = `<div class="toy-shelf-grid">${TOY_LIST.map(t => `
+    <div class="toy-card" data-toy="${t.id}" role="button" tabindex="0">
+      <div class="toy-card-icon">${t.icon}</div>
+      <div class="toy-card-title">${t.title}</div>
+      <div class="toy-card-desc">${t.desc}</div>
+    </div>`).join('')}</div>`;
+  toyEl('toy-shelf-body').querySelectorAll('.toy-card').forEach(card => {
+    card.addEventListener('click', () => renderToy(card.dataset.toy));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') renderToy(card.dataset.toy); });
   });
 }
 function renderToy(id) {
@@ -2971,30 +2647,12 @@ function renderToy(id) {
   const body = toyEl('toy-shelf-body');
   const views = {
     slime: `<div class="toy-stage"><div class="slime-jar" id="slime-jar"><div class="slime-fill" id="slime-fill"></div></div><div class="toy-help">The jar slowly fills itself. Click the jar to jiggle it, or empty it when full.</div><div class="toy-action-row"><button class="toy-action" id="slime-empty">Empty jar</button><button class="toy-action" id="slime-drop">Drop blob</button></div></div>`,
-    space: `<div class="space-scene" id="space-scene">
-      <!-- Stars added by JS -->
-      <div class="space-earth"></div>
-      <div class="space-moon-surface">
-        <div class="space-crater" style="width:22px;height:22px;left:15%;top:40%"></div>
-        <div class="space-crater" style="width:14px;height:14px;left:55%;top:55%"></div>
-        <div class="space-crater" style="width:18px;height:18px;left:75%;top:35%"></div>
-      </div>
-      <div class="space-dog-container" id="space-dog-wrap" style="left:120px">
-        <div class="space-speech" id="space-speech"></div>
-        <img class="space-dog-img state-sleep" id="space-dog-img" src="images/dog sleeping.png" alt="Space Buddy">
-      </div>
-      <div class="space-actions">
-        <button class="space-btn" id="space-btn-wake">👋 Wake up</button>
-        <button class="space-btn" id="space-btn-play">🎾 Play</button>
-        <button class="space-btn" id="space-btn-run">🏃 Run!</button>
-        <button class="space-btn" id="space-btn-bark">🔊 Bark</button>
-      </div>
-    </div>`,
+    space: `<div class="toy-stage"><div class="space-terrarium" id="space-terrarium"><div class="space-ground"></div><div class="space-buddy" id="space-buddy">🐶</div></div><div class="toy-help">Click your space buddy to give it a tiny zero-gravity bounce.</div></div>`,
     bubble: `<div class="toy-stage"><div class="bubble-grid" id="bubble-grid"></div><div class="toy-action-row"><button class="toy-action" id="bubble-reset">Regenerate bubbles</button></div></div>`,
     zen: `<div class="toy-stage"><div class="zen-tray" id="zen-tray"><div class="zen-rake"></div></div><div class="toy-help">Drag or click across the tray to leave little sand marks.</div><div class="toy-action-row"><button class="toy-action" id="zen-smooth">Smooth sand</button></div></div>`,
     lava: `<div class="toy-stage"><div class="lava-lamp" id="lava-lamp"></div><div class="toy-action-row"><button class="toy-action" id="lava-shake">Shake lamp</button></div></div>`,
     gravity: `<div class="toy-stage"><div class="gravity-box" id="gravity-box"></div><div class="toy-action-row"><button class="toy-action" id="gravity-add">Add ball</button><button class="toy-action" id="gravity-flip">Flip gravity</button></div></div>`,
-    cradle: `<div class="toy-stage" style="flex-direction:column;gap:12px"><canvas id="cradle-canvas" width="340" height="260" style="cursor:grab;border-radius:8px;display:block;background:#111"></canvas><div class="toy-help">Click and drag the left or right ball to pull it back, then release.</div></div>`,
+    cradle: `<div class="toy-stage" style="flex-direction:column;gap:14px;background:#0f0f0f;border-radius:10px;padding:16px"><canvas id="cradle-canvas" width="340" height="240" style="cursor:grab;display:block;border-radius:6px"></canvas><div class="toy-help" style="color:#888">Drag the left or right ball to pull it back, then let go.</div></div>`,
     shredder: `<div class="toy-stage"><div class="shredder-wrap"><textarea class="shred-note" id="shred-note" placeholder="write a thought here..."></textarea><div class="shredder"><div class="shredder-slot"></div></div><button class="toy-action" id="shred-btn">Shred it</button><div class="shred-pile" id="shred-pile"></div></div></div>`,
     clouds: `<div class="toy-stage"><div class="cloud-box" id="cloud-box"><div class="cloud" style="top:25px;left:24px">☁️</div><div class="cloud" style="top:75px;left:130px;font-size:56px;animation-duration:9s">☁️</div><div class="cloud" style="top:105px;left:50px;font-size:36px;animation-duration:6s">☁️</div></div><div class="toy-help">Click clouds to nudge them across the sky.</div></div>`,
     aquarium: `<div class="toy-stage"><div class="aquarium"><div class="fish" style="top:45px">🐠</div><div class="fish">🐟</div><div class="aquarium-plant" style="left:14px">🌿</div><div class="aquarium-plant" style="right:12px">🌱</div></div><div class="toy-action-row"><button class="toy-action" id="fish-food">Drop food</button></div></div>`,
@@ -3018,164 +2676,50 @@ function initToy(id) {
     toyShelfTimers.push(setInterval(drop, 5000));
   }
   if (id === 'space') {
-    const scene = toyEl('space-scene');
-    const img = toyEl('space-dog-img');
-    const speech = toyEl('space-speech');
-    const wrap = toyEl('space-dog-wrap');
-
-    // Add stars
-    for (let i = 0; i < 60; i++) {
-      const st = document.createElement('div');
-      st.className = 'space-star';
-      const size = Math.random() * 2.5 + 0.5;
-      st.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*65}%;animation-delay:${Math.random()*3}s;animation-duration:${1.5+Math.random()*2}s`;
-      scene.insertBefore(st, scene.firstChild);
-    }
-
-    // Shooting star occasionally
-    function shootingStar() {
-      const s = document.createElement('div');
-      s.style.cssText = `position:absolute;top:${Math.random()*40}%;left:-40px;width:40px;height:2px;background:linear-gradient(90deg,transparent,#fff);border-radius:1px;animation:none;transition:none`;
-      scene.insertBefore(s, scene.firstChild);
-      s.animate([{transform:'translateX(0) translateY(0)',opacity:1},{transform:'translateX(500px) translateY(60px)',opacity:0}],{duration:600,easing:'linear'}).onfinish = () => s.remove();
-    }
-    toyShelfTimers.push(setInterval(shootingStar, 6000));
-
-    let dogState = 'sleep';
-    let runTimer = null;
-
-    function setDogState(state, imgSrc, speechText) {
-      dogState = state;
-      img.className = `space-dog-img state-${state}`;
-      img.src = imgSrc;
-      if (speechText) {
-        speech.textContent = speechText;
-        speech.classList.add('visible');
-        setTimeout(() => speech.classList.remove('visible'), 2500);
-      }
-    }
-
-    function stopRun() {
-      if (runTimer) { clearInterval(runTimer); runTimer = null; }
-    }
-
-    // Wake / sitting
-    toyEl('space-btn-wake').addEventListener('click', () => {
-      stopRun();
-      const isSleeping = dogState === 'sleep';
-      if (isSleeping) {
-        setDogState('sit', 'images/corgi.png', '!!');
-      } else {
-        setDogState('wag', 'images/tail wag.png', '🐾');
-        setTimeout(() => {
-          if (dogState === 'wag') setDogState('sit', 'images/sitting up.png', null);
-        }, 2000);
-      }
-    });
-
-    // Play — wag tail
-    toyEl('space-btn-play').addEventListener('click', () => {
-      stopRun();
-      setDogState('wag', 'images/tail wag.png', '🎾 !!');
-      setTimeout(() => {
-        if (dogState === 'wag') setDogState('sit', 'images/corgi.png', null);
-      }, 2500);
-    });
-
-    // Run — zoom left off screen, come in from right
-    toyEl('space-btn-run').addEventListener('click', () => {
-      stopRun();
-      const sceneW = scene.offsetWidth;
-      let pos = parseInt(wrap.style.left) || 120;
-      setDogState('run', 'images/running left.png', null);
-      img.style.transform = 'scaleX(1)';
-
-      runTimer = setInterval(() => {
-        pos -= 10;
-        if (pos < -180) {
-          // come in from right
-          pos = sceneW + 20;
-          img.src = 'images/runnin in.png';
-          img.style.transform = 'scaleX(-1)'; // flip to face left
-        }
-        if (pos < sceneW * 0.4 && img.src.includes('runnin_in')) {
-          // slow down and stop
-          stopRun();
-          pos = Math.max(60, pos);
-          wrap.style.left = pos + 'px';
-          img.style.transform = '';
-          setDogState('sit', 'images/corgi.png', '😄');
-          return;
-        }
-        wrap.style.left = pos + 'px';
-      }, 30);
-      toyShelfTimers.push(runTimer);
-    });
-
-    // Bark
-    toyEl('space-btn-bark').addEventListener('click', () => {
-      stopRun();
-      setDogState('bark', 'images/barking.png', 'WOOF WOOF!');
-      setTimeout(() => {
-        if (dogState === 'bark') setDogState('sit', 'images/corgi.png', null);
-      }, 2000);
-    });
-
-    // Click dog directly
-    wrap.addEventListener('click', () => {
-      if (dogState === 'sleep') {
-        toyEl('space-btn-wake').click();
-      } else {
-        setDogState('wag', 'images/tail wag.png', '🐾');
-        setTimeout(() => {
-          if (dogState === 'wag') setDogState('sit', 'images/corgi.png', null);
-        }, 2000);
-      }
-    });
-
-    // Also swap shelf icon to use real image
-    const shelfIcon = document.querySelector('.shelf-toy[data-toy="space"] .shelf-toy-figure');
-    if (shelfIcon) {
-      const shelfImg = document.createElement('img');
-      shelfImg.src = 'images/corgi.png';
-      shelfImg.className = 'shelf-toy-img';
-      shelfImg.style.cssText = '--toy-size:52px;width:52px;height:52px;object-fit:contain';
-      shelfIcon.replaceWith(shelfImg);
-    }
-  }
-  if (id === 'bubble') {
-    const grid = toyEl('bubble-grid');
-    const make = () => { grid.innerHTML = Array.from({length:36},()=>'<button class="bubble" aria-label="bubble"></button>').join(''); grid.querySelectorAll('.bubble').forEach(b=>b.onclick=()=>b.classList.add('popped')); };
-    make(); toyEl('bubble-reset').onclick = make;
+    const terrarium = toyEl('space-terrarium');
+    for (let i=0;i<18;i++){ const st=document.createElement('div'); st.className='space-star'; st.style.left=Math.random()*180+'px'; st.style.top=Math.random()*82+'px'; st.style.animationDelay=Math.random()*1.8+'s'; terrarium.appendChild(st); }
+    toyEl('space-buddy').onclick = e => { e.currentTarget.animate([{transform:'translateY(0) scale(1)'},{transform:'translateY(-28px) scale(1.1)'},{transform:'translateY(0) scale(1)'}],{duration:520,easing:'ease-out'}); };
   }
   if (id === 'cradle') {
     const canvas = toyEl('cradle-canvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
 
-    const N = 5;
-    const ballR = 20;
-    const ropeLen = 130;
-    const spacing = ballR * 2 + 2;
-    const pivotY = 55;
-    const pivotX0 = W/2 - (N-1)*spacing/2;
+    // Physical constants — tuned so period ≈ 0.95s (realistic for 130mm string)
+    // 10 seconds total ≈ 10 full left-right cycles before rest
+    const N        = 5;
+    const ballR    = 19;
+    const ropeLen  = 130;       // pixels — visual string length
+    const spacing  = ballR*2 + 2;
+    const pivotY   = 52;
+    const pivotX0  = W/2 - (N-1)*spacing/2;
 
-    // State: angle from vertical, angular velocity
+    // g scaled so that sqrt(L/g)*2π ≈ 950ms
+    // T = 2π√(L/g) => g = L*(2π/T)² 
+    // L in "sim units" = 1.0, T in seconds = 0.95
+    // We integrate in real milliseconds, so scale accordingly
+    const SIM_G    = 1.0 * Math.pow((2*Math.PI)/0.95, 2); // ~43.6 /s²
+    const SIM_L    = 1.0; // rope length in sim units (maps to ropeLen px)
+
+    // Energy loss per collision — tuned so ~20 swings over 10s
+    // After 10 full cycles (20 half-swings), amplitude ≈ loss^20
+    // Want final amplitude ≈ 3% of start => loss = 0.03^(1/20) ≈ 0.849 — a bit harsh
+    // Use 0.91 for a nice visible but realistic decay
+    const COLL_LOSS = 0.91;
+
+    // Air damping per second — very light, most loss is from collision
+    const AIR_DAMP  = 0.998; // per millisecond^(1/1000)
+
     const angles = new Array(N).fill(0);
     const vels   = new Array(N).fill(0);
 
-    // Physics constants — tuned for realistic feel
-    const g        = 9.8;          // gravity (scaled)
-    const L        = ropeLen / 60; // rope length in physics units
-    const damping  = 0.9988;       // air resistance per frame
-    const loss     = 0.965;        // energy lost per collision
+    let dragging = -1;
+    let animId   = null;
+    let lastTs   = null;
+    let active   = false;
 
-    let dragging   = -1;
-    let animId     = null;
-    let lastTs     = null;
-    let running    = false;
-
-    function ballCenter(i) {
+    function ballXY(i) {
       return {
         x: pivotX0 + i*spacing + Math.sin(angles[i]) * ropeLen,
         y: pivotY  + Math.cos(angles[i]) * ropeLen
@@ -3185,198 +2729,184 @@ function initToy(id) {
     function draw() {
       ctx.clearRect(0, 0, W, H);
 
-      const frameL = pivotX0 - 28;
-      const frameR = pivotX0 + (N-1)*spacing + 28;
+      const frameL = pivotX0 - 26;
+      const frameR = pivotX0 + (N-1)*spacing + 26;
+      const baseY  = H - 30;
 
-      // Frame legs
-      ctx.lineCap = 'round';
-      [[frameL, frameL+10],[frameR, frameR-10]].forEach(([x1,x2]) => {
-        ctx.strokeStyle = '#8a6030'; ctx.lineWidth = 5;
-        ctx.beginPath(); ctx.moveTo(x2, pivotY+6); ctx.lineTo(x2, H-38); ctx.stroke();
-        ctx.strokeStyle = '#a07840'; ctx.lineWidth = 5;
-        ctx.beginPath(); ctx.moveTo(x1, pivotY); ctx.lineTo(x1, H-36); ctx.stroke();
-      });
+      // Back legs (darker)
+      ctx.strokeStyle = '#7a5828'; ctx.lineWidth = 5; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(frameL+11, pivotY+8); ctx.lineTo(frameL+11, baseY-4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(frameR-11, pivotY+8); ctx.lineTo(frameR-11, baseY-4); ctx.stroke();
 
-      // Base bar
-      ctx.strokeStyle = '#a07840'; ctx.lineWidth = 7;
-      ctx.beginPath(); ctx.moveTo(frameL-2, H-36); ctx.lineTo(frameR+2, H-36); ctx.stroke();
+      // Front legs
+      ctx.strokeStyle = '#a07838';
+      ctx.beginPath(); ctx.moveTo(frameL, pivotY); ctx.lineTo(frameL, baseY); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(frameR, pivotY); ctx.lineTo(frameR, baseY); ctx.stroke();
+
+      // Base
+      ctx.lineWidth = 8;
+      ctx.beginPath(); ctx.moveTo(frameL-2, baseY); ctx.lineTo(frameR+2, baseY); ctx.stroke();
 
       // Top bar
-      const tg = ctx.createLinearGradient(0, pivotY-5, 0, pivotY+7);
-      tg.addColorStop(0, '#d4a860'); tg.addColorStop(0.5,'#b08040'); tg.addColorStop(1,'#806020');
+      const tg = ctx.createLinearGradient(0, pivotY-5, 0, pivotY+8);
+      tg.addColorStop(0,'#d4a858'); tg.addColorStop(0.5,'#b08038'); tg.addColorStop(1,'#7a5820');
       ctx.fillStyle = tg;
-      ctx.beginPath();
-      ctx.roundRect(frameL-2, pivotY-5, frameR-frameL+4, 12, 3);
-      ctx.fill();
+      ctx.beginPath(); ctx.roundRect(frameL-2, pivotY-5, frameR-frameL+4, 13, 3); ctx.fill();
 
-      // Ropes + balls
+      // Strings + balls
       for (let i = 0; i < N; i++) {
         const px = pivotX0 + i*spacing;
-        const bc = ballCenter(i);
+        const bc = ballXY(i);
 
         // Two strings
-        ctx.strokeStyle = 'rgba(210,190,150,0.75)'; ctx.lineWidth = 1.2;
+        ctx.strokeStyle = 'rgba(200,180,140,0.7)'; ctx.lineWidth = 1.1;
         [-3,3].forEach(ox => {
-          ctx.beginPath(); ctx.moveTo(px+ox, pivotY+6); ctx.lineTo(bc.x+ox, bc.y-ballR+2); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(px+ox, pivotY+7); ctx.lineTo(bc.x+ox, bc.y-ballR+1); ctx.stroke();
         });
-
-        // Soft shadow on base
-        ctx.fillStyle = 'rgba(0,0,0,0.12)';
-        ctx.beginPath();
-        ctx.ellipse(bc.x+1, H-36, ballR*0.65, 3.5, 0, 0, Math.PI*2);
-        ctx.fill();
 
         // Ball
         const bg = ctx.createRadialGradient(bc.x-6, bc.y-6, 1, bc.x, bc.y, ballR);
-        bg.addColorStop(0, '#f4f4f4');
-        bg.addColorStop(0.25,'#d8d8d8');
-        bg.addColorStop(0.6, '#a0a0a0');
-        bg.addColorStop(1,   '#505050');
+        bg.addColorStop(0,'#f5f5f5'); bg.addColorStop(0.3,'#d0d0d0');
+        bg.addColorStop(0.65,'#949494'); bg.addColorStop(1,'#484848');
         ctx.fillStyle = bg;
         ctx.beginPath(); ctx.arc(bc.x, bc.y, ballR, 0, Math.PI*2); ctx.fill();
 
-        // Highlight
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        // Specular
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
         ctx.beginPath(); ctx.ellipse(bc.x-6, bc.y-6, 6, 4, -0.4, 0, Math.PI*2); ctx.fill();
+      }
 
-        // Drag hint on outer balls when idle
-        if (!running && (i===0||i===N-1)) {
-          ctx.strokeStyle = 'rgba(255,255,255,0.18)'; ctx.lineWidth = 1.5;
-          ctx.beginPath(); ctx.arc(bc.x, bc.y, ballR+5, 0, Math.PI*2); ctx.stroke();
+      // Idle hint — glow outer balls when stopped
+      if (!active && dragging === -1) {
+        [0, N-1].forEach(i => {
+          const bc = ballXY(i);
+          ctx.strokeStyle = 'rgba(180,160,100,0.35)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(bc.x, bc.y, ballR+6, 0, Math.PI*2); ctx.stroke();
+        });
+      }
+    }
+
+    function integrate(dtMs) {
+      // Sub-step for stability — 4 steps per frame
+      const steps = 4;
+      const h = dtMs / steps / 1000; // convert ms to seconds
+
+      for (let s = 0; s < steps; s++) {
+        // Pendulum ODE: α = -(g/L)sinθ
+        for (let i = 0; i < N; i++) {
+          if (i === dragging) continue;
+          const alpha = -(SIM_G / SIM_L) * Math.sin(angles[i]);
+          vels[i]   += alpha * h;
+          // Air damping (per second, applied per sub-step)
+          vels[i]   *= Math.pow(AIR_DAMP, h);
+          angles[i] += vels[i] * h;
+        }
+
+        // Collision — adjacent balls touching
+        for (let i = 0; i < N-1; i++) {
+          const ci = ballXY(i), cj = ballXY(i+1);
+          if (Math.hypot(ci.x-cj.x, ci.y-cj.y) < ballR*2 - 0.5) {
+            const vi = vels[i], vj = vels[i+1];
+            vels[i]   = vj * COLL_LOSS;
+            vels[i+1] = vi * COLL_LOSS;
+          }
         }
       }
     }
 
-    function step(dt) {
-      // dt capped to avoid spiral on tab switch
-      const dtCapped = Math.min(dt, 20);
-      const steps = 4;
-      const subDt = dtCapped / steps;
-
-      for (let s = 0; s < steps; s++) {
-        // Pendulum acceleration for non-dragged balls
-        for (let i = 0; i < N; i++) {
-          if (i === dragging) continue;
-          const acc = -(g / L) * Math.sin(angles[i]);
-          vels[i]   += acc * subDt * 0.001;
-          vels[i]   *= damping;
-          angles[i] += vels[i] * subDt;
-        }
-
-        // Collision — detect when adjacent balls overlap
-        for (let i = 0; i < N-1; i++) {
-          const ci = ballCenter(i);
-          const cj = ballCenter(i+1);
-          const d  = Math.hypot(ci.x-cj.x, ci.y-cj.y);
-          if (d < ballR*2 - 0.5) {
-            // Exchange velocities with energy loss
-            const vi = vels[i], vj = vels[i+1];
-            vels[i]   = vj * loss;
-            vels[i+1] = vi * loss;
-          }
-        }
-      }
-
-      // Stop animation when everything is nearly at rest
-      const motion = vels.reduce((s,v) => s + Math.abs(v), 0);
-      if (motion < 0.00008 && dragging === -1) {
-        // Snap to rest
-        for (let i = 0; i < N; i++) { angles[i] = 0; vels[i] = 0; }
-        running = false;
-        draw();
-        return false; // stop loop
-      }
-      return true;
+    function totalMotion() {
+      return vels.reduce((s,v) => s + Math.abs(v), 0)
+           + angles.reduce((s,a) => s + Math.abs(a), 0);
     }
 
     function loop(ts) {
       if (!lastTs) lastTs = ts;
-      const dt = ts - lastTs;
+      const dt = Math.min(ts - lastTs, 33); // cap at ~30fps worth of dt
       lastTs = ts;
-      const keepGoing = step(dt);
+
+      integrate(dt);
       draw();
-      if (keepGoing || dragging !== -1) {
-        animId = requestAnimationFrame(loop);
-      } else {
+
+      // Stop when motion is negligible
+      if (totalMotion() < 0.0004 && dragging === -1) {
+        for (let i=0;i<N;i++){angles[i]=0;vels[i]=0;}
+        active = false;
+        draw();
         animId = null;
+        return;
       }
+      animId = requestAnimationFrame(loop);
     }
 
     function startLoop() {
       if (!animId) { lastTs = null; animId = requestAnimationFrame(loop); }
     }
 
-    function getHit(mx, my) {
-      // Only allow dragging outer balls
+    function getOuterHit(mx, my) {
       for (const i of [0, N-1]) {
-        if (Math.hypot(mx - ballCenter(i).x, my - ballCenter(i).y) < ballR+10) return i;
+        if (Math.hypot(mx - ballXY(i).x, my - ballXY(i).y) < ballR+10) return i;
       }
       return -1;
     }
 
-    function angleFromMouse(i, mx, my) {
-      const px = pivotX0 + i*spacing;
-      const a = Math.atan2(mx-px, my-pivotY);
-      // Outer ball: left ball pulls left (negative), right ball pulls right (positive)
-      const maxAngle = Math.PI * 0.55;
-      return Math.max(-maxAngle, Math.min(maxAngle, a));
+    function clampAngle(i, raw) {
+      // Left ball (0) pulls left (negative angles), right (N-1) pulls right (positive)
+      const max = Math.PI * 0.52;
+      return Math.max(-max, Math.min(max, raw));
     }
 
+    function angleFromPos(i, mx, my) {
+      return clampAngle(i, Math.atan2(mx - (pivotX0+i*spacing), my - pivotY));
+    }
+
+    // Mouse
     canvas.addEventListener('mousedown', e => {
       const r = canvas.getBoundingClientRect();
-      const hit = getHit(e.clientX-r.left, e.clientY-r.top);
+      const hit = getOuterHit(e.clientX-r.left, e.clientY-r.top);
       if (hit === -1) return;
-      dragging = hit;
-      vels[hit] = 0;
+      dragging = hit; vels[hit] = 0;
       canvas.style.cursor = 'grabbing';
       startLoop();
     });
-
     window.addEventListener('mousemove', e => {
       if (dragging === -1) return;
       const r = canvas.getBoundingClientRect();
-      angles[dragging] = angleFromMouse(dragging, e.clientX-r.left, e.clientY-r.top);
-      draw();
+      angles[dragging] = angleFromPos(dragging, e.clientX-r.left, e.clientY-r.top);
     });
-
     window.addEventListener('mouseup', () => {
       if (dragging === -1) return;
-      running = true;
-      dragging = -1;
+      active = true; dragging = -1;
       canvas.style.cursor = 'grab';
       startLoop();
     });
 
+    // Touch
     canvas.addEventListener('touchstart', e => {
       e.preventDefault();
-      const r = canvas.getBoundingClientRect();
-      const t = e.touches[0];
-      const hit = getHit(t.clientX-r.left, t.clientY-r.top);
+      const r = canvas.getBoundingClientRect(), t = e.touches[0];
+      const hit = getOuterHit(t.clientX-r.left, t.clientY-r.top);
       if (hit === -1) return;
-      dragging = hit; vels[hit] = 0;
-      startLoop();
-    }, {passive:false});
-
+      dragging = hit; vels[hit] = 0; startLoop();
+    },{passive:false});
     window.addEventListener('touchmove', e => {
-      if (dragging === -1) return;
-      const r = canvas.getBoundingClientRect();
-      const t = e.touches[0];
-      angles[dragging] = angleFromMouse(dragging, t.clientX-r.left, t.clientY-r.top);
-      draw();
-    }, {passive:false});
-
+      if (dragging===-1) return; e.preventDefault();
+      const r = canvas.getBoundingClientRect(), t = e.touches[0];
+      angles[dragging] = angleFromPos(dragging, t.clientX-r.left, t.clientY-r.top);
+    },{passive:false});
     window.addEventListener('touchend', () => {
-      if (dragging === -1) return;
-      running = true; dragging = -1;
-      startLoop();
+      if (dragging===-1) return;
+      active = true; dragging = -1; startLoop();
     });
 
-    toyShelfTimers.push({ _cancel: () => { if (animId) cancelAnimationFrame(animId); animId = null; } });
-
-    // Draw idle state immediately
-    draw();
+    toyShelfTimers.push({_cancel:()=>{if(animId){cancelAnimationFrame(animId);animId=null;}}});
+    draw(); // show idle state immediately
   }
 
+  if (id === 'bubble') {
+    const grid = toyEl('bubble-grid');
+    const make = () => { grid.innerHTML = Array.from({length:36},()=>'<button class="bubble" aria-label="bubble"></button>').join(''); grid.querySelectorAll('.bubble').forEach(b=>b.onclick=()=>b.classList.add('popped')); };
+    make(); toyEl('bubble-reset').onclick = make;
+  }
   if (id === 'zen') {
     const tray = toyEl('zen-tray'); let drawing = false;
     const dot = e => { const r=tray.getBoundingClientRect(); const d=document.createElement('div'); d.className='zen-dot'; d.style.left=(e.clientX-r.left-3)+'px'; d.style.top=(e.clientY-r.top-3)+'px'; tray.appendChild(d); };
