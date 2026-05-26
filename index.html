@@ -604,72 +604,74 @@
   }
 
   /* ── LEFT TABS ── */
+  /* Container: 40px front + 3x20px strips = 100px total, all tabs visible */
   .xbox-left-tabs {
     position: relative;
     flex-shrink: 0;
-    /* wide enough to show all tab strips: front tab 40px + 3 strips of 18px each = ~94px */
-    width: 94px;
+    width: 100px;
     align-self: stretch;
     overflow: hidden;
   }
   .xbox-left-tabs .xbox-side-tab {
     position: absolute;
     top: 0; bottom: 0;
-    /* each tab is wide enough to hold vertical text */
-    width: 160px;
+    width: 140px;
     display: flex;
     align-items: center;
-    /* push content to right edge (the visible strip) */
     justify-content: flex-end;
-    padding-right: 8px;
-    background: linear-gradient(to right, #d0cec8, #dddbd5, #e8e6e0);
-    border-top: 1px solid #e8e6e0;
-    border-bottom: 1px solid #a8a6a0;
-    border-radius: 0 14px 14px 0;
-    border-right: 2px solid #c0beb8;
+    padding-right: 6px;
+    background: linear-gradient(to right, #c8c6c0, #d8d6d0, #e4e2dc);
+    border-top: 1px solid #eeece6;
+    border-bottom: 1px solid #a0a098;
+    border-radius: 0 16px 16px 0;
+    border-right: 2px solid #b8b6b0;
     cursor: pointer;
-    box-shadow: 4px 0 10px rgba(0,0,0,0.18);
+    box-shadow: 4px 0 12px rgba(0,0,0,0.22);
     transition: filter 0.15s;
     overflow: hidden;
   }
-  /* Stacked: front tab right edge at container right (94px), each behind 18px further left */
-  .xbox-left-tabs .xbox-side-tab:nth-child(1) { right: 0;   z-index: 4; filter: brightness(1.02); }
-  .xbox-left-tabs .xbox-side-tab:nth-child(2) { right: -18px; z-index: 3; filter: brightness(0.95); }
-  .xbox-left-tabs .xbox-side-tab:nth-child(3) { right: -34px; z-index: 2; filter: brightness(0.88); }
-  .xbox-left-tabs .xbox-side-tab:nth-child(4) { right: -48px; z-index: 1; filter: brightness(0.81); }
-  .xbox-left-tabs .xbox-side-tab:hover { filter: brightness(1.08) !important; z-index: 10 !important; }
+  /* All tabs visible: each one's right edge 20px behind the one in front */
+  /* Front tab: right edge flush with container (right:0) */
+  /* Tab 2: right edge 20px back → right:20px pushes it 20px to the left */
+  /* Tab 3: right edge 40px back → right:40px */
+  /* Tab 4: right edge 60px back → right:60px */
+  .xbox-left-tabs .xbox-side-tab:nth-child(1) { right: 0px;  z-index: 4; filter: brightness(1.0); }
+  .xbox-left-tabs .xbox-side-tab:nth-child(2) { right: 20px; z-index: 3; filter: brightness(0.93); }
+  .xbox-left-tabs .xbox-side-tab:nth-child(3) { right: 40px; z-index: 2; filter: brightness(0.86); }
+  .xbox-left-tabs .xbox-side-tab:nth-child(4) { right: 60px; z-index: 1; filter: brightness(0.79); }
+  .xbox-left-tabs .xbox-side-tab:hover { filter: brightness(1.07) !important; }
 
   /* ── RIGHT TABS ── */
   .xbox-right-tabs {
     position: relative;
     flex-shrink: 0;
-    width: 94px;
+    width: 100px;
     align-self: stretch;
     overflow: hidden;
   }
   .xbox-right-tabs .xbox-side-tab {
     position: absolute;
     top: 0; bottom: 0;
-    width: 160px;
+    width: 140px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding-left: 8px;
-    background: linear-gradient(to left, #d0cec8, #dddbd5, #e8e6e0);
-    border-top: 1px solid #e8e6e0;
-    border-bottom: 1px solid #a8a6a0;
-    border-radius: 14px 0 0 14px;
-    border-left: 2px solid #c0beb8;
+    padding-left: 6px;
+    background: linear-gradient(to left, #c8c6c0, #d8d6d0, #e4e2dc);
+    border-top: 1px solid #eeece6;
+    border-bottom: 1px solid #a0a098;
+    border-radius: 16px 0 0 16px;
+    border-left: 2px solid #b8b6b0;
     cursor: pointer;
-    box-shadow: -4px 0 10px rgba(0,0,0,0.18);
+    box-shadow: -4px 0 12px rgba(0,0,0,0.22);
     transition: filter 0.15s;
     overflow: hidden;
   }
-  .xbox-right-tabs .xbox-side-tab:nth-child(1) { left: 0;    z-index: 4; filter: brightness(1.02); }
-  .xbox-right-tabs .xbox-side-tab:nth-child(2) { left: -18px; z-index: 3; filter: brightness(0.95); }
-  .xbox-right-tabs .xbox-side-tab:nth-child(3) { left: -34px; z-index: 2; filter: brightness(0.88); }
-  .xbox-right-tabs .xbox-side-tab:nth-child(4) { left: -48px; z-index: 1; filter: brightness(0.81); }
-  .xbox-right-tabs .xbox-side-tab:hover { filter: brightness(1.08) !important; z-index: 10 !important; }
+  .xbox-right-tabs .xbox-side-tab:nth-child(1) { left: 0px;  z-index: 4; filter: brightness(1.0); }
+  .xbox-right-tabs .xbox-side-tab:nth-child(2) { left: 20px; z-index: 3; filter: brightness(0.93); }
+  .xbox-right-tabs .xbox-side-tab:nth-child(3) { left: 40px; z-index: 2; filter: brightness(0.86); }
+  .xbox-right-tabs .xbox-side-tab:nth-child(4) { left: 60px; z-index: 1; filter: brightness(0.79); }
+  .xbox-right-tabs .xbox-side-tab:hover { filter: brightness(1.07) !important; }
 
   /* Tab label — vertical text, positioned in the visible strip */
   .xbox-tab-label {
