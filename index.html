@@ -776,6 +776,7 @@
   .toy-window-btn { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 6px 9px; cursor: pointer; }
   .toy-window-btn:hover { color: var(--text); border-color: var(--accent2); }
   .toy-window-body { padding: 14px; overflow: auto; min-height: 260px; }
+  .toy-shelf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .toy-card { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); padding: 12px; cursor: pointer; transition: transform 0.15s, border-color 0.15s, background 0.15s; min-height: 96px; display: flex; flex-direction: column; gap: 7px; }
   .toy-card:hover { transform: translateY(-2px); border-color: var(--accent2); background: var(--surface2); }
   .toy-card-icon { font-size: 26px; line-height: 1; }
@@ -874,6 +875,262 @@
   body.win95-theme .toy-card-title, body.win95-theme .toy-help { color:#000 !important; }
   body.win95-theme .toy-card-desc { color:#444 !important; }
   body.win95-theme .toy-window-btn, body.win95-theme .toy-action { background:#c0c0c0 !important; color:#000 !important; border-radius:0 !important; border:2px solid !important; border-color:#fff #808080 #808080 #fff !important; font-family:'VT323', monospace !important; outline:1px solid #000 !important; }
+
+/* ══════════════════════════════════════════
+   CRT TV THEME
+   ══════════════════════════════════════════ */
+
+/* ── CRT SIDEBAR — Control panel ── */
+body.crt-theme #sidebar {
+  background: linear-gradient(180deg, #3a3a3a 0%, #2e2e2e 40%, #363636 100%) !important;
+  border-right: 3px solid #1a1a1a !important;
+  box-shadow: inset -2px 0 6px rgba(0,0,0,0.5), 4px 0 12px rgba(0,0,0,0.4) !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  position: relative;
+}
+
+/* Subtle panel rivets top/bottom */
+body.crt-theme #sidebar::before {
+  content: '● ●';
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  font-size: 6px; color: #555; letter-spacing: 8px; pointer-events: none; z-index: 5;
+}
+body.crt-theme #sidebar::after {
+  content: '● ●';
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  font-size: 6px; color: #555; letter-spacing: 8px; pointer-events: none; z-index: 5;
+}
+
+/* Section labels */
+body.crt-theme .sidebar-section .section-label,
+body.crt-theme .section-label {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 9px !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  color: #888 !important;
+  background: #2a2a2a !important;
+  display: block !important;
+  padding: 4px 10px !important;
+  border-top: 1px solid #1a1a1a !important;
+  border-bottom: 1px solid #444 !important;
+}
+
+/* Wordmark */
+body.crt-theme .wordmark {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 15px !important;
+  color: #c8ffb0 !important;
+  text-shadow: 0 0 8px rgba(77,255,145,0.6) !important;
+}
+body.crt-theme .wordmark em { color: #4dff91 !important; font-style: normal !important; }
+body.crt-theme .header-sub { color: #5a8050 !important; font-size: 8px !important; letter-spacing: 0.12em !important; }
+
+/* Channel items — with LED dot */
+body.crt-theme .sidebar-channel {
+  background: transparent !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid #222 !important;
+  padding: 7px 10px 7px 28px !important;
+  position: relative !important;
+}
+body.crt-theme .sidebar-channel::before {
+  content: '';
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 7px; height: 7px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #88ff66, #22cc44);
+  box-shadow: 0 0 5px rgba(68,220,100,0.8), 0 0 2px rgba(68,220,100,0.5);
+}
+body.crt-theme .sidebar-channel:hover { background: rgba(77,255,145,0.06) !important; }
+body.crt-theme .sidebar-ch-name { color: #c8ffb0 !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 12px !important; }
+body.crt-theme .sidebar-ch-thumb,
+body.crt-theme .sidebar-ch-placeholder { width: 22px !important; height: 22px !important; border-radius: 3px !important; border: 1px solid #333 !important; }
+
+/* Sidebar scroll box */
+body.crt-theme .sidebar-channel-scroll {
+  border: 1px solid #222 !important;
+  border-radius: 0 !important;
+  background: #111 !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.6) !important;
+}
+
+/* Bottom buttons — panel button style */
+body.crt-theme .sidebar-bottom {
+  background: #2a2a2a !important;
+  border-top: 2px solid #1a1a1a !important;
+  padding: 10px 10px !important;
+  gap: 6px !important;
+}
+body.crt-theme .sidebar-bottom-btn,
+body.crt-theme .sidebar-add-btn {
+  background: linear-gradient(180deg, #484848 0%, #383838 50%, #3e3e3e 100%) !important;
+  border: 1px solid #222 !important;
+  border-top-color: #666 !important;
+  border-left-color: #555 !important;
+  border-radius: 3px !important;
+  color: #aaa !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 0.06em !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 4px rgba(0,0,0,0.5) !important;
+}
+body.crt-theme .sidebar-bottom-btn:hover,
+body.crt-theme .sidebar-add-btn:hover { background: linear-gradient(180deg, #545454 0%, #444 50%, #4a4a4a 100%) !important; color: #c8ffb0 !important; }
+
+/* Settings icon */
+body.crt-theme #sidebar-settings-btn {
+  color: #666 !important; font-size: 14px !important;
+}
+body.crt-theme #sidebar-settings-btn:hover { color: #4dff91 !important; }
+
+/* Timer / quota */
+body.crt-theme .timer-label { color: #5a8050 !important; font-size: 9px !important; letter-spacing: 0.1em !important; font-family: 'IBM Plex Mono', monospace !important; }
+body.crt-theme .timer-value { color: #4dff91 !important; text-shadow: 0 0 6px rgba(77,255,145,0.5) !important; font-family: 'IBM Plex Mono', monospace !important; }
+body.crt-theme #sidebar-quota { color: #c8ffb0 !important; font-family: 'IBM Plex Mono', monospace !important; font-size: 11px !important; }
+
+/* Search button */
+body.crt-theme #sidebar-search-btn {
+  background: #111 !important;
+  border: 1px solid #333 !important;
+  border-radius: 3px !important;
+  color: #5a8050 !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 11px !important;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5) !important;
+}
+body.crt-theme #sidebar-search-btn:hover { color: #4dff91 !important; border-color: #4dff91 !important; }
+
+/* Widget buttons */
+body.crt-theme .sidebar-widget-btn {
+  background: #1a1a1a !important;
+  border: 1px solid #333 !important;
+  border-radius: 2px !important;
+  color: #c8ffb0 !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 10px !important;
+}
+body.crt-theme .sidebar-widget-btn:hover { border-color: #4dff91 !important; color: #4dff91 !important; }
+
+
+/* ── CRT MAIN SCREEN ── */
+body.crt-theme #main {
+  position: relative;
+  background: #050a04 !important;
+}
+
+/* The CRT screen frame — bezel around #main content */
+body.crt-theme #main::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 248px; right: 0; bottom: 0;
+  pointer-events: none; z-index: 200;
+
+  /* Scanlines */
+  background:
+    /* Scanlines */
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 2px,
+      rgba(0,0,0,0.18) 2px, rgba(0,0,0,0.18) 4px
+    ),
+    /* Subtle horizontal flicker band */
+    linear-gradient(180deg,
+      rgba(77,255,145,0.015) 0%,
+      rgba(77,255,145,0.03) 30%,
+      rgba(77,255,145,0.015) 60%,
+      rgba(77,255,145,0.025) 100%
+    ),
+    /* Vignette — dark at corners, bright in centre */
+    radial-gradient(ellipse at 50% 50%,
+      transparent 40%,
+      rgba(0,0,0,0.25) 70%,
+      rgba(0,0,0,0.55) 100%
+    );
+}
+
+/* Glare reflection top-left */
+body.crt-theme #main::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 248px; right: 0; bottom: 0;
+  pointer-events: none; z-index: 201;
+  background: radial-gradient(ellipse at 25% 18%, rgba(255,255,255,0.04) 0%, transparent 45%),
+              radial-gradient(ellipse at 70% 80%, rgba(255,255,255,0.015) 0%, transparent 35%);
+}
+
+/* Screen phosphor tint on all content */
+body.crt-theme .screen.active,
+body.crt-theme #home-screen {
+  background: #050a04 !important;
+}
+
+/* Feed channel headers — CRT blue bar */
+body.crt-theme .feed-channel-header {
+  background: linear-gradient(90deg, #001a40 0%, #002255 50%, #001a40 100%) !important;
+  border-bottom: 1px solid #0044aa !important;
+  box-shadow: 0 0 8px rgba(0,100,255,0.2) !important;
+}
+body.crt-theme .feed-ch-title {
+  color: #88ddff !important;
+  text-shadow: 0 0 6px rgba(100,200,255,0.5) !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 12px !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Feed tiles */
+body.crt-theme .feed-tile {
+  border: 1px solid #1a3020 !important;
+  border-radius: 2px !important;
+  background: #080f07 !important;
+}
+body.crt-theme .feed-tile:hover {
+  border-color: #4dff91 !important;
+  box-shadow: 0 0 8px rgba(77,255,145,0.2) !important;
+}
+body.crt-theme .tile-title { color: #c8ffb0 !important; font-size: 11px !important; font-family: 'IBM Plex Mono', monospace !important; }
+body.crt-theme .tile-meta { color: #4a7040 !important; font-family: 'IBM Plex Mono', monospace !important; }
+
+/* YOUR FEED label */
+body.crt-theme #feed-status-label {
+  color: #5a8050 !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 10px !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+}
+
+/* Add channel button */
+body.crt-theme #show-add-btn {
+  background: #111 !important;
+  border: 1px solid #333 !important;
+  color: #4dff91 !important;
+  border-radius: 2px !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-size: 11px !important;
+  box-shadow: 0 0 6px rgba(77,255,145,0.15) !important;
+}
+
+/* CRT phosphor glow on accent text */
+body.crt-theme .wordmark,
+body.crt-theme .timer-value,
+body.crt-theme .sidebar-ch-name {
+  text-shadow: 0 0 6px rgba(77,255,145,0.4) !important;
+}
+
+/* Subtle scanline animation */
+@keyframes crtScanMove {
+  0% { background-position: 0 0, 0 0, 0 0; }
+  100% { background-position: 0 0, 0 4px, 0 0; }
+}
+
+/* Screen curved edge illusion */
+body.crt-theme #main {
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.4), inset 0 0 80px rgba(0,0,0,0.2) !important;
+}
+
+/* Win95 label on the bottom bar of CRT concept — not applicable, CRT is standalone */
+body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !important; font-size: 11px !important; }
 
 </style>
 </head>
@@ -1411,6 +1668,10 @@
 
 
 <!-- TOY SHELF FLOATING WINDOW -->
+<div id="toy-shelf-window" class="toy-window" aria-hidden="true">
+  <div class="toy-window-header" id="toy-shelf-drag-handle">
+    <div>
+      <div class="toy-window-title" id="toy-shelf-title">Toy Shelf</div>
       <div class="toy-window-subtitle" id="toy-shelf-subtitle">little digital desk toys</div>
     </div>
     <button class="toy-window-btn" id="toy-shelf-back" style="display:none">← Shelf</button>
@@ -1623,7 +1884,7 @@ function renderSidebar() {
   list.querySelectorAll('.sidebar-channel').forEach(card => {
     card.addEventListener('click', e => {
       if (e.target.closest('.sidebar-ch-remove')) return;
-      // sidebar is display/reorder only
+      openChannel(parseInt(card.dataset.index));
     });
   });
   list.querySelectorAll('.sidebar-ch-remove').forEach(btn => {
@@ -1736,8 +1997,9 @@ function displayFeed(videos) {
     const chVideos = grouped[chId]; if (!chVideos || chVideos.length === 0) return;
     const ch = channels.find(c => c.id === chId); if (!ch) return;
     const section = document.createElement('div'); section.className = 'feed-channel-section';
-    section.innerHTML = `<div class="feed-channel-header" data-channel-index="${channels.indexOf(ch)}">${ch.thumb?`<img src="${ch.thumb}" class="feed-ch-avatar" alt="">`:`<div class="feed-ch-avatar-placeholder">${ch.name[0]}</div>`}<span class="feed-ch-title">${esc(ch.name)}</span></div><div class="feed-channel-row">${chVideos.map((v,i)=>`<div class="feed-tile" data-ch="${chId}" data-vi="${i}"><div class="tile-thumb-wrap"><img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy"><div class="tile-duration">${fmtDur(v.duration)}</div><div class="tile-play"><div class="tile-play-icon"></div></div></div><div class="tile-title">${esc(v.title)}</div><div class="tile-meta">${fmtDate(v.published)}${v.views>0?' · '+fmtViews(v.views)+' views':''}</div></div>`).join('')}</div>`;
+    section.innerHTML = `<div class="feed-channel-header" data-channel-index="${channels.indexOf(ch)}">${ch.thumb?`<img src="${ch.thumb}" class="feed-ch-avatar" alt="">`:`<div class="feed-ch-avatar-placeholder">${ch.name[0]}</div>`}<span class="feed-ch-title">${esc(ch.name)}</span><span class="feed-ch-arrow">→</span></div><div class="feed-channel-row">${chVideos.map((v,i)=>`<div class="feed-tile" data-ch="${chId}" data-vi="${i}"><div class="tile-thumb-wrap"><img class="tile-thumb" src="${v.thumb}" alt="" loading="lazy"><div class="tile-duration">${fmtDur(v.duration)}</div><div class="tile-play"><div class="tile-play-icon"></div></div></div><div class="tile-title">${esc(v.title)}</div><div class="tile-meta">${fmtDate(v.published)}${v.views>0?' · '+fmtViews(v.views)+' views':''}</div></div>`).join('')}</div>`;
     container.appendChild(section);
+    section.querySelector('.feed-channel-header').addEventListener('click',function(){openChannel(parseInt(this.dataset.channelIndex));});
     section.querySelectorAll('.feed-tile').forEach(tile=>{tile.addEventListener('click',()=>{const v=grouped[tile.dataset.ch][parseInt(tile.dataset.vi)];playSearchResult(v);document.getElementById('player-back-btn').onclick=()=>{stopPlayer();showHome();};document.getElementById('done-back-btn').onclick=()=>{stopPlayer();showHome();};});});
   });
   // Xbox 360 dashboard mode
@@ -2090,6 +2352,13 @@ const PRESETS = [
     bgPattern: 'radial-gradient(ellipse at 60% 40%, #c47000 0%, #8b4500 30%, #3a1a00 60%, #1a0a00 100%)',
     bgPatternSize: '100% 100%'
   },
+  {
+    name: 'CRT TV',
+    bg: '#0a0f08', surface: '#0d1a0c', surface2: '#122014', border: '#1a3018',
+    text: '#c8ffb0', muted: '#5a8050', accent: '#4dff91', accent2: '#28cc66',
+    font: 'IBM Plex Mono',
+    bgPattern: 'none', bgPatternSize: 'auto'
+  },
 ];
 
 const ACCENTS = [
@@ -2139,6 +2408,7 @@ function applyTheme(t) {
   const _wasXbox = document.body.classList.contains('xbox-theme');
   document.body.classList.toggle('win95-theme', t.presetName === 'Win95');
   document.body.classList.toggle('xbox-theme', t.presetName === 'Xbox 360');
+  document.body.classList.toggle('crt-theme', t.presetName === 'CRT TV');
   if (!_wasW && document.body.classList.contains('win95-theme')) setTimeout(()=>playWin95Sound('startup'),300);
   if (!_wasXbox && document.body.classList.contains('xbox-theme')) setTimeout(()=>playXboxSound('startup'),300);
   document.body.classList.toggle('xbox-theme', t.presetName === 'Xbox 360');
@@ -2568,6 +2838,183 @@ document.getElementById('goal-input').addEventListener('keydown',e=>{if(e.key===
 
 
 // ── TOY SHELF ──
+const TOY_LIST = [
+  { id:'slime', title:'Slime Jar', icon:'🧪', desc:'Slowly fills with blobs. Empty it when full.' },
+  { id:'space', title:'Space Buddy', icon:'🐶', desc:'A tiny space pet terrarium to poke.' },
+  { id:'bubble', title:'Bubble Wrap', icon:'🫧', desc:'Pop bubbles. They come back when reset.' },
+  { id:'zen', title:'Zen Sand Tray', icon:'〰️', desc:'Draw little trails in the sand.' },
+  { id:'lava', title:'Lava Lamp', icon:'💡', desc:'Floating blobs for background calm.' },
+  { id:'gravity', title:'Gravity Balls', icon:'⚪', desc:'Bouncy balls in a little physics box.' },
+  { id:'cradle', title:'Newton Cradle', icon:'⚙️', desc:'A tiny desktop clacking toy.' },
+  { id:'shredder', title:'Sticky Note Shredder', icon:'📝', desc:'Type a thought, then shred it away.' },
+  { id:'clouds', title:'Cloud Pusher', icon:'☁️', desc:'Push clouds around a little sky.' },
+  { id:'aquarium', title:'Mini Aquarium', icon:'🐠', desc:'Fish drift through a tiny tank.' },
+  { id:'marble', title:'Marble Run', icon:'🟠', desc:'Watch a marble roll through ramps.' },
+  { id:'ducks', title:'Duck Pond', icon:'🦆', desc:'Make ripples around rubber ducks.' },
+  { id:'blob', title:'Breathing Blob', icon:'🟣', desc:'A soft blob that breathes in and out.' },
+  { id:'plant', title:'Desk Plant', icon:'🪴', desc:'Water a gentle little plant.' },
+  { id:'coin', title:'Coin Spinner', icon:'🪙', desc:'Flick the coin and watch it spin.' }
+];
+
+let toyShelfOpen = false;
+let toyShelfTimers = [];
+let toyGravityLoop = null;
+let toyWindowWasPositioned = false;
+
+function toyEl(id) { return document.getElementById(id); }
+function clearToyShelfTimers() {
+  toyShelfTimers.forEach(t => clearInterval(t));
+  toyShelfTimers = [];
+  if (toyGravityLoop) { cancelAnimationFrame(toyGravityLoop); toyGravityLoop = null; }
+}
+function showToyShelf() {
+  const win = toyEl('toy-shelf-window');
+  if (!win) return;
+  toyShelfOpen = true;
+  win.classList.add('visible');
+  win.setAttribute('aria-hidden', 'false');
+  if (!toyWindowWasPositioned) {
+    win.style.left = '50%'; win.style.top = '50%'; win.style.transform = 'translate(-50%, -50%)';
+  }
+  renderToyShelfMenu();
+}
+function closeToyShelf() {
+  const win = toyEl('toy-shelf-window');
+  if (!win) return;
+  toyShelfOpen = false;
+  clearToyShelfTimers();
+  win.classList.remove('visible');
+  win.setAttribute('aria-hidden', 'true');
+}
+function renderToyShelfMenu() {
+  clearToyShelfTimers();
+  toyEl('toy-shelf-title').textContent = 'Toy Shelf';
+  toyEl('toy-shelf-subtitle').textContent = 'choose a little digital desk toy';
+  toyEl('toy-shelf-back').style.display = 'none';
+  toyEl('toy-shelf-body').innerHTML = `<div class="toy-shelf-grid">${TOY_LIST.map(t => `
+    <div class="toy-card" data-toy="${t.id}" role="button" tabindex="0">
+      <div class="toy-card-icon">${t.icon}</div>
+      <div class="toy-card-title">${t.title}</div>
+      <div class="toy-card-desc">${t.desc}</div>
+    </div>`).join('')}</div>`;
+  toyEl('toy-shelf-body').querySelectorAll('.toy-card').forEach(card => {
+    card.addEventListener('click', () => renderToy(card.dataset.toy));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') renderToy(card.dataset.toy); });
+  });
+}
+function renderToy(id) {
+  clearToyShelfTimers();
+  const meta = TOY_LIST.find(t => t.id === id) || TOY_LIST[0];
+  toyEl('toy-shelf-title').textContent = meta.title;
+  toyEl('toy-shelf-subtitle').textContent = meta.desc;
+  toyEl('toy-shelf-back').style.display = 'inline-block';
+  const body = toyEl('toy-shelf-body');
+  const views = {
+    slime: `<div class="toy-stage"><div class="slime-jar" id="slime-jar"><div class="slime-fill" id="slime-fill"></div></div><div class="toy-help">The jar slowly fills itself. Click the jar to jiggle it, or empty it when full.</div><div class="toy-action-row"><button class="toy-action" id="slime-empty">Empty jar</button><button class="toy-action" id="slime-drop">Drop blob</button></div></div>`,
+    space: `<div class="toy-stage"><div class="space-terrarium" id="space-terrarium"><div class="space-ground"></div><div class="space-buddy" id="space-buddy">🐶</div></div><div class="toy-help">Click your space buddy to give it a tiny zero-gravity bounce.</div></div>`,
+    bubble: `<div class="toy-stage"><div class="bubble-grid" id="bubble-grid"></div><div class="toy-action-row"><button class="toy-action" id="bubble-reset">Regenerate bubbles</button></div></div>`,
+    zen: `<div class="toy-stage"><div class="zen-tray" id="zen-tray"><div class="zen-rake"></div></div><div class="toy-help">Drag or click across the tray to leave little sand marks.</div><div class="toy-action-row"><button class="toy-action" id="zen-smooth">Smooth sand</button></div></div>`,
+    lava: `<div class="toy-stage"><div class="lava-lamp" id="lava-lamp"></div><div class="toy-action-row"><button class="toy-action" id="lava-shake">Shake lamp</button></div></div>`,
+    gravity: `<div class="toy-stage"><div class="gravity-box" id="gravity-box"></div><div class="toy-action-row"><button class="toy-action" id="gravity-add">Add ball</button><button class="toy-action" id="gravity-flip">Flip gravity</button></div></div>`,
+    cradle: `<div class="toy-stage"><div class="cradle">${[0,1,2,3,4].map(i=>`<div class="cradle-ball" style="left:${45+i*30}px"></div>`).join('')}</div><div class="toy-help">A tiny Newton’s cradle for background motion.</div></div>`,
+    shredder: `<div class="toy-stage"><div class="shredder-wrap"><textarea class="shred-note" id="shred-note" placeholder="write a thought here..."></textarea><div class="shredder"><div class="shredder-slot"></div></div><button class="toy-action" id="shred-btn">Shred it</button><div class="shred-pile" id="shred-pile"></div></div></div>`,
+    clouds: `<div class="toy-stage"><div class="cloud-box" id="cloud-box"><div class="cloud" style="top:25px;left:24px">☁️</div><div class="cloud" style="top:75px;left:130px;font-size:56px;animation-duration:9s">☁️</div><div class="cloud" style="top:105px;left:50px;font-size:36px;animation-duration:6s">☁️</div></div><div class="toy-help">Click clouds to nudge them across the sky.</div></div>`,
+    aquarium: `<div class="toy-stage"><div class="aquarium"><div class="fish" style="top:45px">🐠</div><div class="fish">🐟</div><div class="aquarium-plant" style="left:14px">🌿</div><div class="aquarium-plant" style="right:12px">🌱</div></div><div class="toy-action-row"><button class="toy-action" id="fish-food">Drop food</button></div></div>`,
+    marble: `<div class="toy-stage"><div class="marble-run"><div class="marble" id="marble"></div><div class="ramp" style="top:58px;left:34px"></div><div class="ramp" style="top:122px;left:66px;transform:rotate(-13deg)"></div><div class="ramp" style="top:178px;left:36px"></div></div><div class="toy-action-row"><button class="toy-action" id="marble-release">Release marble</button></div></div>`,
+    ducks: `<div class="toy-stage"><div class="duck-pond" id="duck-pond"><div class="duck" style="top:50px;left:60px">🦆</div><div class="duck" style="top:88px;left:155px;animation-delay:.6s">🦆</div></div><div class="toy-help">Click the pond to make ripples.</div></div>`,
+    blob: `<div class="toy-stage"><div class="breathing-blob" id="breathing-blob"></div><div class="toy-help">Breathe with the blob, or click it for a little squish.</div></div>`,
+    plant: `<div class="toy-stage"><div class="desk-plant" id="desk-plant"><div class="plant-stem"><div class="leaf" style="left:-42px;top:8px;transform:rotate(18deg)"></div><div class="leaf" style="left:6px;top:35px;transform:scaleX(-1) rotate(18deg)"></div><div class="leaf" style="left:-38px;top:55px;transform:rotate(-8deg)"></div></div><div class="plant-pot"></div></div><div class="toy-action-row"><button class="toy-action" id="plant-water">Water plant</button></div></div>`,
+    coin: `<div class="toy-stage"><div class="coin" id="coin">YS</div><div class="toy-help">Click or press spin. Completely pointless, somehow satisfying.</div><div class="toy-action-row"><button class="toy-action" id="coin-spin">Spin coin</button></div></div>`
+  };
+  body.innerHTML = views[id] || views.slime;
+  initToy(id);
+}
+function initToy(id) {
+  if (id === 'slime') {
+    let level = 18;
+    const fill = toyEl('slime-fill'), jar = toyEl('slime-jar');
+    const drop = () => { level = Math.min(96, level + 8); fill.style.height = level + '%'; const b = document.createElement('div'); b.className='slime-blob'; jar.appendChild(b); setTimeout(()=>b.remove(),1100); };
+    toyEl('slime-drop').onclick = drop;
+    toyEl('slime-empty').onclick = () => { level = 8; fill.style.height = level + '%'; };
+    jar.onclick = () => { jar.classList.remove('jiggle'); void jar.offsetWidth; jar.classList.add('jiggle'); };
+    toyShelfTimers.push(setInterval(drop, 5000));
+  }
+  if (id === 'space') {
+    const terrarium = toyEl('space-terrarium');
+    for (let i=0;i<18;i++){ const st=document.createElement('div'); st.className='space-star'; st.style.left=Math.random()*180+'px'; st.style.top=Math.random()*82+'px'; st.style.animationDelay=Math.random()*1.8+'s'; terrarium.appendChild(st); }
+    toyEl('space-buddy').onclick = e => { e.currentTarget.animate([{transform:'translateY(0) scale(1)'},{transform:'translateY(-28px) scale(1.1)'},{transform:'translateY(0) scale(1)'}],{duration:520,easing:'ease-out'}); };
+  }
+  if (id === 'bubble') {
+    const grid = toyEl('bubble-grid');
+    const make = () => { grid.innerHTML = Array.from({length:36},()=>'<button class="bubble" aria-label="bubble"></button>').join(''); grid.querySelectorAll('.bubble').forEach(b=>b.onclick=()=>b.classList.add('popped')); };
+    make(); toyEl('bubble-reset').onclick = make;
+  }
+  if (id === 'zen') {
+    const tray = toyEl('zen-tray'); let drawing = false;
+    const dot = e => { const r=tray.getBoundingClientRect(); const d=document.createElement('div'); d.className='zen-dot'; d.style.left=(e.clientX-r.left-3)+'px'; d.style.top=(e.clientY-r.top-3)+'px'; tray.appendChild(d); };
+    tray.onpointerdown = e => { drawing = true; tray.setPointerCapture(e.pointerId); dot(e); };
+    tray.onpointermove = e => { if (drawing) dot(e); };
+    tray.onpointerup = () => drawing = false;
+    toyEl('zen-smooth').onclick = () => tray.querySelectorAll('.zen-dot').forEach(d=>d.remove());
+  }
+  if (id === 'lava') {
+    const lamp = toyEl('lava-lamp');
+    for (let i=0;i<6;i++){ const b=document.createElement('div'); b.className='lava-blob'; const size=22+Math.random()*34; b.style.width=size+'px'; b.style.height=size*1.2+'px'; b.style.left=(14+Math.random()*58)+'px'; b.style.bottom=(-30+Math.random()*120)+'px'; b.style.animationDelay=(-Math.random()*5)+'s'; b.style.animationDuration=(4+Math.random()*3)+'s'; lamp.appendChild(b); }
+    toyEl('lava-shake').onclick = () => lamp.animate([{transform:'rotate(0)'},{transform:'rotate(-5deg)'},{transform:'rotate(5deg)'},{transform:'rotate(0)'}],{duration:420});
+  }
+  if (id === 'gravity') initGravityToy();
+  if (id === 'shredder') toyEl('shred-btn').onclick = () => { const note=toyEl('shred-note'); const pile=toyEl('shred-pile'); const text=note.value.trim(); if(!text) return; pile.innerHTML = Array.from({length:28},(_,i)=>`<div class="shred-strip" style="animation-delay:${i*0.015}s"></div>`).join(''); note.value=''; };
+  if (id === 'clouds') toyEl('cloud-box').querySelectorAll('.cloud').forEach(c => c.onclick = () => { const now=parseFloat(c.style.left)||0; c.style.left = ((now + 28) % 220) + 'px'; });
+  if (id === 'aquarium') toyEl('fish-food').onclick = e => { const tank=e.currentTarget.closest('.toy-stage').querySelector('.aquarium'); for(let i=0;i<8;i++){const f=document.createElement('div'); f.textContent='•'; f.style.cssText=`position:absolute;left:${130+Math.random()*30}px;top:15px;color:#ffe58f;font-size:22px;animation:stripFall .8s ease forwards`; tank.appendChild(f); setTimeout(()=>f.remove(),900);} };
+  if (id === 'marble') toyEl('marble-release').onclick = () => { const m=toyEl('marble'); m.style.animation='none'; void m.offsetWidth; m.style.animation='marbleRoll 3.4s ease-in-out infinite'; };
+  if (id === 'ducks') toyEl('duck-pond').onclick = e => { const r=e.currentTarget.getBoundingClientRect(); const rip=document.createElement('div'); rip.className='ripple'; rip.style.left=(e.clientX-r.left-14)+'px'; rip.style.top=(e.clientY-r.top-14)+'px'; rip.style.width='28px'; rip.style.height='28px'; e.currentTarget.appendChild(rip); setTimeout(()=>rip.remove(),700); };
+  if (id === 'blob') toyEl('breathing-blob').onclick = e => e.currentTarget.animate([{transform:'scale(1)'},{transform:'scale(.72,1.18)'},{transform:'scale(1)'}],{duration:360});
+  if (id === 'plant') toyEl('plant-water').onclick = () => { const p=toyEl('desk-plant'); p.animate([{filter:'brightness(1)'},{filter:'brightness(1.35)'},{filter:'brightness(1)'}],{duration:650}); };
+  if (id === 'coin') { const spin=()=>{const c=toyEl('coin'); c.classList.remove('spinning'); void c.offsetWidth; c.classList.add('spinning');}; toyEl('coin').onclick=spin; toyEl('coin-spin').onclick=spin; }
+}
+function initGravityToy() {
+  const box = toyEl('gravity-box');
+  const balls = [];
+  let gravity = 0.12;
+  function addBall() {
+    const el = document.createElement('div'); el.className='g-ball'; box.appendChild(el);
+    balls.push({ el, x: 35 + Math.random()*180, y: 20 + Math.random()*90, vx: (Math.random()-.5)*3, vy: (Math.random()-.5)*2 });
+  }
+  function tick() {
+    const w = box.clientWidth, h = box.clientHeight;
+    balls.forEach(b => { b.vy += gravity; b.x += b.vx; b.y += b.vy; if (b.x < 0 || b.x > w-28) { b.vx *= -0.9; b.x = Math.max(0, Math.min(w-28,b.x)); } if (b.y < 0 || b.y > h-28) { b.vy *= -0.82; b.y = Math.max(0, Math.min(h-28,b.y)); } b.el.style.transform = `translate(${b.x}px,${b.y}px)`; });
+    toyGravityLoop = requestAnimationFrame(tick);
+  }
+  addBall(); addBall(); addBall(); tick();
+  toyEl('gravity-add').onclick = addBall;
+  toyEl('gravity-flip').onclick = () => gravity *= -1;
+}
+
+(function initToyShelfWindow() {
+  const win = toyEl('toy-shelf-window'), handle = toyEl('toy-shelf-drag-handle');
+  if (!win || !handle) return;
+  toyEl('toy-shelf-close').addEventListener('click', closeToyShelf);
+  toyEl('toy-shelf-back').addEventListener('click', renderToyShelfMenu);
+  let dragging = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
+  handle.addEventListener('pointerdown', e => {
+    if (e.target.closest('button')) return;
+    dragging = true; toyWindowWasPositioned = true;
+    const rect = win.getBoundingClientRect();
+    startX = e.clientX; startY = e.clientY; startLeft = rect.left; startTop = rect.top;
+    win.style.transform = 'none'; win.style.left = rect.left + 'px'; win.style.top = rect.top + 'px';
+    handle.setPointerCapture(e.pointerId);
+  });
+  handle.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const maxLeft = window.innerWidth - win.offsetWidth - 8;
+    const maxTop = window.innerHeight - win.offsetHeight - 8;
+    win.style.left = Math.max(8, Math.min(maxLeft, startLeft + e.clientX - startX)) + 'px';
+    win.style.top = Math.max(8, Math.min(maxTop, startTop + e.clientY - startY)) + 'px';
+  });
+  handle.addEventListener('pointerup', () => { dragging = false; });
+})();
+
+
 // ── WIDGET SYSTEM ──
 const WIDGETS_KEY = 'ys_widgets';
 
@@ -2579,6 +3026,7 @@ const ALL_WIDGETS = [
   { id: 'mywishlist',  label: 'MyWishlist',   show: showMyWishlist },
   { id: 'mychallenges',label: 'MyChallenges', show: showMyChallenges },
   { id: 'mydiary',     label: 'MyDiary',      show: showMyDiary },
+  { id: 'toyshelf',    label: 'Toy Shelf',    show: showToyShelf },
 ];
 
 function getActiveWidgets() {
