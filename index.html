@@ -2401,6 +2401,58 @@ body.arcade-theme .settings-tab.active {
     box-shadow: 0 0 12px rgba(255,47,185,0.14) !important;
   }
 
+
+
+  /* Arcade Cabinet player fit fix — keep YouTube controls above the cabinet bezel */
+  body.arcade-cabinet-theme #player-screen.active {
+    height: 100% !important;
+    max-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    background: #000 !important;
+  }
+
+  body.arcade-cabinet-theme #player-screen .player-top {
+    flex: 0 0 clamp(34px, 3.8vw, 46px) !important;
+    min-height: clamp(34px, 3.8vw, 46px) !important;
+    padding: 7px 12px !important;
+    border-bottom: 1px solid rgba(255,191,40,0.24) !important;
+    background: linear-gradient(90deg, rgba(255,47,185,0.20), rgba(0,0,0,0.42)) !important;
+    z-index: 4 !important;
+  }
+
+  body.arcade-cabinet-theme #player-screen .player-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    padding: 0 0 clamp(46px, 4.4vw, 74px) !important;
+    background: #000 !important;
+  }
+
+  body.arcade-cabinet-theme #player-screen .embed-wrap {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    aspect-ratio: auto !important;
+    background: #000 !important;
+  }
+
+  body.arcade-cabinet-theme #player-screen .embed-wrap iframe {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+  }
+
+  body.arcade-cabinet-theme #player-screen .player-sidebar {
+    display: none !important;
+  }
+
   @media (max-width: 900px) {
     body.arcade-cabinet-theme { overflow: auto !important; }
     body.arcade-cabinet-theme::after { display: none !important; }
