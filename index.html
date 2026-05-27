@@ -1999,6 +1999,47 @@ body.arcade-theme .settings-tab.active {
     body.gamecube-theme #main { position: static !important; width: 100% !important; height: 100vh !important; border-radius: 0 !important; }
   }
 
+
+  /* ── GAMECUBE DOCK BUTTON FINAL FIT ── */
+  body.gamecube-theme #sidebar-add-btn,
+  body.gamecube-theme #sidebar-add-widget-btn,
+  body.gamecube-theme #sidebar-settings-btn {
+    position: fixed !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 0 10px !important;
+    z-index: 10000 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    box-sizing: border-box !important;
+    background: linear-gradient(180deg, rgba(48,39,112,0.72), rgba(8,7,24,0.82)) !important;
+    color: #e9e5ff !important;
+    border: 1px solid rgba(185,173,255,0.36) !important;
+    border-radius: 10px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 18px rgba(95,76,205,0.18), 0 0 8px rgba(80,60,190,0.18) !important;
+    font-family: 'IBM Plex Mono', monospace !important;
+    font-size: clamp(8px, 0.62vw, 12px) !important;
+    letter-spacing: 0.02em !important;
+    text-shadow: 0 0 7px rgba(157,140,255,0.48) !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+
+  body.gamecube-theme #sidebar-add-btn:hover,
+  body.gamecube-theme #sidebar-add-widget-btn:hover,
+  body.gamecube-theme #sidebar-settings-btn:hover {
+    background: linear-gradient(180deg, rgba(90,72,198,0.88), rgba(24,20,68,0.90)) !important;
+    border-color: rgba(226,220,255,0.70) !important;
+  }
+
+  body.gamecube-theme #sidebar-settings-btn svg {
+    width: clamp(10px, 0.7vw, 13px) !important;
+    height: clamp(10px, 0.7vw, 13px) !important;
+    flex-shrink: 0 !important;
+  }
+
 </style>
 </head>
 <body>
@@ -4743,5 +4784,63 @@ function renderXboxDashboard(videos) {
 })();
 
 </script>
+<script>
+(function(){
+  const OVERLAY_W = 1777;
+  const OVERLAY_H = 885;
+  const rects = {
+    // transparent GameCube side-panel cut-outs measured from the overlay image
+    'sidebar-add-btn':        { x: 25, y: 675, w: 255, h: 39 },  // top box: Add channel
+    'sidebar-add-widget-btn': { x: 25, y: 718, w: 255, h: 40 },  // middle box: Add widget
+    'sidebar-settings-btn':   { x: 29, y: 787, w: 249, h: 70 }   // bottom box: Settings
+  };
+
+  function getOverlayRect(){
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const overlayRatio = OVERLAY_W / OVERLAY_H;
+    if (vw / vh >= overlayRatio) {
+      const h = vh;
+      const w = h * overlayRatio;
+      return { left: (vw - w) / 2, top: 0, width: w, height: h };
+    }
+    const w = vw;
+    const h = w / overlayRatio;
+    return { left: 0, top: (vh - h) / 2, width: w, height: h };
+  }
+
+  function applyDockFit(){
+    const isGameCube = document.body.classList.contains('gamecube-theme');
+    const overlay = getOverlayRect();
+    Object.entries(rects).forEach(([id, r]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!isGameCube) {
+        ['position','left','top','width','height','zIndex','display','alignItems','justifyContent','margin','padding'].forEach(p => el.style[p] = '');
+        return;
+      }
+      el.style.position = 'fixed';
+      el.style.left = `${overlay.left + (r.x / OVERLAY_W) * overlay.width}px`;
+      el.style.top = `${overlay.top + (r.y / OVERLAY_H) * overlay.height}px`;
+      el.style.width = `${(r.w / OVERLAY_W) * overlay.width}px`;
+      el.style.height = `${(r.h / OVERLAY_H) * overlay.height}px`;
+      el.style.zIndex = '10000';
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
+      el.style.margin = '0';
+      el.style.padding = '0 10px';
+    });
+  }
+
+  window.addEventListener('resize', applyDockFit);
+  window.addEventListener('orientationchange', applyDockFit);
+  document.addEventListener('DOMContentLoaded', applyDockFit);
+  new MutationObserver(applyDockFit).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  setTimeout(applyDockFit, 50);
+  setTimeout(applyDockFit, 350);
+})();
+</script>
+
 </body>
 </html>
