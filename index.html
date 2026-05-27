@@ -1883,6 +1883,115 @@ body.arcade-theme .settings-tab.active {
     padding: 7px 8px 8px !important;
   }
 
+
+  /* ── GAMECUBE THEME REFINEMENTS: fitted dock buttons + scrollable main screen ── */
+  body.gamecube-theme #main,
+  body.gamecube-theme .screen.active,
+  body.gamecube-theme #home-screen,
+  body.gamecube-theme #videos-screen,
+  body.gamecube-theme #search-videos-screen,
+  body.gamecube-theme #settings-screen,
+  body.gamecube-theme #yourday-screen,
+  body.gamecube-theme #player-screen {
+    min-height: 0 !important;
+    min-width: 0 !important;
+  }
+
+  body.gamecube-theme #main {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  body.gamecube-theme #feed-container {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-bottom: 34px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(157,140,255,0.65) rgba(10,8,24,0.35) !important;
+  }
+
+  body.gamecube-theme #feed-container::-webkit-scrollbar,
+  body.gamecube-theme #main::-webkit-scrollbar,
+  body.gamecube-theme .video-grid::-webkit-scrollbar {
+    width: 8px !important;
+  }
+
+  body.gamecube-theme #feed-container::-webkit-scrollbar-track,
+  body.gamecube-theme #main::-webkit-scrollbar-track,
+  body.gamecube-theme .video-grid::-webkit-scrollbar-track {
+    background: rgba(10,8,24,0.35) !important;
+    border-left: 1px solid rgba(157,140,255,0.16) !important;
+  }
+
+  body.gamecube-theme #feed-container::-webkit-scrollbar-thumb,
+  body.gamecube-theme #main::-webkit-scrollbar-thumb,
+  body.gamecube-theme .video-grid::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(157,140,255,0.85), rgba(80,60,190,0.85)) !important;
+    border-radius: 8px !important;
+  }
+
+  body.gamecube-theme .feed-channel-section:last-child {
+    margin-bottom: 46px !important;
+  }
+
+  body.gamecube-theme .sidebar-bottom {
+    border-top: 1px solid rgba(157,140,255,0.20) !important;
+    background: rgba(0,0,0,0.10) !important;
+    padding: 7px 8px 8px !important;
+    overflow: visible !important;
+  }
+
+  body.gamecube-theme #sidebar-add-widget-btn,
+  body.gamecube-theme #sidebar-add-btn,
+  body.gamecube-theme #sidebar-settings-btn {
+    position: absolute !important;
+    left: 6.1% !important;
+    width: 87.8% !important;
+    min-height: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    z-index: 6 !important;
+    background: linear-gradient(180deg, rgba(58,48,128,0.68), rgba(16,14,42,0.72)) !important;
+    border: 1px solid rgba(185,173,255,0.38) !important;
+    border-radius: 8px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 0 8px rgba(80,60,190,0.18) !important;
+    font-size: clamp(8px, 0.62vw, 11px) !important;
+  }
+
+  body.gamecube-theme #sidebar-add-widget-btn {
+    top: calc(100% + 1.35%) !important;
+    height: 5.3% !important;
+  }
+
+  body.gamecube-theme #sidebar-add-btn {
+    top: calc(100% + 8.25%) !important;
+    height: 5.3% !important;
+  }
+
+  body.gamecube-theme #sidebar-settings-btn {
+    top: calc(100% + 23.0%) !important;
+    height: 9.0% !important;
+    color: #b9adff !important;
+  }
+
+  body.gamecube-theme #sidebar-settings-btn svg {
+    width: clamp(10px, 0.72vw, 13px) !important;
+    height: clamp(10px, 0.72vw, 13px) !important;
+  }
+
+  body.gamecube-theme #sidebar-add-widget-btn:hover,
+  body.gamecube-theme #sidebar-add-btn:hover,
+  body.gamecube-theme #sidebar-settings-btn:hover {
+    background: linear-gradient(180deg, rgba(93,74,198,0.9), rgba(33,28,86,0.88)) !important;
+    border-color: rgba(226,220,255,0.72) !important;
+  }
+
   @media (max-width: 767px) {
     body.gamecube-theme { overflow: auto !important; }
     body.gamecube-theme::after { display: none !important; }
