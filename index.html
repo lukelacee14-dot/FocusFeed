@@ -2040,6 +2040,43 @@ body.arcade-theme .settings-tab.active {
     flex-shrink: 0 !important;
   }
 
+
+
+  /* ── GAMECUBE BODY-LEVEL DOCK BUTTONS ── */
+  body.gamecube-theme #sidebar-add-btn,
+  body.gamecube-theme #sidebar-add-widget-btn,
+  body.gamecube-theme #sidebar-settings-btn {
+    visibility: hidden !important;
+  }
+
+  .gamecube-dock-btn {
+    position: fixed;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0 10px;
+    z-index: 10050;
+    background: linear-gradient(180deg, rgba(58,48,128,0.82), rgba(10,8,28,0.92));
+    color: #e9e5ff;
+    border: 1px solid rgba(185,173,255,0.46);
+    border-radius: 10px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), inset 0 0 18px rgba(95,76,205,0.22), 0 0 10px rgba(80,60,190,0.22);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(8px, 0.62vw, 12px);
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 7px rgba(157,140,255,0.52);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  body.gamecube-theme .gamecube-dock-btn { display: flex; }
+  .gamecube-dock-btn:hover {
+    background: linear-gradient(180deg, rgba(90,72,198,0.92), rgba(24,20,68,0.94));
+    border-color: rgba(226,220,255,0.76);
+  }
+
 </style>
 </head>
 <body>
@@ -4839,6 +4876,81 @@ function renderXboxDashboard(videos) {
   new MutationObserver(applyDockFit).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   setTimeout(applyDockFit, 50);
   setTimeout(applyDockFit, 350);
+})();
+</script>
+
+
+<script>
+(function(){
+  const OVERLAY_W = 1777;
+  const OVERLAY_H = 885;
+  const dock = [
+    { cloneId: 'gc-dock-add-channel', label: '＋ Add channel', targetId: 'sidebar-add-btn',        rect: { x: 25, y: 677, w: 255, h: 35 } },
+    { cloneId: 'gc-dock-add-widget',  label: '＋ Add widget',  targetId: 'sidebar-add-widget-btn', rect: { x: 25, y: 720, w: 255, h: 36 } },
+    { cloneId: 'gc-dock-settings',    label: '⚙ Settings',    targetId: 'sidebar-settings-btn',   rect: { x: 29, y: 787, w: 249, h: 68 } }
+  ];
+
+  function overlayRect(){
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const ratio = OVERLAY_W / OVERLAY_H;
+    if (vw / vh >= ratio) {
+      const h = vh;
+      const w = h * ratio;
+      return { left: (vw - w) / 2, top: 0, width: w, height: h };
+    }
+    const w = vw;
+    const h = w / ratio;
+    return { left: 0, top: (vh - h) / 2, width: w, height: h };
+  }
+
+  function ensureDockButtons(){
+    dock.forEach(item => {
+      let btn = document.getElementById(item.cloneId);
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.id = item.cloneId;
+        btn.type = 'button';
+        btn.className = 'gamecube-dock-btn';
+        btn.textContent = item.label;
+        btn.addEventListener('click', function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          const target = document.getElementById(item.targetId);
+          if (target) target.click();
+        });
+        document.body.appendChild(btn);
+      }
+    });
+  }
+
+  function positionDockButtons(){
+    ensureDockButtons();
+    const isGameCube = document.body.classList.contains('gamecube-theme');
+    const o = overlayRect();
+    dock.forEach(item => {
+      const btn = document.getElementById(item.cloneId);
+      if (!btn) return;
+      if (!isGameCube) {
+        btn.style.display = 'none';
+        return;
+      }
+      const r = item.rect;
+      btn.style.display = 'flex';
+      btn.style.left = `${o.left + (r.x / OVERLAY_W) * o.width}px`;
+      btn.style.top = `${o.top + (r.y / OVERLAY_H) * o.height}px`;
+      btn.style.width = `${(r.w / OVERLAY_W) * o.width}px`;
+      btn.style.height = `${(r.h / OVERLAY_H) * o.height}px`;
+    });
+  }
+
+  window.addEventListener('resize', positionDockButtons);
+  window.addEventListener('orientationchange', positionDockButtons);
+  document.addEventListener('DOMContentLoaded', positionDockButtons);
+  new MutationObserver(positionDockButtons).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  setTimeout(positionDockButtons, 50);
+  setTimeout(positionDockButtons, 250);
+  setTimeout(positionDockButtons, 750);
 })();
 </script>
 
