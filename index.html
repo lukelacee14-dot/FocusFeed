@@ -2078,7 +2078,6 @@ body.arcade-theme .settings-tab.active {
     border-color: rgba(226,220,255,0.76);
   }
 
-
   /* ── ARCADE CABINET THEME ── */
   body.arcade-cabinet-theme {
     --bg: #02030a;
@@ -2410,6 +2409,7 @@ body.arcade-theme .settings-tab.active {
     body.arcade-cabinet-theme #sidebar { display: none !important; }
     body.arcade-cabinet-theme .mobile-header { display: flex !important; }
   }
+
 
 </style>
 </head>
@@ -5039,6 +5039,24 @@ document.addEventListener('click',e=>{if(!document.body.classList.contains('win9
   if(!getKey()){showScreen('setup-screen');}
   else{renderSidebar();showScreen('home-screen');renderFeed(false);}
 })();
+
+
+// Arcade Cabinet fallback: keep this separate so the settings panel always shows the option.
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    if (Array.isArray(PRESETS) && !PRESETS.some(p => p.name === 'Arcade Cabinet')) {
+      PRESETS.push({
+        name: 'Arcade Cabinet',
+        bg: '#02030a', surface: '#070712', surface2: '#111027', border: '#ffbf2844',
+        text: '#fff4d6', muted: '#b99bd7', accent: '#ff2fb9', accent2: '#ffbf28',
+        font: 'Orbitron',
+        bgPattern: 'radial-gradient(circle at 50% 50%, #111028 0%, #04040b 58%, #000 100%)',
+        bgPatternSize: '100% 100%'
+      });
+      if (typeof renderThemePanel === 'function') renderThemePanel();
+    }
+  } catch (e) {}
+});
 
 // ── XBOX 360 THEME ──
 let xboxActiveChannel = 0;
