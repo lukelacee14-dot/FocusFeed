@@ -2463,6 +2463,51 @@ body.arcade-theme .settings-tab.active {
   }
 
 
+
+
+  /* Arcade Cabinet player exact-fit override v4 — shrink the YouTube iframe inside the visible cut-out */
+  body.arcade-cabinet-theme #player-screen.active {
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body.arcade-cabinet-theme #player-screen .player-top {
+    flex: 0 0 clamp(32px, 3.2vw, 42px) !important;
+    min-height: clamp(32px, 3.2vw, 42px) !important;
+    padding: 6px 12px !important;
+  }
+
+  body.arcade-cabinet-theme #player-screen .player-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 0 clamp(14px, 1.05vw, 22px) clamp(90px, 6.4vw, 128px) clamp(14px, 1.05vw, 22px) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    background: #000 !important;
+  }
+
+  body.arcade-cabinet-theme #player-screen .embed-wrap {
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    aspect-ratio: auto !important;
+    overflow: hidden !important;
+    border-radius: 0 0 10px 10px !important;
+    background: #000 !important;
+  }
+
+  body.arcade-cabinet-theme #player-screen .embed-wrap iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: 0 !important;
+    display: block !important;
+  }
+
 </style>
 </head>
 <body>
