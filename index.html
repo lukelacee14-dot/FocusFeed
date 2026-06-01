@@ -2263,77 +2263,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     body.cyberpunk-bedroom-theme .mobile-header { display: flex !important; }
   }
 
-  /* ── MOBILE BOTTOM NAV ── */
-  #mobile-bottom-nav { display: none; }
-  @media (max-width: 767px) {
-    #mobile-bottom-nav {
-      display: flex;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: var(--bg);
-      border-top: 1px solid var(--border);
-      z-index: 500;
-      height: 60px;
-      align-items: center;
-      justify-content: space-around;
-      padding: 0 4px;
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-    }
-    .mob-nav-btn {
-      background: none; border: none;
-      color: var(--muted); font-size: 20px;
-      cursor: pointer; padding: 8px;
-      border-radius: 8px; transition: color 0.15s;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; min-width: 40px; min-height: 40px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .mob-nav-btn.active { color: var(--accent); }
-    .mob-nav-channels {
-      display: flex; align-items: center; gap: 2px;
-      overflow: hidden; flex: 1;
-      justify-content: center; padding: 0 2px;
-    }
-    .mob-ch-btn {
-      background: none; border: none; cursor: pointer;
-      padding: 4px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      transition: opacity 0.15s; flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .mob-ch-btn.active { outline: 2px solid var(--accent); border-radius: 50%; }
-    .mob-ch-btn img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-    .mob-ch-placeholder {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: var(--surface2); display: flex; align-items: center;
-      justify-content: center; font-family: 'DM Serif Display', serif;
-      font-size: 12px; color: var(--accent);
-    }
-    /* Ensure content is not hidden behind the nav bar */
-    #main { padding-bottom: 60px; }
-    .video-grid { padding-bottom: 80px !important; }
-    .feed-grid { padding-bottom: 80px !important; }
-    #dashboard-screen .dashboard-inner { padding-bottom: 80px !important; }
-    #settings-screen { padding-bottom: 60px; }
-    #add-screen { padding-bottom: 60px; }
-    #player-screen .player-sidebar { padding-bottom: 60px; }
-    #search-videos-screen { padding-bottom: 60px; }
-  }
-  /* Make sure overlay themes show bottom nav at mobile */
-  @media (max-width: 767px) {
-    body.lofi-cafe-theme #mobile-bottom-nav,
-    body.cyberpunk-bedroom-theme #mobile-bottom-nav { display: flex !important; }
-    /* Ensure overlay themes don't clip the fixed nav */
-    body.lofi-cafe-theme #main,
-    body.cyberpunk-bedroom-theme #main { padding-bottom: 60px !important; }
-    /* Overlay themes: ensure bg image covers full screen */
-    body.lofi-cafe-theme,
-    body.cyberpunk-bedroom-theme {
-      background-size: cover !important;
-      background-position: center !important;
-    }
-  }
-
 </style>
 </head>
 <body>
@@ -2949,13 +2878,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       </div>
     </div>
 
-    <!-- Mobile bottom nav -->
-    <nav id="mobile-bottom-nav" aria-label="Navigation">
-      <button class="mob-nav-btn" id="mob-nav-home-btn" title="Home">⌂</button>
-      <div id="mob-nav-channels" class="mob-nav-channels"></div>
-      <button class="mob-nav-btn" id="mob-nav-dashboard-btn" title="Your Dashboard">◈</button>
-      <button class="mob-nav-btn" id="mob-nav-settings-btn" title="Settings">⚙</button>
-    </nav>
   </div>
 </div>
 
@@ -3048,7 +2970,6 @@ function isDesktop() { return window.innerWidth >= 768; }
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  updateMobileNavActive();
 }
 
 function showHome() {
@@ -3175,7 +3096,6 @@ function renderSidebar() {
     btn.addEventListener('click', e => { e.stopPropagation(); removeChannel(parseInt(btn.dataset.remove)); });
   });
   if(typeof addDragToSidebar==='function') addDragToSidebar();
-  renderMobileNav();
 }
 
 // ── Mobile channel list ──
@@ -3817,10 +3737,7 @@ function renderThemePanel() {
 
   // Presets
   const tg = document.getElementById('theme-grid');
-  const _isMobile = window.innerWidth < 768;
-  tg.innerHTML = PRESETS.map((p, i) => {
-    if (_isMobile && (p.name === 'GameCube' || p.name === 'Xbox 360')) return '';
-    return `
+  tg.innerHTML = PRESETS.map((p, i) => `
     <div class="theme-swatch ${current.presetName === p.name ? 'active' : ''}" data-preset="${i}" style="cursor:pointer">
       <div class="theme-swatch-dots">
         <div class="theme-swatch-dot" style="background:${p.bg};border:1px solid ${p.border}"></div>
@@ -3829,8 +3746,7 @@ function renderThemePanel() {
       </div>
       <div class="theme-swatch-name">${p.name}</div>
       ${current.presetName === p.name ? '<div class="theme-active-tick">✓ active</div>' : ''}
-    </div>`;
-  }).join('');
+    </div>`).join('');
   tg.querySelectorAll('.theme-swatch').forEach(sw => {
     sw.addEventListener('click', () => {
       const p = PRESETS[parseInt(sw.dataset.preset)];
@@ -3961,7 +3877,6 @@ document.getElementById('reset-theme-btn').addEventListener('click', () => {
 
 // Apply saved theme on load
 applyTheme(loadTheme());
-checkMobileTheme();
 
 // ── QUOTA TRACKER ──
 const QUOTA_KEY = 'ff_quota';
@@ -5398,55 +5313,6 @@ window._tourChannelCheck = function() {
   if (!tourActive) return;
   if (TOUR_STEPS[tourStep].trigger === 'add') setTimeout(_tourAdvance, 600);
 };
-
-// ── MOBILE BOTTOM NAV ──
-function renderMobileNav() {
-  const container = document.getElementById('mob-nav-channels');
-  if (!container) return;
-  const MAX = 5;
-  const shown = channels.slice(0, MAX);
-  container.innerHTML = shown.map((ch, i) => `
-    <button class="mob-ch-btn ${currentChannel && currentChannel.id === ch.id ? 'active' : ''}" data-chi="${i}" title="${esc(ch.name)}">
-      ${ch.thumb ? `<img src="${ch.thumb}" alt="">` : `<div class="mob-ch-placeholder">${ch.name[0]}</div>`}
-    </button>`).join('');
-  container.querySelectorAll('.mob-ch-btn').forEach(btn => {
-    btn.addEventListener('click', () => { openChannel(parseInt(btn.dataset.chi)); });
-  });
-  updateMobileNavActive();
-}
-
-function updateMobileNavActive() {
-  const active = document.querySelector('.screen.active');
-  const sid = active ? active.id : '';
-  const hb = document.getElementById('mob-nav-home-btn');
-  const db = document.getElementById('mob-nav-dashboard-btn');
-  const sb = document.getElementById('mob-nav-settings-btn');
-  if (hb) hb.classList.toggle('active', sid === 'home-screen');
-  if (db) db.classList.toggle('active', sid === 'dashboard-screen');
-  if (sb) sb.classList.toggle('active', sid === 'settings-screen');
-  document.querySelectorAll('.mob-ch-btn').forEach(btn => {
-    const ch = channels[parseInt(btn.dataset.chi)];
-    btn.classList.toggle('active', !!(currentChannel && ch && currentChannel.id === ch.id));
-  });
-}
-
-document.getElementById('mob-nav-home-btn').addEventListener('click', showHome);
-document.getElementById('mob-nav-dashboard-btn').addEventListener('click', () => showDashboard('today'));
-document.getElementById('mob-nav-settings-btn').addEventListener('click', showSettings);
-
-// ── MOBILE THEME CHECK ──
-function checkMobileTheme() {
-  if (window.innerWidth >= 768) return;
-  const t = loadTheme();
-  if (t.presetName === 'GameCube' || t.presetName === 'Xbox 360') {
-    const fallback = { ...PRESETS[0], presetName: PRESETS[0].name };
-    saveTheme(fallback);
-    applyTheme(fallback);
-    const tg = document.getElementById('theme-grid');
-    if (tg) renderThemePanel();
-  }
-}
-window.addEventListener('resize', checkMobileTheme);
 
 // Page-load trigger: start tour if ff_tour_done is absent
 // Fires when home screen is shown for the first time
