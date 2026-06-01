@@ -2403,9 +2403,11 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     .mob-video-meta { font-size: 11px; color: var(--muted); }
 
     /* 4 ── HIDE GAMECUBE + XBOX IN THEME PICKER ── */
-    /* PRESETS indices: 9 = Xbox 360, 10 = GameCube */
+    /* PRESETS indices: 9 = Xbox 360, 10 = GameCube, 12 = Lofi Cafe, 13 = Cyberpunk Bedroom */
     #theme-grid .theme-swatch[data-preset="9"],
-    #theme-grid .theme-swatch[data-preset="10"] { display: none !important; }
+    #theme-grid .theme-swatch[data-preset="10"],
+    #theme-grid .theme-swatch[data-preset="12"],
+    #theme-grid .theme-swatch[data-preset="13"] { display: none !important; }
 
     /* 5 ── BACKGROUND IMAGE / OVERLAY THEMES ── */
     body.has-bg-image { background-size: cover !important; background-position: center !important; }
@@ -5548,7 +5550,7 @@ window._tourChannelCheck = function() {
   function checkMobileThemeFallback() {
     if (isDesktop()) return;
     const t = loadTheme();
-    if (t.presetName === 'GameCube' || t.presetName === 'Xbox 360') {
+    if (t.presetName === 'GameCube' || t.presetName === 'Xbox 360' || t.presetName === 'Lofi Cafe' || t.presetName === 'Cyberpunk Bedroom') {
       const def = { ...PRESETS[0], presetName: PRESETS[0].name };
       saveTheme(def);
       applyTheme(def);
