@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Door — YourSpace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── CSS CUSTOM PROPERTIES — one per scene for easy tone control ── */
+:root {
+  --bg-ante:    #0a0c10;
+  --bg-d1:      #0d0f14;
+  --bg-d2:      #101318;
+  --bg-d3:      #080a0e;
+  --bg-d4:      #1a1208;
+  --bg-d5:      #22180a;
+  --bg-d6:      #1c140a;
+
+  --text-ante:  #c8c4bc;
+  --text-d1:    #b8b4ac;
+  --text-d2:    #c0bcb4;
+  --text-d3:    #9a9690;
+  --text-d4:    #e8d8b0;
+  --text-d5:    #f0e4c8;
+  --text-d6:    #f0e8d4;
+
+  --accent-ante: #4a5070;
+  --accent-d1:   #4a5070;
+  --accent-d2:   #5a6080;
+  --accent-d3:   #3a3d50;
+  --accent-d4:   #c8900a;
+  --accent-d5:   #d4a020;
+  --accent-d6:   #c89030;
+
+  --glow-ante:  rgba(60,70,120,0.18);
+  --glow-d1:    rgba(60,70,120,0.20);
+  --glow-d2:    rgba(70,80,140,0.18);
+  --glow-d3:    rgba(40,50,100,0.22);
+  --glow-d4:    rgba(210,140,20,0.22);
+  --glow-d5:    rgba(230,160,30,0.30);
+  --glow-d6:    rgba(240,180,60,0.35);
+
+  /* Active scene (updated by JS) */
+  --scene-bg:   #0a0c10;
+  --scene-text: #c8c4bc;
+  --scene-accent: #4a5070;
+  --scene-glow: rgba(60,70,120,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--scene-bg);
+  color: var(--scene-text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  transition: background 1.2s ease, color 1.2s ease;
+}
+
+/* ── FILM GRAIN ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 9000;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  opacity: 0.032;
+  mix-blend-mode: overlay;
+}
+
+/* ── VIGNETTE ── */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 8999;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 48%, transparent 38%, rgba(0,0,0,0.72) 100%);
+}
+
+/* ── BACK LINK ── */
+#back-link {
+  position: fixed; top: 24px; left: 28px; z-index: 9100;
+  font-size: 12px; color: rgba(200,196,188,0.3);
+  text-decoration: none; letter-spacing: 0.06em;
+  transition: color 0.3s;
+}
+#back-link:hover { color: rgba(200,196,188,0.7); }
+
+/* ── FADE OVERLAY ── */
+#fade-overlay {
+  position: fixed; inset: 0; z-index: 9050;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+#fade-overlay.fading { opacity: 1; pointer-events: all; }
+
+/* ── STAGE ── */
+#stage {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+}
+
+/* ── SCENES ── */
+.scene {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+  padding: 40px 20px;
+}
+.scene.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ── TEXT CONTENT ── */
+.content {
+  max-width: 700px; width: 100%;
+  text-align: center;
+  margin-bottom: 48px;
+}
+.content p {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--scene-text);
+  margin-bottom: 16px;
+  opacity: 0;
+  transition: opacity 0.7s ease, color 1.2s ease;
+}
+.content p.visible { opacity: 1; }
+.content h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(26px, 3.5vw, 42px);
+  line-height: 1.25;
+  color: var(--scene-text);
+  margin-bottom: 24px;
+  opacity: 0;
+  transition: opacity 0.8s ease, color 1.2s ease;
+}
+.content h2.visible { opacity: 1; }
+.content .big-line {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(22px, 3vw, 36px);
+  font-style: italic;
+  line-height: 1.3;
+  color: var(--scene-text);
+  margin: 32px 0;
+  opacity: 0;
+  transition: opacity 0.8s ease, color 1.2s ease;
+}
+.content .big-line.visible { opacity: 1; }
+
+/* ── TYPEWRITER ── */
+#typewriter-text {
+  font-size: 18px; line-height: 1.8;
+  color: var(--scene-text);
+  text-align: center;
+  max-width: 600px;
+  min-height: 80px;
+  transition: color 1.2s ease;
+}
+#typewriter-cursor {
+  display: inline-block;
+  width: 2px; height: 1.1em;
+  background: var(--scene-text);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 0.8s step-end infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ── BUTTON ── */
+.btn {
+  display: inline-block;
+  background: none;
+  border: 1px solid rgba(200,196,188,0.25);
+  color: rgba(200,196,188,0.6);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  padding: 12px 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.3s, color 0.3s, background 0.3s, opacity 0.5s ease;
+  opacity: 0;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+}
+.btn.visible { opacity: 1; }
+.btn:hover {
+  border-color: rgba(200,196,188,0.55);
+  color: rgba(200,196,188,0.9);
+  background: rgba(200,196,188,0.05);
+}
+.btn.primary {
+  border-color: var(--scene-accent);
+  color: var(--scene-accent);
+}
+.btn.primary:hover {
+  background: rgba(200,196,188,0.08);
+}
+.btn.disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.btn.disabled.visible { opacity: 0.3 !important; }
+.btn-row {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  opacity: 0; transition: opacity 0.6s ease;
+  margin-top: 24px;
+}
+.btn-row.visible { opacity: 1; }
+
+/* ── DOOR SCENE ── */
+#door-scene {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+}
+
+#door-above-text {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-340px);
+  text-align: center;
+  max-width: 560px;
+  font-size: 16px;
+  color: rgba(200,196,188,0.55);
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+#door-above-text.visible { opacity: 1; }
+
+/* 3D Door container — mouse parallax */
+#door-container {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  width: 200px;
+  height: 380px;
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  /* small drop shadow for the whole door */
+  filter: drop-shadow(0 20px 60px rgba(0,0,0,0.8));
+}
+/* Parallax wrapper */
+#door-parallax {
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.12s ease-out;
+}
+
+/* Light glow behind door */
+#door-glow {
+  position: absolute;
+  left: -80px; top: -60px;
+  width: calc(100% + 160px);
+  height: calc(100% + 120px);
+  background: radial-gradient(ellipse at 50% 50%, rgba(255,200,80,0.0) 0%, transparent 70%);
+  transition: background 0.3s ease;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+}
+#door-container.glowing #door-glow {
+  animation: glow-expand 2.5s ease forwards;
+}
+@keyframes glow-expand {
+  0%   { background: radial-gradient(ellipse at 50% 50%, rgba(255,200,80,0.0) 0%, transparent 70%); }
+  30%  { background: radial-gradient(ellipse at 50% 50%, rgba(255,200,80,0.08) 0%, rgba(255,160,40,0.04) 50%, transparent 75%); }
+  100% { background: radial-gradient(ellipse at 50% 50%, rgba(255,200,80,0.28) 0%, rgba(255,160,40,0.14) 50%, transparent 80%); }
+}
+
+/* Door hinged on left — 3D transform-origin */
+#door-panel {
+  position: absolute; inset: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transform: rotateY(0deg);
+  transition: transform 2.5s cubic-bezier(0.22,0.00,0.10,1.00);
+  z-index: 2;
+}
+#door-panel.open {
+  transform: rotateY(-82deg);
+}
+
+/* Door face */
+#door-face {
+  position: absolute; inset: 0;
+  border-radius: 2px 8px 8px 2px;
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+/* Door texture — CSS only, each door has a different feel set by JS */
+#door-face-inner {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  padding: 18px 14px;
+  position: relative;
+  background: var(--door-bg, #2a1e14);
+  border: 1px solid var(--door-border, #3a2a1c);
+}
+/* Wood grain lines */
+#door-face-inner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    175deg,
+    transparent 0px,
+    transparent 8px,
+    rgba(0,0,0,0.06) 8px,
+    rgba(0,0,0,0.06) 9px
+  );
+  pointer-events: none;
+}
+/* Door panels (raised rectangle detail) */
+.door-panel-detail {
+  flex: 1;
+  border: 1px solid var(--door-panel-border, rgba(255,255,255,0.06));
+  border-radius: 3px;
+  margin: 4px 0;
+  background: var(--door-panel-bg, rgba(0,0,0,0.12));
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -1px 0 rgba(0,0,0,0.2);
+}
+
+/* Door knob */
+#door-knob {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #c8a060, #7a5a30);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Door shadow — on the "floor" / wall as it swings */
+#door-shadow {
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  transition: transform 2.5s cubic-bezier(0.22,0.00,0.10,1.00), opacity 2.5s ease;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.35;
+}
+#door-shadow.open {
+  transform: rotateY(-82deg);
+  opacity: 0.12;
+}
+#door-shadow-fill {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.7), transparent);
+  border-radius: 2px;
+}
+
+/* Door frame (stays fixed) */
+#door-frame {
+  position: absolute; inset: -10px;
+  border: 2px solid var(--door-frame, #1a1208);
+  border-radius: 4px 10px 10px 4px;
+  pointer-events: none;
+  z-index: 3;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04),
+              -4px 0 12px rgba(0,0,0,0.5);
+}
+
+/* Light crack on left side as door opens */
+#door-crack {
+  position: absolute;
+  left: -10px; top: -10px;
+  width: 8px; height: calc(100% + 20px);
+  background: linear-gradient(to right, rgba(255,180,60,0.0), transparent);
+  z-index: 4;
+  pointer-events: none;
+  transition: background 0.4s ease;
+}
+#door-container.glowing #door-crack {
+  animation: crack-glow 2.5s ease forwards;
+}
+@keyframes crack-glow {
+  0%   { background: linear-gradient(to right, rgba(255,180,60,0.0), transparent); }
+  20%  { background: linear-gradient(to right, rgba(255,180,60,0.35) 0%, rgba(255,180,60,0.08) 40%, transparent 100%); }
+  100% { background: linear-gradient(to right, rgba(255,200,80,0.55) 0%, rgba(255,180,60,0.18) 50%, transparent 100%); }
+}
+
+/* Dust particles */
+.dust-particle {
+  position: absolute;
+  left: calc(50% + 20px);
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: rgba(255,220,120,0.7);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+#door-container.glowing .dust-particle { animation: dust-float var(--dur, 3s) var(--delay, 0s) ease-in-out forwards; }
+@keyframes dust-float {
+  0%   { opacity: 0; transform: translate(0px, 0px) scale(0.5); }
+  15%  { opacity: 0.8; }
+  100% { opacity: 0; transform: translate(var(--tx, 40px), var(--ty, -80px)) scale(0.8); }
+}
+
+/* ── DOOR BELOW BUTTON ── */
+#door-below {
+  position: absolute;
+  top: 50%;
+  transform: translateY(220px);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#door-below.visible { opacity: 1; }
+
+/* ── LOOP ANIMATION (Door 3) ── */
+#loop-display {
+  display: flex;
+  gap: 0;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  max-width: 700px;
+  margin: 0 auto 32px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#loop-display.visible { opacity: 1; }
+.loop-word {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(180,170,160,0.5);
+  padding: 0 6px;
+  transition: color 0.4s, opacity 0.4s;
+  white-space: nowrap;
+}
+.loop-word.active-word {
+  color: var(--scene-text);
+  opacity: 1;
+}
+.loop-arrow {
+  font-size: 11px;
+  color: rgba(180,170,160,0.25);
+  padding: 0 2px;
+}
+
+/* ── GOAL CARDS (Door 5) ── */
+#goal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto 28px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#goal-grid.visible { opacity: 1; }
+.goal-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 16px 14px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+.goal-card:hover {
+  background: rgba(255,255,255,0.07);
+  transform: translateY(-1px);
+}
+.goal-card.selected {
+  background: rgba(200,144,48,0.12);
+  border-color: rgba(200,144,48,0.35);
+}
+.goal-card-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+.goal-card-text {
+  font-size: 13px;
+  color: var(--scene-text);
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+/* ── DOOR 6 SECTIONS ── */
+#d6-sections {
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  text-align: left;
+}
+#d6-sections.visible { opacity: 1; }
+.d6-section {
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.d6-section.visible { opacity: 1; }
+.d6-section-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--scene-accent);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+.d6-section p {
+  font-size: 14px;
+  color: var(--scene-text);
+  line-height: 1.7;
+  margin-bottom: 14px;
+  opacity: 1;
+}
+.d6-btn-row {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+.d6-btn {
+  display: inline-block;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--scene-text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  padding: 10px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+.d6-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* Prompt box */
+#prompt-box {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 18px 20px;
+  font-size: 13px;
+  color: rgba(240,220,180,0.8);
+  line-height: 1.75;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 14px;
+  user-select: text;
+}
+#copy-btn {
+  display: inline-block;
+  background: rgba(200,144,48,0.1);
+  border: 1px solid rgba(200,144,48,0.3);
+  color: rgba(200,144,48,0.8);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+#copy-btn:hover {
+  background: rgba(200,144,48,0.18);
+  color: rgba(220,164,68,1);
+}
+
+.d6-tips { display: flex; flex-direction: column; gap: 10px; }
+.d6-tip {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 14px; color: var(--scene-text); line-height: 1.6;
+}
+.d6-tip::before {
+  content: '—';
+  color: var(--scene-accent);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+#finish-btn {
+  display: block;
+  margin: 0 auto;
+  background: none;
+  border: 1px solid var(--scene-accent);
+  color: var(--scene-accent);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 14px 44px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.5s;
+  opacity: 0;
+}
+#finish-btn.visible { opacity: 1; }
+#finish-btn:hover { background: rgba(200,144,48,0.08); }
+
+/* ── SCROLLABLE SCENE WRAPPER ── */
+.scene-scroll {
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200,196,188,0.15) transparent;
+  padding: 60px 20px;
+  width: 100%;
+  display: flex; flex-direction: column; align-items: center;
+}
+.scene-scroll::-webkit-scrollbar { width: 4px; }
+.scene-scroll::-webkit-scrollbar-thumb { background: rgba(200,196,188,0.15); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<!-- Back link — always present -->
+<a href="index.html" id="back-link">← Back</a>
+
+<!-- Fade overlay for transitions -->
+<div id="fade-overlay"></div>
+
+<!-- Stage -->
+<div id="stage">
+
+  <!-- ═══════════════ ANTE-ROOM ═══════════════ -->
+  <div class="scene active" id="scene-ante">
+    <div id="door-scene">
+      <div id="door-above-text">
+        This will take about 5 minutes.<br>It might feel familiar.
+      </div>
+      <div id="door-container">
+        <div id="door-parallax">
+          <div id="door-glow"></div>
+          <!-- Crack light -->
+          <div id="door-crack"></div>
+          <!-- Shadow -->
+          <div id="door-shadow">
+            <div id="door-shadow-fill"></div>
+          </div>
+          <!-- Door panel -->
+          <div id="door-panel">
+            <div id="door-face">
+              <div id="door-face-inner">
+                <div class="door-panel-detail"></div>
+                <div class="door-panel-detail" style="flex:1.4"></div>
+                <div class="door-panel-detail"></div>
+                <div id="door-knob"></div>
+              </div>
+            </div>
+          </div>
+          <!-- Frame -->
+          <div id="door-frame"></div>
+          <!-- Dust particles -->
+          <div class="dust-particle" style="top:42%;--tx:55px;--ty:-70px;--dur:3.2s;--delay:1.4s"></div>
+          <div class="dust-particle" style="top:55%;--tx:38px;--ty:-90px;--dur:2.8s;--delay:1.8s"></div>
+          <div class="dust-particle" style="top:35%;--tx:70px;--ty:-50px;--dur:3.5s;--delay:2.0s"></div>
+          <div class="dust-particle" style="top:60%;--tx:45px;--ty:-110px;--dur:2.6s;--delay:2.2s"></div>
+          <div class="dust-particle" style="top:48%;--tx:80px;--ty:-65px;--dur:3.8s;--delay:2.4s"></div>
+          <div class="dust-particle" style="top:30%;--tx:35px;--ty:-85px;--dur:3.0s;--delay:2.6s"></div>
+          <div class="dust-particle" style="top:65%;--tx:60px;--ty:-45px;--dur:2.9s;--delay:1.6s"></div>
+          <div class="dust-particle" style="top:52%;--tx:25px;--ty:-100px;--dur:3.4s;--delay:2.8s"></div>
+        </div>
+      </div>
+      <div id="door-below">
+        <button class="btn primary" id="ready-btn">I'm ready</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DOOR 1 ═══════════════ -->
+  <div class="scene" id="scene-d1">
+    <div class="content">
+      <div id="typewriter-wrap" style="margin-bottom:28px">
+        <span id="typewriter-text"></span><span id="typewriter-cursor"></span>
+      </div>
+      <p id="d1-question" style="font-size:16px;color:rgba(200,196,188,0.5);letter-spacing:0.04em">Does this feel familiar?</p>
+    </div>
+    <div class="btn-row" id="d1-btns">
+      <button class="btn" data-next="d2">Yes</button>
+      <button class="btn" data-next="d2">Sometimes</button>
+      <button class="btn" data-next="d2">Keep going</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DOOR 2 ═══════════════ -->
+  <div class="scene" id="scene-d2">
+    <div class="content" id="d2-content">
+      <p id="d2-p1">These apps are not neutral.</p>
+      <p id="d2-p2">They are built to keep you watching, scrolling, reacting, comparing, and coming back.</p>
+      <p id="d2-p3">You are not weak. You are in an environment designed to overpower your attention.</p>
+      <p id="d2-p4">But once you see it — you can start changing it.</p>
+    </div>
+    <button class="btn primary" id="d2-btn">Show me what it costs</button>
+  </div>
+
+  <!-- ═══════════════ DOOR 3 ═══════════════ -->
+  <div class="scene" id="scene-d3">
+    <div class="scene-scroll">
+      <div id="loop-display">
+        <span class="loop-word" data-word="0">Bored</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-word" data-word="1">Scroll</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-word" data-word="2">Overstimulated</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-word" data-word="3">Avoid tasks</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-word" data-word="4">Feel guilty</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-word" data-word="5">Need escape</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-word" data-word="6">Scroll</span>
+      </div>
+
+      <div class="content" id="d3-content" style="margin-bottom:16px">
+        <p id="d3-i1">Poor sleep</p>
+        <p id="d3-i2">Avoided tasks</p>
+        <p id="d3-i3">More anxiety</p>
+        <p id="d3-i4">Less creativity</p>
+        <p id="d3-i5">Comparison and envy</p>
+        <p id="d3-i6">Parasocial relationships</p>
+        <p id="d3-i7">Political overstimulation</p>
+        <p id="d3-i8">Less desire to go outside</p>
+        <p id="d3-i9">Guilt over wasted potential</p>
+      </div>
+
+      <p id="d3-close" style="font-size:16px;line-height:1.7;color:rgba(180,170,160,0.7);max-width:600px;text-align:center;opacity:0;transition:opacity 0.7s ease;margin-bottom:28px">
+        This is the loop. Most people live inside it without ever naming it.
+      </p>
+
+      <button class="btn primary" id="d3-btn" style="opacity:0;transition:opacity 0.6s ease">What's outside it?</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DOOR 4 ═══════════════ -->
+  <div class="scene" id="scene-d4">
+    <div class="scene-scroll">
+      <div class="content" id="d4-content">
+        <p id="d4-l1">You sleep earlier.</p>
+        <p id="d4-l2">You feel less mentally noisy.</p>
+        <p id="d4-l3">You start finishing things.</p>
+        <p id="d4-l4">You get bored — then creativity comes back.</p>
+        <p id="d4-l5">You pick up a hobby.</p>
+        <p id="d4-l6">You message real people.</p>
+        <p id="d4-l7">You go outside.</p>
+        <p id="d4-l8">You stop living through other people's lives.</p>
+        <p id="d4-l9">Your own life starts feeling bigger.</p>
+        <div class="big-line" id="d4-big">The goal is not less screen time.<br>The goal is more life.</div>
+      </div>
+      <button class="btn primary" id="d4-btn">I want that</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DOOR 5 ═══════════════ -->
+  <div class="scene" id="scene-d5">
+    <div class="scene-scroll">
+      <div class="content" style="margin-bottom:24px">
+        <h2 id="d5-title">What do you want to build?</h2>
+        <p id="d5-sub" style="font-size:15px;color:rgba(240,228,200,0.6)">Now that you can see the loop — what do you actually want your life to become?</p>
+        <p id="d5-sub2" style="font-size:13px;color:rgba(240,228,200,0.4);letter-spacing:0.04em;margin-top:4px">Choose what matters to you. You can pick more than one.</p>
+      </div>
+
+      <div id="goal-grid">
+        <div class="goal-card" data-goal="Get fitter"><span class="goal-card-icon">🏃</span><span class="goal-card-text">Get fitter</span></div>
+        <div class="goal-card" data-goal="Make money"><span class="goal-card-icon">💰</span><span class="goal-card-text">Make money</span></div>
+        <div class="goal-card" data-goal="Finish uni or study"><span class="goal-card-icon">🎓</span><span class="goal-card-text">Finish uni or study</span></div>
+        <div class="goal-card" data-goal="Buy a house"><span class="goal-card-icon">🏠</span><span class="goal-card-text">Buy a house</span></div>
+        <div class="goal-card" data-goal="Learn a skill or hobby"><span class="goal-card-icon">🎸</span><span class="goal-card-text">Learn a skill or hobby</span></div>
+        <div class="goal-card" data-goal="Build better relationships"><span class="goal-card-icon">❤️</span><span class="goal-card-text">Build better relationships</span></div>
+        <div class="goal-card" data-goal="Make something — an app, website, or business"><span class="goal-card-icon">🌐</span><span class="goal-card-text">Make something — an app, website, or business</span></div>
+        <div class="goal-card" data-goal="Figure out my purpose"><span class="goal-card-icon">🧭</span><span class="goal-card-text">Figure out my purpose</span></div>
+        <div class="goal-card" data-goal="Detox from my devices"><span class="goal-card-icon">📵</span><span class="goal-card-text">Detox from my devices</span></div>
+        <div class="goal-card" data-goal="I feel stuck and I don't know where to start"><span class="goal-card-icon">💭</span><span class="goal-card-text">I feel stuck and I don't know where to start</span></div>
+      </div>
+
+      <button class="btn primary disabled" id="d5-btn">Show me how</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ DOOR 6 ═══════════════ -->
+  <div class="scene" id="scene-d6">
+    <div class="scene-scroll">
+      <div class="content" style="margin-bottom:32px">
+        <p id="d6-intro" style="font-size:17px;line-height:1.8;max-width:640px;text-align:center">AI won't live your life for you. But if you give it the right goal and the right questions, it can help you think, plan, and act faster than you could alone.</p>
+      </div>
+
+      <div id="d6-sections">
+        <!-- Section 1 -->
+        <div class="d6-section" id="d6-s1">
+          <div class="d6-section-label">Step 1 — Open your AI assistant</div>
+          <p>Start here. Both of these work — the important part is how you talk to it.</p>
+          <div class="d6-btn-row">
+            <a href="https://claude.ai" target="_blank" class="d6-btn">Open Claude →</a>
+            <a href="https://chatgpt.com" target="_blank" class="d6-btn">Open ChatGPT →</a>
+          </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="d6-section" id="d6-s2">
+          <div class="d6-section-label">Step 2 — Your first prompt</div>
+          <p>Copy this and paste it into your AI assistant. Your goals are already filled in.</p>
+          <div id="prompt-box"></div>
+          <button id="copy-btn">Copy prompt</button>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="d6-section" id="d6-s3">
+          <div class="d6-section-label">Step 3 — How to use it properly</div>
+          <div class="d6-tips">
+            <div class="d6-tip">Give each big goal its own separate chat — don't mix everything together.</div>
+            <div class="d6-tip">The more context and detail you give it, the better it helps you.</div>
+            <div class="d6-tip">Come back to the same chat to continue — it remembers everything you've told it.</div>
+          </div>
+        </div>
+      </div>
+
+      <button id="finish-btn">Take me to my dashboard →</button>
+    </div>
+  </div>
+
+</div><!-- /stage -->
+
+<script>
+'use strict';
+
+/* ── Audio ── */
+const sounds = {};
+function loadSound(name, src) {
+  sounds[name] = new Audio(src);
+  sounds[name].preload = 'auto';
+}
+loadSound('creak', 'door-creak.mp3');
+loadSound('wind',  'wind.mp3');
+loadSound('birds', 'birdsong.mp3');
+loadSound('chime', 'chime.mp3');
+
+function playSound(name, volume = 1.0, loop = false) {
+  const s = sounds[name];
+  if (!s) return;
+  s.volume = volume;
+  s.loop = loop;
+  s.currentTime = 0;
+  s.play().catch(() => {});
+}
+function stopSound(name, fadeDuration = 600) {
+  const s = sounds[name];
+  if (!s) return;
+  const startVol = s.volume;
+  const steps = 20;
+  const interval = fadeDuration / steps;
+  let step = 0;
+  const fade = setInterval(() => {
+    step++;
+    s.volume = Math.max(0, startVol * (1 - step / steps));
+    if (step >= steps) { clearInterval(fade); s.pause(); s.currentTime = 0; s.volume = startVol; }
+  }, interval);
+}
+
+/* ── Scene colours & door styles ── */
+const SCENES = {
+  ante: { bg: '#0a0c10', text: '#c0bcb4', accent: '#4a5070', glow: 'rgba(60,70,120,0.18)',
+          door: { bg: '#221610', border: '#2e1e12', frame: '#100a06', panel: 'rgba(0,0,0,0.15)', panelBorder: 'rgba(255,255,255,0.05)' } },
+  d1:   { bg: '#0d0f14', text: '#b0acA4', accent: '#4a5070', glow: 'rgba(60,70,120,0.20)',
+          door: { bg: '#221a10', border: '#2e2210', frame: '#100c04', panel: 'rgba(0,0,0,0.14)', panelBorder: 'rgba(255,255,255,0.05)' } },
+  d2:   { bg: '#101318', text: '#b8b4ac', accent: '#5a6080', glow: 'rgba(70,80,140,0.18)',
+          door: { bg: '#241c10', border: '#302414', frame: '#120e06', panel: 'rgba(0,0,0,0.13)', panelBorder: 'rgba(255,255,255,0.06)' } },
+  d3:   { bg: '#080a0e', text: '#8a8680', accent: '#3a3d50', glow: 'rgba(40,50,100,0.22)',
+          door: { bg: '#180e08', border: '#221408', frame: '#080402', panel: 'rgba(0,0,0,0.18)', panelBorder: 'rgba(255,255,255,0.04)' } },
+  d4:   { bg: '#181008', text: '#e0cc98', accent: '#c8900a', glow: 'rgba(210,140,20,0.22)',
+          door: { bg: '#3a2810', border: '#4a3418', frame: '#1a1208', panel: 'rgba(255,200,80,0.06)', panelBorder: 'rgba(255,200,80,0.12)' } },
+  d5:   { bg: '#1c1408', text: '#f0e0c0', accent: '#d4a020', glow: 'rgba(230,160,30,0.30)',
+          door: { bg: '#4a3018', border: '#5a3c20', frame: '#221408', panel: 'rgba(255,200,80,0.08)', panelBorder: 'rgba(255,200,80,0.18)' } },
+  d6:   { bg: '#1c140a', text: '#f0e8d4', accent: '#c89030', glow: 'rgba(240,180,60,0.35)',
+          door: { bg: '#5a3c20', border: '#6a4c2c', frame: '#28180c', panel: 'rgba(255,210,100,0.10)', panelBorder: 'rgba(255,210,100,0.22)' } },
+};
+
+function applySceneColours(key) {
+  const s = SCENES[key];
+  const root = document.documentElement;
+  root.style.setProperty('--scene-bg',     s.bg);
+  root.style.setProperty('--scene-text',   s.text);
+  root.style.setProperty('--scene-accent', s.accent);
+  root.style.setProperty('--scene-glow',   s.glow);
+  document.body.style.background = s.bg;
+  const d = s.door;
+  root.style.setProperty('--door-bg',           d.bg);
+  root.style.setProperty('--door-border',        d.border);
+  root.style.setProperty('--door-frame',         d.frame);
+  root.style.setProperty('--door-panel-bg',      d.panel);
+  root.style.setProperty('--door-panel-border',  d.panelBorder);
+}
+
+/* ── Fade transition ── */
+const fadeEl = document.getElementById('fade-overlay');
+function fadeOut(cb) {
+  fadeEl.style.transition = 'opacity 0.8s ease';
+  fadeEl.classList.add('fading');
+  setTimeout(cb, 820);
+}
+function fadeIn(cb) {
+  fadeEl.style.transition = 'opacity 0.8s ease';
+  fadeEl.classList.remove('fading');
+  if (cb) setTimeout(cb, 820);
+}
+
+/* ── Show scene ── */
+let currentScene = 'ante';
+function showScene(key, onShown) {
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  applySceneColours(key);
+  const el = document.getElementById('scene-' + key);
+  if (el) el.classList.add('active');
+  currentScene = key;
+  if (onShown) setTimeout(onShown, 80);
+}
+
+/* ── Mouse parallax on door ── */
+const doorParallax = document.getElementById('door-parallax');
+document.addEventListener('mousemove', e => {
+  const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+  const dx = (e.clientX - cx) / cx;
+  const dy = (e.clientY - cy) / cy;
+  doorParallax.style.transform =
+    `rotateY(${dx * 2.5}deg) rotateX(${-dy * 1.5}deg) translateZ(0)`;
+});
+
+/* ── Door open animation ── */
+let doorOpened = false;
+function openDoor(cb) {
+  if (doorOpened) { if (cb) cb(); return; }
+  doorOpened = true;
+  const doorContainer = document.getElementById('door-container');
+  const doorPanel     = document.getElementById('door-panel');
+  const doorShadow    = document.getElementById('door-shadow');
+  // Play creak immediately as swing starts
+  playSound('creak', 0.85);
+  // Glow & particles
+  doorContainer.classList.add('glowing');
+  // Swing
+  requestAnimationFrame(() => {
+    doorPanel.classList.add('open');
+    doorShadow.classList.add('open');
+  });
+  // After fully open, callback
+  if (cb) setTimeout(cb, 2600);
+}
+
+/* ── Typewriter ── */
+function typewrite(text, el, cursorEl, speed, onDone) {
+  el.textContent = '';
+  let i = 0;
+  function next() {
+    if (i < text.length) {
+      el.textContent += text[i++];
+      setTimeout(next, speed);
+    } else {
+      if (cursorEl) setTimeout(() => { cursorEl.style.display = 'none'; }, 1000);
+      if (onDone) setTimeout(onDone, 1000);
+    }
+  }
+  next();
+}
+
+/* ── Delay show ── */
+function delayShow(el, delay) {
+  if (!el) return;
+  setTimeout(() => el.classList.add('visible'), delay);
+}
+
+/* ── Selected goals ── */
+let selectedGoals = [];
+
+/* ════════════════════════════════
+   INIT — Ante-room
+   ════════════════════════════════ */
+applySceneColours('ante');
+
+// Fade in door-above-text and ready button with short delay
+setTimeout(() => {
+  document.getElementById('door-above-text').classList.add('visible');
+}, 800);
+setTimeout(() => {
+  document.getElementById('door-below').classList.add('visible');
+  document.getElementById('ready-btn').classList.add('visible');
+}, 1400);
+
+/* ── Ready button ── */
+document.getElementById('ready-btn').addEventListener('click', () => {
+  openDoor(() => {
+    // Transition to Door 1 after door fully opens
+    fadeOut(() => {
+      doorOpened = false; // reset for next door
+      document.getElementById('door-panel').classList.remove('open');
+      document.getElementById('door-shadow').classList.remove('open');
+      document.getElementById('door-container').classList.remove('glowing');
+      showScene('d1', startD1);
+      fadeIn();
+    });
+  });
+});
+
+/* ════════════════════════════════
+   DOOR 1 — Recognise the loop
+   ════════════════════════════════ */
+function startD1() {
+  // Faint screen-flicker on background
+  const scene = document.getElementById('scene-d1');
+  let flicker = setInterval(() => {
+    scene.style.opacity = 0.97 + Math.random() * 0.03;
+  }, 180);
+  setTimeout(() => { clearInterval(flicker); scene.style.opacity = 1; }, 6000);
+
+  const text = "You open TikTok for 5 minutes. Then Instagram. Then YouTube. Then back to TikTok. Suddenly it's 4am. The assignment is due tomorrow.";
+  const twEl = document.getElementById('typewriter-text');
+  const twCur = document.getElementById('typewriter-cursor');
+  twEl.textContent = '';
+  twCur.style.display = 'inline-block';
+
+  setTimeout(() => {
+    typewrite(text, twEl, twCur, 38, () => {
+      // After text done — show question
+      setTimeout(() => {
+        document.getElementById('d1-question').classList.add('visible');
+      }, 1000);
+      // Show buttons
+      setTimeout(() => {
+        document.getElementById('d1-btns').classList.add('visible');
+        document.getElementById('d1-btns').querySelectorAll('.btn').forEach(b => b.classList.add('visible'));
+      }, 1800);
+    });
+  }, 400);
+}
+
+// D1 buttons — all go to D2
+document.querySelectorAll('#d1-btns .btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    fadeOut(() => {
+      showScene('d2', startD2);
+      playSound('wind', 0.25, true);
+      fadeIn();
+    });
+  });
+});
+
+/* ════════════════════════════════
+   DOOR 2 — It's not just your fault
+   ════════════════════════════════ */
+function startD2() {
+  const paras = ['d2-p1','d2-p2','d2-p3','d2-p4'];
+  paras.forEach((id, i) => {
+    setTimeout(() => delayShow(document.getElementById(id), 0), i * 600);
+  });
+  setTimeout(() => {
+    const btn = document.getElementById('d2-btn');
+    btn.classList.add('visible');
+  }, paras.length * 600 + 400);
+}
+
+document.getElementById('d2-btn').addEventListener('click', () => {
+  stopSound('wind', 400);
+  openDoor(() => {
+    fadeOut(() => {
+      doorOpened = false;
+      document.getElementById('door-panel').classList.remove('open');
+      document.getElementById('door-shadow').classList.remove('open');
+      document.getElementById('door-container').classList.remove('glowing');
+      showScene('d3', startD3);
+      playSound('wind', 0.15, true);
+      fadeIn();
+    });
+  });
+});
+
+/* ════════════════════════════════
+   DOOR 3 — What the loop costs
+   ════════════════════════════════ */
+function startD3() {
+  // Loop animation
+  const loopEl = document.getElementById('loop-display');
+  const words = loopEl.querySelectorAll('.loop-word');
+  loopEl.classList.add('visible');
+
+  let wIdx = 0;
+  const loopTimer = setInterval(() => {
+    words.forEach(w => w.classList.remove('active-word'));
+    words[wIdx % words.length].classList.add('active-word');
+    wIdx++;
+  }, 420);
+
+  setTimeout(() => {
+    clearInterval(loopTimer);
+    words.forEach(w => w.classList.remove('active-word'));
+    loopEl.style.transition = 'opacity 0.8s ease';
+    loopEl.style.opacity = '0';
+    setTimeout(() => { loopEl.style.display = 'none'; }, 900);
+
+    // Items
+    const items = ['d3-i1','d3-i2','d3-i3','d3-i4','d3-i5','d3-i6','d3-i7','d3-i8','d3-i9'];
+    items.forEach((id, i) => {
+      setTimeout(() => delayShow(document.getElementById(id), 0), i * 400);
+    });
+
+    // Closing line
+    setTimeout(() => {
+      document.getElementById('d3-close').style.opacity = '1';
+    }, items.length * 400 + 300);
+
+    // Button
+    setTimeout(() => {
+      document.getElementById('d3-btn').style.opacity = '1';
+    }, items.length * 400 + 900);
+
+  }, 3200);
+}
+
+document.getElementById('d3-btn').addEventListener('click', () => {
+  stopSound('wind', 500);
+  openDoor(() => {
+    fadeOut(() => {
+      doorOpened = false;
+      document.getElementById('door-panel').classList.remove('open');
+      document.getElementById('door-shadow').classList.remove('open');
+      document.getElementById('door-container').classList.remove('glowing');
+      showScene('d4', startD4);
+      playSound('birds', 0.2, true);
+      fadeIn();
+    });
+  });
+});
+
+/* ════════════════════════════════
+   DOOR 4 — What's outside the loop
+   ════════════════════════════════ */
+function startD4() {
+  const lines = ['d4-l1','d4-l2','d4-l3','d4-l4','d4-l5','d4-l6','d4-l7','d4-l8','d4-l9'];
+  lines.forEach((id, i) => {
+    setTimeout(() => delayShow(document.getElementById(id), 0), i * 700);
+  });
+  setTimeout(() => {
+    document.getElementById('d4-big').classList.add('visible');
+  }, lines.length * 700 + 400);
+  setTimeout(() => {
+    document.getElementById('d4-btn').classList.add('visible');
+  }, lines.length * 700 + 1200);
+}
+
+document.getElementById('d4-btn').addEventListener('click', () => {
+  stopSound('birds', 600);
+  openDoor(() => {
+    fadeOut(() => {
+      doorOpened = false;
+      document.getElementById('door-panel').classList.remove('open');
+      document.getElementById('door-shadow').classList.remove('open');
+      document.getElementById('door-container').classList.remove('glowing');
+      showScene('d5', startD5);
+      fadeIn();
+    });
+  });
+});
+
+/* ════════════════════════════════
+   DOOR 5 — What do you want to build
+   ════════════════════════════════ */
+function startD5() {
+  document.getElementById('d5-title').classList.add('visible');
+  setTimeout(() => delayShow(document.getElementById('d5-sub'), 0), 300);
+  setTimeout(() => delayShow(document.getElementById('d5-sub2'), 0), 500);
+  setTimeout(() => {
+    document.getElementById('goal-grid').classList.add('visible');
+  }, 700);
+  setTimeout(() => {
+    document.getElementById('d5-btn').classList.add('visible');
+  }, 1100);
+}
+
+// Goal card selection
+document.querySelectorAll('.goal-card').forEach(card => {
+  card.addEventListener('click', () => {
+    card.classList.toggle('selected');
+    const goal = card.dataset.goal;
+    if (card.classList.contains('selected')) {
+      if (!selectedGoals.includes(goal)) selectedGoals.push(goal);
+    } else {
+      selectedGoals = selectedGoals.filter(g => g !== goal);
+    }
+    const btn = document.getElementById('d5-btn');
+    if (selectedGoals.length > 0) {
+      btn.classList.remove('disabled');
+    } else {
+      btn.classList.add('disabled');
+    }
+  });
+});
+
+document.getElementById('d5-btn').addEventListener('click', () => {
+  if (selectedGoals.length === 0) return;
+  openDoor(() => {
+    playSound('chime', 0.7);
+    fadeOut(() => {
+      doorOpened = false;
+      document.getElementById('door-panel').classList.remove('open');
+      document.getElementById('door-shadow').classList.remove('open');
+      document.getElementById('door-container').classList.remove('glowing');
+      showScene('d6', startD6);
+      fadeIn();
+    });
+  });
+});
+
+/* ════════════════════════════════
+   DOOR 6 — Your AI guide
+   ════════════════════════════════ */
+function buildPrompt(goals) {
+  const numbered = goals.map((g, i) => `${i + 1}. ${g}`).join('\n');
+  return `I want to use you as a practical life assistant. I am new to using AI properly, so I need you to guide me step by step. Here are the areas of my life I want to improve:\n${numbered}\n\nPlease do not give me a generic motivational answer. First, help me sort these goals into clear categories. Then tell me which ones should each become their own separate chat so I can work on them properly over time. For each goal give me: the first questions I need to answer, the first small action I should take, what information you need from me, and how I should use you as an AI assistant for this specific goal. Speak to me like a calm practical coach. Keep the steps simple and make it easy for me to begin.`;
+}
+
+function startD6() {
+  // Chime fades out
+  setTimeout(() => stopSound('chime', 1000), 400);
+
+  delayShow(document.getElementById('d6-intro'), 200);
+
+  const sections = document.getElementById('d6-sections');
+  setTimeout(() => {
+    sections.classList.add('visible');
+    delayShow(document.getElementById('d6-s1'), 200);
+    delayShow(document.getElementById('d6-s2'), 900);
+    delayShow(document.getElementById('d6-s3'), 1600);
+  }, 1000);
+
+  // Build prompt with goals
+  const promptText = buildPrompt(selectedGoals.length > 0 ? selectedGoals : ['(add your goals here)']);
+  document.getElementById('prompt-box').textContent = promptText;
+
+  setTimeout(() => {
+    document.getElementById('finish-btn').classList.add('visible');
+  }, 2800);
+}
+
+// Copy button
+document.getElementById('copy-btn').addEventListener('click', () => {
+  const text = document.getElementById('prompt-box').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = 'Copy prompt'; }, 2000);
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = 'Copy prompt'; }, 2000);
+  });
+});
+
+// Finish button
+document.getElementById('finish-btn').addEventListener('click', () => {
+  // Save to localStorage
+  try {
+    localStorage.setItem('ff_door_goals', JSON.stringify(selectedGoals));
+    localStorage.setItem('ff_door_done', '1');
+  } catch(e) {}
+  fadeOut(() => { window.location.href = 'index.html'; });
+});
+
+/* ── Re-open door for each scene's "next" door button ── */
+// The door is always in the DOM but hidden behind the scene;
+// we only show it in the ante-room and between scenes.
+// Between scenes it flashes open then we transition.
+
+</script>
+</body>
+</html>
