@@ -584,6 +584,68 @@
   .settings-tab-content { display: none; }
   .settings-tab-content.active { display: block; }
 
+/* ── ONBOARDING TOUR ── */
+.tour-overlay {
+  position: fixed; inset: 0; z-index: 9000;
+  pointer-events: none;
+}
+.tour-overlay.active { pointer-events: all; }
+.tour-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.72);
+  transition: clip-path 0.35s ease;
+}
+.tour-spotlight {
+  position: absolute;
+  border-radius: 10px;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.72), 0 0 0 2px var(--accent);
+  transition: all 0.35s ease;
+  pointer-events: none;
+}
+.tour-tooltip {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px 16px;
+  max-width: 300px;
+  min-width: 230px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  z-index: 9001;
+  animation: tourFadeIn 0.22s ease;
+}
+@keyframes tourFadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.tour-step-label {
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 6px;
+}
+.tour-title {
+  font-family: 'DM Serif Display', serif; font-size: 17px;
+  color: var(--text); margin-bottom: 8px; line-height: 1.35;
+}
+.tour-body {
+  font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 16px;
+}
+.tour-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tour-next-btn {
+  background: var(--accent); border: none; border-radius: 8px;
+  color: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 13px;
+  font-weight: 500; padding: 8px 18px; cursor: pointer; transition: opacity 0.15s;
+}
+.tour-next-btn:hover { opacity: 0.88; }
+.tour-skip-btn {
+  background: none; border: none; color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  cursor: pointer; padding: 4px; transition: color 0.15s;
+}
+.tour-skip-btn:hover { color: var(--text); }
+.tour-dots { display: flex; gap: 5px; align-items: center; }
+.tour-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border); transition: background 0.2s;
+}
+.tour-dot.active { background: var(--accent); }
+
 /* ── DASHBOARD SCREEN ── */
 #dashboard-screen .dashboard-inner {
   max-width: 720px; width: 100%; margin: 0 auto;
@@ -2498,6 +2560,13 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
               <input type="file" id="import-file-input" accept=".json" style="display:none">
             </div>
           </div>
+          <div class="settings-section">
+            <div class="settings-section-title">Onboarding</div>
+            <div class="settings-row">
+              <div><div class="settings-label">Replay welcome tour</div><div class="settings-sub">Walk through the key features again</div></div>
+              <button class="settings-action-btn" id="replay-tour-btn">▶ Replay</button>
+            </div>
+          </div>
         </div>
 
         <!-- FEEDBACK TAB -->
@@ -2817,8 +2886,22 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   </div>
 </div>
 
-
-
+<!-- ONBOARDING TOUR OVERLAY -->
+<div id="tour-overlay" class="tour-overlay" aria-hidden="true">
+  <div class="tour-spotlight" id="tour-spotlight"></div>
+  <div class="tour-tooltip" id="tour-tooltip">
+    <div class="tour-step-label" id="tour-step-label"></div>
+    <div class="tour-title" id="tour-title"></div>
+    <div class="tour-body" id="tour-body"></div>
+    <div class="tour-actions">
+      <div class="tour-dots" id="tour-dots"></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="tour-skip-btn" id="tour-skip-btn">Skip tour</button>
+        <button class="tour-next-btn" id="tour-next-btn">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 // ── API Key ──
@@ -3399,6 +3482,7 @@ async function addChannel(i) {
   saveChannels();
   renderSidebar();
   showHome();
+  if (typeof window._tourChannelCheck === 'function') window._tourChannelCheck();
 
   // Fetch only the new channel's videos and merge into existing cache
   document.getElementById('feed-status-label').textContent = `Loading ${ch.name}…`;
@@ -5010,6 +5094,201 @@ function renderXboxDashboard(videos) {
   setTimeout(positionDockButtons, 250);
   setTimeout(positionDockButtons, 750);
 })();
+</script>
+
+<script>
+// ── ONBOARDING TOUR ──
+const TOUR_KEY = 'ff_tour_done';
+
+const TOUR_STEPS = [
+  {
+    targetId: 'sidebar-add-btn',
+    title: 'Add your first channel',
+    body: 'Click <strong style="color:var(--text)">＋ Add channel</strong> to search for any YouTube channel. YourSpace will only ever show content from channels you choose — no algorithm, no noise.',
+    nextLabel: 'Got it →'
+  },
+  {
+    targetId: 'sidebar-channel-list',
+    title: 'Your channels live here',
+    body: 'Each channel you add appears in this list. Click any one to browse their videos. You can drag to reorder them.',
+    nextLabel: 'Next →',
+    waitForChannel: true
+  },
+  {
+    targetId: 'sidebar-dashboard-btn',
+    title: 'Your Dashboard',
+    body: 'Everything personal lives here — write diary entries, set goals for the day, manage reminders, build a wishlist, and more.',
+    nextLabel: 'Next →'
+  },
+  {
+    targetId: 'sidebar-settings-btn',
+    title: 'Settings & backup',
+    body: 'Change the theme, update your API key, or <strong style="color:var(--text)">export your data</strong> as a backup. Worth doing regularly — everything lives in your browser.',
+    nextLabel: 'Done ✓',
+    isLast: true
+  }
+];
+
+let tourStep = 0;
+let tourActive = false;
+let tourResizeObserver = null;
+
+function isTourDone() { return localStorage.getItem(TOUR_KEY) === '1'; }
+function markTourDone() { localStorage.setItem(TOUR_KEY, '1'); }
+
+function startTour(force) {
+  if (!force && isTourDone()) return;
+  tourStep = 0;
+  tourActive = true;
+  document.getElementById('tour-overlay').classList.add('active');
+  document.getElementById('tour-overlay').setAttribute('aria-hidden', 'false');
+  showTourStep(tourStep);
+}
+
+function endTour() {
+  tourActive = false;
+  markTourDone();
+  const overlay = document.getElementById('tour-overlay');
+  overlay.classList.remove('active');
+  overlay.setAttribute('aria-hidden', 'true');
+  if (tourResizeObserver) { tourResizeObserver.disconnect(); tourResizeObserver = null; }
+  window.removeEventListener('resize', positionTourStep);
+}
+
+function positionTourStep() {
+  if (!tourActive) return;
+  const step = TOUR_STEPS[tourStep];
+  const el = document.getElementById(step.targetId) ||
+             document.querySelector('.' + step.targetId) ||
+             document.querySelector(step.targetId);
+  if (!el) return;
+
+  const r = el.getBoundingClientRect();
+  const pad = 8;
+  const spot = document.getElementById('tour-spotlight');
+  spot.style.left   = (r.left - pad) + 'px';
+  spot.style.top    = (r.top - pad) + 'px';
+  spot.style.width  = (r.width + pad * 2) + 'px';
+  spot.style.height = (r.height + pad * 2) + 'px';
+
+  // Position tooltip: prefer below, fall back to above
+  const tip = document.getElementById('tour-tooltip');
+  tip.style.left = '';
+  tip.style.right = '';
+  tip.style.top = '';
+  tip.style.bottom = '';
+  tip.style.transform = '';
+
+  const tipW = Math.min(300, window.innerWidth - 32);
+  tip.style.width = tipW + 'px';
+
+  // Horizontal: align with spotlight left, clamped to viewport
+  let left = r.left - pad;
+  left = Math.max(12, Math.min(left, window.innerWidth - tipW - 12));
+  tip.style.left = left + 'px';
+
+  // Vertical: try below
+  const belowY = r.bottom + pad + 14;
+  const tipH = tip.offsetHeight || 180;
+  if (belowY + tipH < window.innerHeight - 12) {
+    tip.style.top = belowY + 'px';
+  } else {
+    // above
+    tip.style.top = Math.max(12, r.top - pad - tipH - 14) + 'px';
+  }
+}
+
+function showTourStep(i) {
+  const step = TOUR_STEPS[i];
+  const total = TOUR_STEPS.length;
+
+  document.getElementById('tour-step-label').textContent = `Step ${i + 1} of ${total}`;
+  document.getElementById('tour-title').textContent = step.title;
+  document.getElementById('tour-body').innerHTML = step.body;
+  document.getElementById('tour-next-btn').textContent = step.nextLabel || 'Next →';
+
+  // Dots
+  document.getElementById('tour-dots').innerHTML = TOUR_STEPS.map((_,idx) =>
+    `<div class="tour-dot${idx === i ? ' active' : ''}"></div>`
+  ).join('');
+
+  // Reset animation
+  const tip = document.getElementById('tour-tooltip');
+  tip.style.animation = 'none';
+  void tip.offsetWidth;
+  tip.style.animation = '';
+
+  // Position after a tick so layout is settled
+  requestAnimationFrame(() => {
+    positionTourStep();
+    // Observe size changes for repositioning
+    if (tourResizeObserver) tourResizeObserver.disconnect();
+    const target = document.getElementById(step.targetId);
+    if (target && window.ResizeObserver) {
+      tourResizeObserver = new ResizeObserver(positionTourStep);
+      tourResizeObserver.observe(target);
+    }
+  });
+}
+
+function tourNext() {
+  const step = TOUR_STEPS[tourStep];
+
+  // Step 1 (index 1): wait until at least 1 channel exists
+  if (step.waitForChannel && channels.length === 0) {
+    // Briefly flash the spotlight to hint at the target
+    const spot = document.getElementById('tour-spotlight');
+    spot.style.boxShadow = '0 0 0 9999px rgba(0,0,0,0.72), 0 0 0 3px #fff';
+    setTimeout(() => {
+      spot.style.boxShadow = '0 0 0 9999px rgba(0,0,0,0.72), 0 0 0 2px var(--accent)';
+    }, 400);
+    document.getElementById('tour-body').innerHTML =
+      '<span style="color:var(--accent)">Add a channel first</span> — search for one above, then come back here.';
+    return;
+  }
+
+  if (step.isLast || tourStep >= TOUR_STEPS.length - 1) {
+    endTour();
+    return;
+  }
+  tourStep++;
+  showTourStep(tourStep);
+}
+
+// Wire buttons
+document.getElementById('tour-next-btn').addEventListener('click', tourNext);
+document.getElementById('tour-skip-btn').addEventListener('click', endTour);
+document.getElementById('replay-tour-btn').addEventListener('click', () => {
+  // Close settings and start tour
+  showHome();
+  setTimeout(() => startTour(true), 280);
+});
+
+// Reposition on resize
+window.addEventListener('resize', positionTourStep);
+
+// Hook: auto-start after first API key save (from setup screen)
+(function patchApiSave() {
+  const btn = document.getElementById('api-save-btn');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    // If key is valid and this is the first time, start tour after home loads
+    setTimeout(() => {
+      if (!isTourDone() && getKey()) startTour(false);
+    }, 600);
+  });
+})();
+
+// Hook: after channel added, if tour is on step 1, advance to step 2 automatically
+const _origAddChannel = typeof addChannel === 'function' ? addChannel : null;
+// We patch renderSidebar instead to detect channel additions during tour
+const _patchedRenderSidebar = renderSidebar;
+window._tourChannelCheck = function() {
+  if (tourActive && tourStep === 1 && channels.length > 0) {
+    // Re-render step 1 to clear the "add first" message and repoint spotlight
+    setTimeout(() => showTourStep(1), 400);
+  }
+};
 </script>
 
 </body>
