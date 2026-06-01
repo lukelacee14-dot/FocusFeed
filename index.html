@@ -2264,6 +2264,161 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     body.cyberpunk-bedroom-theme .mobile-header { display: flex !important; }
   }
 
+  /* ═══════════════════════════════════════════════════════
+     MOBILE-ONLY  (max-width: 767px) — desktop untouched
+  ═══════════════════════════════════════════════════════ */
+  @media (max-width: 767px) {
+
+    /* 1 ── FIXED SHELL: header → scrollable screen → fixed bottom nav ── */
+    #main {
+      min-height: unset !important;
+      height: 100dvh !important;
+      overflow: hidden !important;
+    }
+    /* Active screen is the scrollable middle area */
+    .screen.active {
+      flex: 1 !important;
+      min-height: 0 !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+    /* feed-container must not create a second scroll layer */
+    #feed-container {
+      overflow-y: unset !important;
+      flex: unset !important;
+      min-height: unset !important;
+    }
+    /* settings/dashboard inner — let the .screen handle scrolling */
+    .settings-inner { overflow-y: visible; }
+
+    /* 2 ── BOTTOM NAV ── */
+    #mobile-bottom-nav {
+      display: flex;
+      flex-shrink: 0;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      z-index: 200;
+    }
+    .mob-nav-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      padding: 14px 6px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: color 0.15s;
+      touch-action: manipulation;
+    }
+    .mob-nav-btn.active { color: var(--accent); }
+    /* Header icon buttons replaced by bottom nav */
+    #mobile-dashboard-btn, #mobile-settings-btn { display: none !important; }
+
+    /* 3 ── MOBILE CHANNEL ACCORDION ── */
+    .mob-channels-label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 14px 16px 6px;
+      flex-shrink: 0;
+    }
+    .mob-ch-item { border-bottom: 1px solid var(--border); }
+    .mob-ch-item.drag-over-top { border-top: 2px solid var(--accent); }
+    .mob-ch-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 16px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .mob-ch-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%; object-fit: cover; flex-shrink: 0;
+    }
+    .mob-ch-avatar-placeholder {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 500; color: var(--accent);
+      flex-shrink: 0;
+    }
+    .mob-ch-name {
+      flex: 1; font-size: 14px; color: var(--text);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .mob-ch-chevron {
+      font-size: 14px; color: var(--muted); flex-shrink: 0;
+      transition: transform 0.2s ease; line-height: 1;
+    }
+    .mob-ch-item.expanded .mob-ch-chevron { transform: rotate(90deg); }
+    .mob-ch-remove {
+      background: none; border: none;
+      color: var(--muted); font-size: 20px; line-height: 1;
+      padding: 4px 6px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      flex-shrink: 0; touch-action: manipulation;
+    }
+    .mob-ch-videos {
+      display: none; flex-direction: column;
+      background: var(--surface);
+    }
+    .mob-ch-item.expanded .mob-ch-videos { display: flex; }
+    .mob-video-card {
+      display: flex; gap: 12px; padding: 10px 14px;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+      border-top: 1px solid var(--border); touch-action: manipulation;
+    }
+    .mob-video-card:active { opacity: 0.7; }
+    .mob-video-thumb-wrap {
+      width: 100px; flex-shrink: 0;
+      aspect-ratio: 16/9; border-radius: 6px;
+      overflow: hidden; background: var(--surface2);
+      position: relative; align-self: flex-start;
+    }
+    .mob-video-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mob-video-dur {
+      position: absolute; bottom: 3px; right: 4px;
+      background: rgba(0,0,0,0.82); color: #fff;
+      font-size: 10px; padding: 1px 4px; border-radius: 3px;
+    }
+    .mob-video-info {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    .mob-video-title {
+      font-size: 13px; color: var(--text); line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .mob-video-meta { font-size: 11px; color: var(--muted); }
+
+    /* 4 ── HIDE GAMECUBE + XBOX IN THEME PICKER ── */
+    /* PRESETS indices: 9 = Xbox 360, 10 = GameCube */
+    #theme-grid .theme-swatch[data-preset="9"],
+    #theme-grid .theme-swatch[data-preset="10"] { display: none !important; }
+
+    /* 5 ── BACKGROUND IMAGE / OVERLAY THEMES ── */
+    body.has-bg-image { background-size: cover !important; background-position: center !important; }
+
+    /* 6 ── DASHBOARD TABS — force touch-friendly ── */
+    #dashboard-screen .settings-tab { touch-action: manipulation; }
+
+    /* 7 ── GAMECUBE theme mobile override (already exists above) ── */
+    /* Ensure home screen sections don't create spurious scroll containers */
+    #home-screen .channels-header { flex-shrink: 0; }
+    #mobile-channel-search-wrap { flex-shrink: 0; }
+  }
+
 </style>
 </head>
 <body>
@@ -2878,6 +3033,13 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       </div>
     </div>
 
+    <!-- Mobile bottom nav — display:none on desktop via CSS -->
+    <nav id="mobile-bottom-nav" style="display:none">
+      <button class="mob-nav-btn active" id="mob-nav-home">Home</button>
+      <button class="mob-nav-btn" id="mob-nav-dashboard">Your Dashboard</button>
+      <button class="mob-nav-btn" id="mob-nav-settings">Settings</button>
+    </nav>
+
   </div>
 </div>
 
@@ -3099,12 +3261,24 @@ function renderSidebar() {
 }
 
 // ── Mobile channel list ──
+var mobVideoCache = {}; // keyed by channel id, populated on accordion expand
+
 function renderChannels() {
-  // renderChannels now triggers the feed — mobile list is gone
+  if (!isDesktop()) { if (typeof renderMobileChannelList === 'function') renderMobileChannelList(); return; }
   renderFeed();
 }
 
 async function renderFeed(forceRefresh) {
+  if (!isDesktop()) {
+    if (forceRefresh) {
+      mobVideoCache = {};
+      localStorage.removeItem('ff_feed_cache');
+      localStorage.removeItem('ff_feed_date');
+    }
+    if (typeof renderMobileChannelList === 'function') renderMobileChannelList();
+    return;
+  }
+
   const container = document.getElementById('feed-container');
   if (!container) return;
 
@@ -5329,6 +5503,268 @@ window._tourChannelCheck = function() {
   });
   const main = document.getElementById('main');
   if (main) observer.observe(main, { childList: false, subtree: true, attributes: true, attributeFilter: ['class'] });
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE-ONLY CODE  — all gated on !isDesktop()
+   Desktop behaviour is completely unchanged above.
+═══════════════════════════════════════════════════════════════ */
+(function initMobile() {
+  if (isDesktop()) return; // nothing to do on desktop
+
+  // ── Show the bottom nav (hidden by inline style on desktop) ──
+  const mobileNav = document.getElementById('mobile-bottom-nav');
+  if (mobileNav) mobileNav.style.display = '';
+
+  const btnHome = document.getElementById('mob-nav-home');
+  const btnDash = document.getElementById('mob-nav-dashboard');
+  const btnSet  = document.getElementById('mob-nav-settings');
+
+  function setNavActive(btn) {
+    [btnHome, btnDash, btnSet].forEach(b => { if (b) b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+  }
+
+  // Wire bottom nav buttons
+  if (btnHome) btnHome.addEventListener('click', () => { setNavActive(btnHome); showHome(); });
+  if (btnDash) btnDash.addEventListener('click', () => { setNavActive(btnDash); showDashboard('today'); });
+  if (btnSet)  btnSet.addEventListener('click',  () => { setNavActive(btnSet);  showSettings(); });
+
+  // Sync nav highlight whenever the active screen changes
+  const screenObserver = new MutationObserver(() => {
+    const active = document.querySelector('.screen.active');
+    if (!active) return;
+    if (active.id === 'home-screen')      setNavActive(btnHome);
+    else if (active.id === 'dashboard-screen') setNavActive(btnDash);
+    else if (active.id === 'settings-screen')  setNavActive(btnSet);
+  });
+  document.querySelectorAll('.screen').forEach(s =>
+    screenObserver.observe(s, { attributes: true, attributeFilter: ['class'] })
+  );
+
+  // ── GameCube / Xbox fallback on mobile ──
+  function checkMobileThemeFallback() {
+    if (isDesktop()) return;
+    const t = loadTheme();
+    if (t.presetName === 'GameCube' || t.presetName === 'Xbox 360') {
+      const def = { ...PRESETS[0], presetName: PRESETS[0].name };
+      saveTheme(def);
+      applyTheme(def);
+      if (typeof renderThemePanel === 'function') renderThemePanel();
+    }
+  }
+  checkMobileThemeFallback();
+  window.addEventListener('resize', () => {
+    if (!isDesktop()) checkMobileThemeFallback();
+  });
+
+  // ── Mobile channel accordion ──
+  let mobExpandedId = null;
+
+  function renderMobileChannelList() {
+    const container = document.getElementById('feed-container');
+    if (!container) return;
+
+    // Pre-populate video cache from feed cache on first call
+    if (Object.keys(mobVideoCache).length === 0) {
+      try {
+        const fc = JSON.parse(localStorage.getItem('ff_feed_cache') || '[]');
+        fc.forEach(v => {
+          if (!mobVideoCache[v.channelId]) mobVideoCache[v.channelId] = [];
+          if (mobVideoCache[v.channelId].length < 5) mobVideoCache[v.channelId].push(v);
+        });
+      } catch(e) {}
+    }
+
+    if (channels.length === 0) {
+      container.innerHTML = `
+        <div class="feed-empty">
+          <div class="empty-icon">◎</div>
+          <div class="feed-empty-title">No channels yet</div>
+          <div class="feed-empty-sub">Search for a YouTube channel above to add one.</div>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = '<div class="mob-channels-label">Channels</div>';
+
+    channels.forEach((ch, i) => {
+      const item = document.createElement('div');
+      item.className = 'mob-ch-item';
+      item.dataset.chId  = ch.id;
+      item.dataset.chIdx = i;
+
+      const avatarHtml = ch.thumb
+        ? `<img class="mob-ch-avatar" src="${ch.thumb}" alt="" loading="lazy">`
+        : `<div class="mob-ch-avatar-placeholder">${esc(ch.name[0] || '?')}</div>`;
+
+      item.innerHTML = `
+        <div class="mob-ch-row">
+          ${avatarHtml}
+          <span class="mob-ch-name">${esc(ch.name)}</span>
+          <span class="mob-ch-chevron">›</span>
+          <button class="mob-ch-remove" aria-label="Remove channel">×</button>
+        </div>
+        <div class="mob-ch-videos"></div>`;
+
+      // Expand / collapse on row tap
+      item.querySelector('.mob-ch-row').addEventListener('click', e => {
+        if (e.target.classList.contains('mob-ch-remove')) return;
+        toggleMobChannel(item, ch);
+      });
+
+      // Remove button
+      item.querySelector('.mob-ch-remove').addEventListener('click', e => {
+        e.stopPropagation();
+        const idx = parseInt(item.dataset.chIdx);
+        delete mobVideoCache[ch.id];
+        if (mobExpandedId === ch.id) mobExpandedId = null;
+        removeChannel(idx);
+        renderMobileChannelList();
+      });
+
+      container.appendChild(item);
+    });
+
+    // Restore previously expanded channel
+    if (mobExpandedId) {
+      const el = container.querySelector(`[data-ch-id="${mobExpandedId}"]`);
+      const ch = channels.find(c => c.id === mobExpandedId);
+      if (el && ch) toggleMobChannel(el, ch, true);
+    }
+
+    addMobileDrag(container);
+  }
+
+  async function toggleMobChannel(item, ch, forceOpen) {
+    const isOpen = item.classList.contains('expanded');
+    const container = document.getElementById('feed-container');
+
+    if (isOpen && !forceOpen) {
+      item.classList.remove('expanded');
+      mobExpandedId = null;
+      return;
+    }
+
+    // Collapse any other open channel first
+    if (container) {
+      container.querySelectorAll('.mob-ch-item.expanded').forEach(el => el.classList.remove('expanded'));
+    }
+    item.classList.add('expanded');
+    mobExpandedId = ch.id;
+
+    const videosEl = item.querySelector('.mob-ch-videos');
+
+    // Use cached videos if available
+    if (mobVideoCache[ch.id] && mobVideoCache[ch.id].length > 0) {
+      renderMobVideos(videosEl, mobVideoCache[ch.id]);
+      return;
+    }
+
+    // Fetch from API
+    videosEl.innerHTML = '<div style="padding:16px;text-align:center;color:var(--muted);font-size:13px"><div class="spinner" style="margin:0 auto 8px"></div>Loading…</div>';
+    const videos = await fetchChannelVideos(ch);
+    mobVideoCache[ch.id] = videos;
+    renderMobVideos(videosEl, videos);
+  }
+
+  function renderMobVideos(el, videos) {
+    if (!videos || videos.length === 0) {
+      el.innerHTML = '<div style="padding:12px 16px;color:var(--muted);font-size:13px">No videos found.</div>';
+      return;
+    }
+    const sorted = [...videos]
+      .sort((a, b) => new Date(b.published) - new Date(a.published))
+      .slice(0, 5);
+
+    el.innerHTML = sorted.map(v => `
+      <div class="mob-video-card">
+        <div class="mob-video-thumb-wrap">
+          <img class="mob-video-thumb" src="${v.thumb || ''}" alt="" loading="lazy">
+          <div class="mob-video-dur">${fmtDur(v.duration)}</div>
+        </div>
+        <div class="mob-video-info">
+          <div class="mob-video-title">${esc(v.title)}</div>
+          <div class="mob-video-meta">${fmtDate(v.published)}${v.views > 0 ? ' · ' + fmtViews(v.views) + ' views' : ''}</div>
+        </div>
+      </div>`).join('');
+
+    el.querySelectorAll('.mob-video-card').forEach((card, i) => {
+      card.addEventListener('click', () => {
+        const v = sorted[i];
+        playSearchResult(v);
+        const goBack = () => { stopPlayer(); showHome(); };
+        const pb = document.getElementById('player-back-btn');
+        const db = document.getElementById('done-back-btn');
+        if (pb) pb.onclick = goBack;
+        if (db) db.onclick = goBack;
+      });
+    });
+  }
+
+  // ── Touch drag-to-reorder channels ──
+  function addMobileDrag(container) {
+    let dragSrc = null, isDragging = false, longPressTimer = null;
+
+    container.querySelectorAll('.mob-ch-item').forEach(item => {
+      item.addEventListener('touchstart', e => {
+        longPressTimer = setTimeout(() => {
+          isDragging = true;
+          dragSrc = item;
+          item.style.opacity = '0.45';
+          if (navigator.vibrate) navigator.vibrate(30);
+        }, 450);
+      }, { passive: true });
+
+      item.addEventListener('touchmove', e => {
+        clearTimeout(longPressTimer);
+        if (!isDragging || !dragSrc) return;
+        const touch = e.touches[0];
+        container.querySelectorAll('.mob-ch-item').forEach(el => el.classList.remove('drag-over-top'));
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        const over = target && target.closest('.mob-ch-item');
+        if (over && over !== dragSrc) over.classList.add('drag-over-top');
+      }, { passive: true });
+
+      item.addEventListener('touchend', e => {
+        clearTimeout(longPressTimer);
+        if (!isDragging || !dragSrc) { isDragging = false; return; }
+        dragSrc.style.opacity = '';
+        const touch = e.changedTouches[0];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY);
+        const over = target && target.closest('.mob-ch-item');
+        container.querySelectorAll('.mob-ch-item').forEach(el => el.classList.remove('drag-over-top'));
+        if (over && over !== dragSrc) {
+          const from = parseInt(dragSrc.dataset.chIdx);
+          const to   = parseInt(over.dataset.chIdx);
+          const moved = channels.splice(from, 1)[0];
+          channels.splice(to, 0, moved);
+          saveChannels();
+          renderMobileChannelList();
+        }
+        isDragging = false;
+        dragSrc = null;
+      }, { passive: true });
+
+      item.addEventListener('touchcancel', () => {
+        clearTimeout(longPressTimer);
+        if (dragSrc) { dragSrc.style.opacity = ''; dragSrc = null; }
+        isDragging = false;
+        container.querySelectorAll('.mob-ch-item').forEach(el => el.classList.remove('drag-over-top'));
+      }, { passive: true });
+    });
+  }
+
+  // Expose so renderChannels / renderFeed can call it
+  window.renderMobileChannelList = renderMobileChannelList;
+
+  // Kick off initial render if home screen is already active
+  if (document.getElementById('home-screen') &&
+      document.getElementById('home-screen').classList.contains('active')) {
+    renderMobileChannelList();
+  }
 })();
 </script>
 
