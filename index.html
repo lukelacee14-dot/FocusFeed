@@ -590,16 +590,11 @@
   pointer-events: none;
 }
 .tour-overlay.active { pointer-events: all; }
-.tour-backdrop {
-  position: absolute; inset: 0;
-  background: rgba(0,0,0,0.72);
-  transition: clip-path 0.35s ease;
-}
 .tour-spotlight {
   position: absolute;
   border-radius: 10px;
   box-shadow: 0 0 0 9999px rgba(0,0,0,0.72), 0 0 0 2px var(--accent);
-  transition: all 0.35s ease;
+  transition: left 0.35s ease, top 0.35s ease, width 0.35s ease, height 0.35s ease;
   pointer-events: none;
 }
 .tour-tooltip {
@@ -607,44 +602,57 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px 20px 16px;
-  max-width: 300px;
-  min-width: 230px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  padding: 14px 16px 12px;
+  max-width: 260px;
+  min-width: 180px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.55);
   z-index: 9001;
-  animation: tourFadeIn 0.22s ease;
+  pointer-events: none;
 }
-@keyframes tourFadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.tour-tooltip.visible { animation: tourFadeIn 0.22s ease; }
+@keyframes tourFadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
 .tour-step-label {
   font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 6px;
-}
-.tour-title {
-  font-family: 'DM Serif Display', serif; font-size: 17px;
-  color: var(--text); margin-bottom: 8px; line-height: 1.35;
+  color: var(--accent); margin-bottom: 5px;
 }
 .tour-body {
-  font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 16px;
+  font-size: 13px; color: var(--muted); line-height: 1.6;
+  margin-bottom: 10px;
 }
-.tour-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.tour-next-btn {
-  background: var(--accent); border: none; border-radius: 8px;
-  color: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 13px;
-  font-weight: 500; padding: 8px 18px; cursor: pointer; transition: opacity 0.15s;
-}
-.tour-next-btn:hover { opacity: 0.88; }
 .tour-skip-btn {
-  background: none; border: none; color: var(--muted);
+  position: fixed; bottom: 20px; right: 20px; z-index: 9002;
+  background: none; border: none; color: rgba(232,228,220,0.45);
   font-family: 'DM Sans', sans-serif; font-size: 12px;
-  cursor: pointer; padding: 4px; transition: color 0.15s;
+  cursor: pointer; padding: 6px 8px; transition: color 0.15s;
+  pointer-events: all;
 }
 .tour-skip-btn:hover { color: var(--text); }
 .tour-dots { display: flex; gap: 5px; align-items: center; }
 .tour-dot {
-  width: 6px; height: 6px; border-radius: 50%;
+  width: 5px; height: 5px; border-radius: 50%;
   background: var(--border); transition: background 0.2s;
 }
 .tour-dot.active { background: var(--accent); }
+
+/* ── INLINE CHANNEL SEARCH RESULTS (sidebar) ── */
+.inline-ch-result {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 8px; cursor: default;
+}
+.inline-ch-result.added { opacity: 0.45; }
+.inline-ch-thumb-sm { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--surface2); }
+.inline-ch-name-sm { font-size: 12px; color: var(--text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.inline-ch-add-btn {
+  background: none; border: 1px solid var(--accent2); color: var(--accent);
+  border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 11px;
+  font-weight: 500; padding: 3px 8px; cursor: pointer; flex-shrink: 0; transition: background 0.15s;
+}
+.inline-ch-add-btn:hover { background: rgba(107,127,255,0.12); }
+.inline-ch-add-btn:disabled { opacity: 0.4; cursor: default; }
+
+/* Mobile channel search — hidden on desktop */
+@media (min-width: 768px) { #mobile-channel-search-wrap { display: none !important; } }
 
 /* ── DASHBOARD SCREEN ── */
 #dashboard-screen .dashboard-inner {
@@ -2289,8 +2297,12 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
         <span id="sidebar-quota" style="font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums">0 / 10,000</span>
       </div>
     </div>
-    <div style="padding:8px 12px;border-bottom:1px solid var(--border)">
-      <button id="sidebar-search-btn" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:var(--font-body,'DM Sans',sans-serif);font-size:13px;padding:8px 12px;cursor:pointer;text-align:left;transition:border-color 0.2s">⌕ Search all of YouTube…</button>
+    <div id="sidebar-channel-search-wrap" style="padding:8px 12px;border-bottom:1px solid var(--border)">
+      <div style="display:flex;gap:6px">
+        <input id="sidebar-channel-search-input" type="text" placeholder="⌕  Search channels…" autocomplete="off" autocorrect="off" spellcheck="false" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body,'DM Sans',sans-serif);font-size:12px;font-weight:300;padding:7px 10px;outline:none;transition:border-color 0.2s;min-width:0">
+        <button id="sidebar-channel-search-btn" style="background:var(--accent);border:none;border-radius:8px;color:var(--bg);font-family:var(--font-body,'DM Sans',sans-serif);font-size:12px;font-weight:500;padding:7px 11px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity 0.15s">Add</button>
+      </div>
+      <div id="sidebar-channel-results" style="display:none;margin-top:6px;flex-direction:column;gap:4px"></div>
     </div>
 
     <div class="sidebar-section">
@@ -2303,7 +2315,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     <!-- Sidebar bottom: controls -->
     <div class="sidebar-bottom">
       <button class="sidebar-bottom-btn" id="sidebar-dashboard-btn">◈ Your Dashboard</button>
-      <button class="sidebar-bottom-btn" id="sidebar-add-btn">＋ Add channel</button>
       <button id="sidebar-settings-btn" title="Settings" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-family:var(--font-body,'DM Sans',sans-serif);font-size:12px;cursor:pointer;transition:border-color 0.2s,color 0.2s,background 0.2s;letter-spacing:0.04em;margin-top:2px">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         Settings
@@ -2657,9 +2668,16 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
 
     <!-- HOME — mixed feed -->
     <div id="home-screen" class="screen">
-      <div class="channels-header" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;flex-shrink:0">
+      <div class="channels-header" style="display:flex;align-items:center;padding:16px 20px 12px;flex-shrink:0">
         <span class="section-label" id="feed-status-label">Your feed</span>
-        <button class="add-btn" id="show-add-btn">+ Add channel</button>
+      </div>
+      <!-- Mobile channel search (desktop uses sidebar search instead) -->
+      <div id="mobile-channel-search-wrap" style="padding:0 16px 12px;flex-shrink:0">
+        <div style="display:flex;gap:8px">
+          <input id="mobile-channel-search-input" type="text" placeholder="Search for a YouTube channel…" class="search-input" style="flex:1;padding:9px 14px;font-size:13px" autocomplete="off" autocorrect="off" spellcheck="false">
+          <button id="mobile-channel-search-btn" class="search-btn" style="padding:9px 14px;font-size:13px">Add</button>
+        </div>
+        <div id="mobile-channel-results" style="margin-top:8px;display:flex;flex-direction:column;gap:8px"></div>
       </div>
       <div id="feed-container" style="flex:1;overflow-y:auto"></div>
       <!-- Xbox 360 dashboard layout -->
@@ -2829,18 +2847,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       </div>
     </div>
 
-    <!-- ADD -->
-    <div id="add-screen" class="screen">
-      <button class="back-btn" id="add-back-btn" style="margin:24px 24px 4px">← Back</button>
-      <div class="screen-title" style="padding:0 24px">Add a channel</div>
-      <div class="search-row" style="padding:0 24px">
-        <input class="search-input" id="search-input" type="text" placeholder="Search YouTube channels…" autocomplete="off" autocorrect="off" spellcheck="false">
-        <button class="search-btn" id="search-btn">Search</button>
-      </div>
-      <div id="search-status" style="padding:0 24px"></div>
-      <div class="search-results" id="search-results" style="padding:0 24px 24px"></div>
-    </div>
-
     <!-- VIDEOS -->
     <div id="videos-screen" class="screen">
       <div class="videos-top">
@@ -2891,16 +2897,10 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   <div class="tour-spotlight" id="tour-spotlight"></div>
   <div class="tour-tooltip" id="tour-tooltip">
     <div class="tour-step-label" id="tour-step-label"></div>
-    <div class="tour-title" id="tour-title"></div>
     <div class="tour-body" id="tour-body"></div>
-    <div class="tour-actions">
-      <div class="tour-dots" id="tour-dots"></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="tour-skip-btn" id="tour-skip-btn">Skip tour</button>
-        <button class="tour-next-btn" id="tour-next-btn">Next →</button>
-      </div>
-    </div>
+    <div class="tour-dots" id="tour-dots"></div>
   </div>
+  <button class="tour-skip-btn" id="tour-skip-btn">Skip tour</button>
 </div>
 
 <script>
@@ -2992,14 +2992,7 @@ function showHome() {
   renderChannels();
 }
 
-function showAdd() {
-  searchResults = [];
-  document.getElementById('search-results').innerHTML = '';
-  document.getElementById('search-status').innerHTML = '';
-  document.getElementById('search-input').value = '';
-  showScreen('add-screen');
-  setTimeout(() => document.getElementById('search-input').focus(), 100);
-}
+// showAdd removed — channel search is now inline in sidebar / home screen
 
 function showVideosScreen() { showScreen('videos-screen'); }
 
@@ -3043,7 +3036,6 @@ document.getElementById('api-key-input').addEventListener('keydown', e => {
 });
 
 // ── Button wiring ──
-document.getElementById('show-add-btn').addEventListener('click', showAdd);
 
 // Quota info tooltip
 const quotaTooltip = document.createElement('div');
@@ -3070,14 +3062,10 @@ document.addEventListener('click', () => {
   const tt = document.getElementById('quota-tooltip');
   if (tt) tt.classList.remove('visible');
 });
-document.getElementById('add-back-btn').addEventListener('click', () => { isDesktop() ? showHome() : showHome(); });
 document.getElementById('videos-back-btn').addEventListener('click', showHome);
 document.getElementById('player-back-btn').addEventListener('click', () => { stopPlayer(); showVideosScreen(); });
 document.getElementById('done-back-btn').addEventListener('click', () => { stopPlayer(); showVideosScreen(); });
-document.getElementById('search-btn').addEventListener('click', searchChannels);
-document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') searchChannels(); });
 document.getElementById('load-more-btn').addEventListener('click', loadMoreVideos);
-document.getElementById('sidebar-add-btn').addEventListener('click', showAdd);
 document.getElementById('sidebar-settings-btn').addEventListener('mouseenter', function(){ this.style.borderColor='var(--accent2)'; this.style.color='var(--text)'; this.style.background='var(--surface2)'; });
 document.getElementById('sidebar-settings-btn').addEventListener('mouseleave', function(){ this.style.borderColor='var(--border)'; this.style.color='var(--muted)'; this.style.background='var(--surface)'; });
 document.getElementById('sidebar-settings-btn').addEventListener('click', showSettings);
@@ -3425,24 +3413,23 @@ window.addEventListener('message', e => {
   } catch(_) {}
 });
 
-// ── Search ──
-async function searchChannels() {
-  const q = document.getElementById('search-input').value.trim();
+// ── Inline Channel Search ──
+// Shared results rendered into a container as compact sidebar cards or full cards
+async function searchChannelsInline(q, btnEl, resultsContainerId, compact) {
   if (!q) return;
   const API_KEY = getKey();
-  const btn = document.getElementById('search-btn');
-  const status = document.getElementById('search-status');
-  const resultsEl = document.getElementById('search-results');
-  btn.disabled = true; btn.textContent = '…';
-  status.innerHTML = `<div class="status"><div class="spinner"></div>Searching…</div>`;
-  resultsEl.innerHTML = ''; searchResults = [];
+  const resultsEl = document.getElementById(resultsContainerId);
+  if (!resultsEl) return;
+  btnEl.disabled = true; btnEl.textContent = '…';
+  resultsEl.style.display = 'flex';
+  resultsEl.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:6px 2px">Searching…</div>`;
+  searchResults = [];
   try {
     const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(q)}&part=snippet&type=channel&maxResults=6`;
     const res = await apiFetch(url, 100);
     const data = await res.json();
-    status.innerHTML = '';
-    if (data.error) { status.innerHTML = `<div class="error-msg">${esc(data.error.message)}</div>`; return; }
-    if (!data.items || data.items.length === 0) { status.innerHTML = `<div class="error-msg">No channels found.</div>`; return; }
+    if (data.error) { resultsEl.innerHTML = `<div style="font-size:12px;color:#e07060;padding:4px 2px">${esc(data.error.message)}</div>`; return; }
+    if (!data.items || data.items.length === 0) { resultsEl.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:4px 2px">No channels found.</div>`; return; }
     const channelIds = data.items.map(i => i.snippet.channelId).join(',');
     const statsRes = await apiFetch(`https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${channelIds}&part=statistics`, channelIds.split(',').length);
     const statsData = await statsRes.json();
@@ -3453,27 +3440,92 @@ async function searchChannels() {
       thumb: item.snippet.thumbnails?.default?.url || '',
       subs: statsMap[item.snippet.channelId]
     }));
-    resultsEl.innerHTML = searchResults.map((ch, i) => {
-      const added = channels.some(c => c.id === ch.id);
-      return `
-        <div class="result-card ${added ? 'already-added' : ''}" data-index="${i}">
-          <img class="result-thumb" src="${ch.thumb}" alt="">
-          <div class="result-info">
-            <div class="result-name">${esc(ch.name)}</div>
-            ${ch.subs ? `<div class="result-subs">${fmtSubs(ch.subs)} subscribers</div>` : ''}
-          </div>
-          <div class="result-add">${added ? 'Added ✓' : '+ Add'}</div>
-        </div>`;
-    }).join('');
-    resultsEl.querySelectorAll('.result-card:not(.already-added)').forEach(card => {
-      card.addEventListener('click', () => addChannel(parseInt(card.dataset.index)));
-    });
+    renderInlineResults(resultsEl, compact);
   } catch(e) {
-    status.innerHTML = `<div class="error-msg">Search failed. Check your connection.</div>`;
+    resultsEl.innerHTML = `<div style="font-size:12px;color:#e07060;padding:4px 2px">Search failed. Check your connection.</div>`;
   } finally {
-    btn.disabled = false; btn.textContent = 'Search';
+    btnEl.disabled = false; btnEl.textContent = 'Add';
   }
 }
+
+function renderInlineResults(resultsEl, compact) {
+  if (compact) {
+    // Sidebar compact style
+    resultsEl.innerHTML = searchResults.map((ch, i) => {
+      const added = channels.some(c => c.id === ch.id);
+      return `<div class="inline-ch-result${added ? ' added' : ''}" data-index="${i}">
+        <img class="inline-ch-thumb-sm" src="${ch.thumb}" alt="">
+        <span class="inline-ch-name-sm">${esc(ch.name)}</span>
+        <button class="inline-ch-add-btn" data-index="${i}"${added ? ' disabled' : ''}>${added ? '✓' : '+ Add'}</button>
+      </div>`;
+    }).join('');
+    resultsEl.querySelectorAll('.inline-ch-add-btn:not([disabled])').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        addChannelInline(parseInt(btn.dataset.index), btn);
+      });
+    });
+  } else {
+    // Mobile full style
+    resultsEl.innerHTML = searchResults.map((ch, i) => {
+      const added = channels.some(c => c.id === ch.id);
+      return `<div class="result-card${added ? ' already-added' : ''}" data-index="${i}" style="cursor:default">
+        <img class="result-thumb" src="${ch.thumb}" alt="">
+        <div class="result-info">
+          <div class="result-name">${esc(ch.name)}</div>
+          ${ch.subs ? `<div class="result-subs">${fmtSubs(ch.subs)} subscribers</div>` : ''}
+        </div>
+        <button class="inline-ch-add-btn" data-index="${i}" style="font-size:12px;padding:5px 12px"${added ? ' disabled' : ''}>${added ? 'Added ✓' : '+ Add'}</button>
+      </div>`;
+    }).join('');
+    resultsEl.querySelectorAll('.inline-ch-add-btn:not([disabled])').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        addChannelInline(parseInt(btn.dataset.index), btn);
+      });
+    });
+  }
+}
+
+async function addChannelInline(i, btnEl) {
+  const ch = searchResults[i];
+  if (!ch || channels.some(c => c.id === ch.id)) return;
+  if (btnEl) { btnEl.disabled = true; btnEl.textContent = '✓'; }
+  // Mark sibling card as added
+  if (btnEl) { const card = btnEl.closest('.inline-ch-result, .result-card'); if (card) card.classList.add('added'); }
+  channels.push({ id: ch.id, name: ch.name, thumb: ch.thumb });
+  saveChannels();
+  renderSidebar();
+  if (typeof window._tourChannelCheck === 'function') window._tourChannelCheck();
+  document.getElementById('feed-status-label').textContent = `Loading ${ch.name}…`;
+  const newVideos = await fetchChannelVideos({ id: ch.id, name: ch.name, thumb: ch.thumb });
+  let cached = [];
+  try { cached = JSON.parse(localStorage.getItem('ff_feed_cache') || '[]'); } catch(e) {}
+  const merged = [...cached, ...newVideos];
+  merged.sort((a, b) => new Date(b.published) - new Date(a.published));
+  localStorage.setItem('ff_feed_cache', JSON.stringify(merged));
+  localStorage.setItem('ff_feed_date', new Date().toISOString().slice(0, 10));
+  document.getElementById('feed-status-label').textContent = 'Your feed';
+  displayFeed(merged);
+}
+
+// ── Sidebar channel search wiring ──
+document.getElementById('sidebar-channel-search-btn').addEventListener('click', () => {
+  const q = document.getElementById('sidebar-channel-search-input').value.trim();
+  searchChannelsInline(q, document.getElementById('sidebar-channel-search-btn'), 'sidebar-channel-results', true);
+});
+document.getElementById('sidebar-channel-search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('sidebar-channel-search-btn').click();
+});
+
+// ── Mobile channel search wiring ──
+document.getElementById('mobile-channel-search-btn').addEventListener('click', () => {
+  const q = document.getElementById('mobile-channel-search-input').value.trim();
+  searchChannelsInline(q, document.getElementById('mobile-channel-search-btn'), 'mobile-channel-results', false);
+});
+document.getElementById('mobile-channel-search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('mobile-channel-search-btn').click();
+});
 
 async function addChannel(i) {
   const ch = searchResults[i];
@@ -3996,8 +4048,7 @@ function playSearchResult(v) {
   showScreen('player-screen');
 }
 
-// Wire up search buttons
-document.getElementById('sidebar-search-btn').addEventListener('click', showVideoSearch);
+// Wire up search buttons (sidebar-search-btn removed; replaced by channel search)
 document.getElementById('mobile-search-btn').addEventListener('click', showVideoSearch);
 document.getElementById('search-videos-back-btn').addEventListener('click', () => {
   currentChannel ? showVideosScreen() : showHome();
@@ -5027,8 +5078,7 @@ function renderXboxDashboard(videos) {
   const OVERLAY_W = 1777;
   const OVERLAY_H = 885;
   const dock = [
-    { cloneId: 'gc-dock-add-channel', label: '＋ Add channel', targetId: 'sidebar-add-btn',        rect: { x: 25, y: 677, w: 255, h: 35 } },
-    { cloneId: 'gc-dock-dashboard',   label: '◈ Dashboard',   targetId: 'sidebar-dashboard-btn',  rect: { x: 25, y: 720, w: 255, h: 36 } },
+    { cloneId: 'gc-dock-dashboard',   label: '◈ Dashboard',   targetId: 'sidebar-dashboard-btn',  rect: { x: 25, y: 677, w: 255, h: 36 } },
     { cloneId: 'gc-dock-settings',    label: '⚙ Settings',    targetId: 'sidebar-settings-btn',   rect: { x: 29, y: 787, w: 249, h: 68 } }
   ];
 
@@ -5100,38 +5150,45 @@ function renderXboxDashboard(videos) {
 // ── ONBOARDING TOUR ──
 const TOUR_KEY = 'ff_tour_done';
 
+// Each step: targetId for desktop, mobileTargetId for mobile (<768px)
+// waitForChannel: true — step waits until user adds a channel (no auto-advance)
+// autoAdvance: ms — step auto-advances after N ms
+// isLast: true — tour ends after this step
 const TOUR_STEPS = [
   {
-    targetId: 'sidebar-add-btn',
-    title: 'Add your first channel',
-    body: 'Click <strong style="color:var(--text)">＋ Add channel</strong> to search for any YouTube channel. YourSpace will only ever show content from channels you choose — no algorithm, no noise.',
-    nextLabel: 'Got it →'
-  },
-  {
-    targetId: 'sidebar-channel-list',
-    title: 'Your channels live here',
-    body: 'Each channel you add appears in this list. Click any one to browse their videos. You can drag to reorder them.',
-    nextLabel: 'Next →',
+    targetId: 'sidebar-channel-search-wrap',
+    mobileTargetId: 'mobile-channel-search-wrap',
+    label: 'Step 1 of 4',
+    body: 'Search for a YouTube channel and hit Add to get started',
     waitForChannel: true
   },
   {
+    targetId: 'sidebar-channel-list',
+    mobileSkip: true, // sidebar hidden on mobile; skip to next
+    label: 'Step 2 of 4',
+    body: 'Your channels live here — click one to load its videos',
+    autoAdvance: 3000
+  },
+  {
     targetId: 'sidebar-dashboard-btn',
-    title: 'Your Dashboard',
-    body: 'Everything personal lives here — write diary entries, set goals for the day, manage reminders, build a wishlist, and more.',
-    nextLabel: 'Next →'
+    mobileTargetId: 'mobile-dashboard-btn',
+    label: 'Step 3 of 4',
+    body: 'Your tools — diary, goals, reminders and more — all live here',
+    autoAdvance: 3000
   },
   {
     targetId: 'sidebar-settings-btn',
-    title: 'Settings & backup',
-    body: 'Change the theme, update your API key, or <strong style="color:var(--text)">export your data</strong> as a backup. Worth doing regularly — everything lives in your browser.',
-    nextLabel: 'Done ✓',
+    mobileTargetId: 'mobile-settings-btn',
+    label: 'Step 4 of 4',
+    body: 'Head here to back up your data and customise your space',
+    autoAdvance: 3000,
     isLast: true
   }
 ];
 
 let tourStep = 0;
 let tourActive = false;
-let tourResizeObserver = null;
+let tourAutoTimer = null;
 
 function isTourDone() { return localStorage.getItem(TOUR_KEY) === '1'; }
 function markTourDone() { localStorage.setItem(TOUR_KEY, '1'); }
@@ -5140,153 +5197,132 @@ function startTour(force) {
   if (!force && isTourDone()) return;
   tourStep = 0;
   tourActive = true;
-  document.getElementById('tour-overlay').classList.add('active');
-  document.getElementById('tour-overlay').setAttribute('aria-hidden', 'false');
-  showTourStep(tourStep);
+  const overlay = document.getElementById('tour-overlay');
+  overlay.classList.add('active');
+  overlay.setAttribute('aria-hidden', 'false');
+  _showTourStep(tourStep);
 }
 
 function endTour() {
   tourActive = false;
   markTourDone();
+  if (tourAutoTimer) { clearTimeout(tourAutoTimer); tourAutoTimer = null; }
   const overlay = document.getElementById('tour-overlay');
   overlay.classList.remove('active');
   overlay.setAttribute('aria-hidden', 'true');
-  if (tourResizeObserver) { tourResizeObserver.disconnect(); tourResizeObserver = null; }
-  window.removeEventListener('resize', positionTourStep);
+  window.removeEventListener('resize', _positionTour);
 }
 
-function positionTourStep() {
+function _tourTarget(step) {
+  const isMob = window.innerWidth < 768;
+  if (isMob && step.mobileTargetId) return document.getElementById(step.mobileTargetId);
+  return document.getElementById(step.targetId);
+}
+
+function _positionTour() {
   if (!tourActive) return;
   const step = TOUR_STEPS[tourStep];
-  const el = document.getElementById(step.targetId) ||
-             document.querySelector('.' + step.targetId) ||
-             document.querySelector(step.targetId);
+  const el = _tourTarget(step);
   if (!el) return;
-
   const r = el.getBoundingClientRect();
   const pad = 8;
   const spot = document.getElementById('tour-spotlight');
   spot.style.left   = (r.left - pad) + 'px';
-  spot.style.top    = (r.top - pad) + 'px';
-  spot.style.width  = (r.width + pad * 2) + 'px';
+  spot.style.top    = (r.top  - pad) + 'px';
+  spot.style.width  = (r.width  + pad * 2) + 'px';
   spot.style.height = (r.height + pad * 2) + 'px';
 
-  // Position tooltip: prefer below, fall back to above
   const tip = document.getElementById('tour-tooltip');
-  tip.style.left = '';
-  tip.style.right = '';
-  tip.style.top = '';
-  tip.style.bottom = '';
-  tip.style.transform = '';
-
-  const tipW = Math.min(300, window.innerWidth - 32);
+  const tipW = Math.min(260, window.innerWidth - 28);
   tip.style.width = tipW + 'px';
-
-  // Horizontal: align with spotlight left, clamped to viewport
+  // Horizontal: align to spotlight left, clamped
   let left = r.left - pad;
-  left = Math.max(12, Math.min(left, window.innerWidth - tipW - 12));
+  left = Math.max(10, Math.min(left, window.innerWidth - tipW - 10));
   tip.style.left = left + 'px';
-
-  // Vertical: try below
-  const belowY = r.bottom + pad + 14;
-  const tipH = tip.offsetHeight || 180;
-  if (belowY + tipH < window.innerHeight - 12) {
+  // Vertical: below if room, else above
+  const tipH = tip.offsetHeight || 90;
+  const belowY = r.bottom + pad + 12;
+  if (belowY + tipH < window.innerHeight - 10) {
     tip.style.top = belowY + 'px';
   } else {
-    // above
-    tip.style.top = Math.max(12, r.top - pad - tipH - 14) + 'px';
+    tip.style.top = Math.max(10, r.top - pad - tipH - 12) + 'px';
   }
 }
 
-function showTourStep(i) {
+function _showTourStep(i) {
+  if (tourAutoTimer) { clearTimeout(tourAutoTimer); tourAutoTimer = null; }
   const step = TOUR_STEPS[i];
-  const total = TOUR_STEPS.length;
+  const isMob = window.innerWidth < 768;
 
-  document.getElementById('tour-step-label').textContent = `Step ${i + 1} of ${total}`;
-  document.getElementById('tour-title').textContent = step.title;
-  document.getElementById('tour-body').innerHTML = step.body;
-  document.getElementById('tour-next-btn').textContent = step.nextLabel || 'Next →';
+  // Skip step on mobile if no target
+  if (isMob && step.mobileSkip) {
+    _advanceTour(); return;
+  }
+
+  document.getElementById('tour-step-label').textContent = step.label;
+  document.getElementById('tour-body').textContent = step.body;
 
   // Dots
-  document.getElementById('tour-dots').innerHTML = TOUR_STEPS.map((_,idx) =>
-    `<div class="tour-dot${idx === i ? ' active' : ''}"></div>`
+  const visibleSteps = TOUR_STEPS.filter((s, idx) => !(isMob && s.mobileSkip));
+  const visibleIdx = visibleSteps.indexOf(step);
+  document.getElementById('tour-dots').innerHTML = visibleSteps.map((_,j) =>
+    `<div class="tour-dot${j === visibleIdx ? ' active' : ''}"></div>`
   ).join('');
 
-  // Reset animation
+  // Trigger fade animation
   const tip = document.getElementById('tour-tooltip');
-  tip.style.animation = 'none';
+  tip.classList.remove('visible');
   void tip.offsetWidth;
-  tip.style.animation = '';
+  tip.classList.add('visible');
 
-  // Position after a tick so layout is settled
-  requestAnimationFrame(() => {
-    positionTourStep();
-    // Observe size changes for repositioning
-    if (tourResizeObserver) tourResizeObserver.disconnect();
-    const target = document.getElementById(step.targetId);
-    if (target && window.ResizeObserver) {
-      tourResizeObserver = new ResizeObserver(positionTourStep);
-      tourResizeObserver.observe(target);
-    }
-  });
+  requestAnimationFrame(() => { _positionTour(); });
+
+  // Auto-advance
+  if (step.autoAdvance) {
+    tourAutoTimer = setTimeout(() => _advanceTour(), step.autoAdvance);
+  }
 }
 
-function tourNext() {
+function _advanceTour() {
+  if (!tourActive) return;
   const step = TOUR_STEPS[tourStep];
-
-  // Step 1 (index 1): wait until at least 1 channel exists
-  if (step.waitForChannel && channels.length === 0) {
-    // Briefly flash the spotlight to hint at the target
-    const spot = document.getElementById('tour-spotlight');
-    spot.style.boxShadow = '0 0 0 9999px rgba(0,0,0,0.72), 0 0 0 3px #fff';
-    setTimeout(() => {
-      spot.style.boxShadow = '0 0 0 9999px rgba(0,0,0,0.72), 0 0 0 2px var(--accent)';
-    }, 400);
-    document.getElementById('tour-body').innerHTML =
-      '<span style="color:var(--accent)">Add a channel first</span> — search for one above, then come back here.';
-    return;
-  }
-
   if (step.isLast || tourStep >= TOUR_STEPS.length - 1) {
-    endTour();
-    return;
+    endTour(); return;
   }
   tourStep++;
-  showTourStep(tourStep);
+  _showTourStep(tourStep);
 }
 
-// Wire buttons
-document.getElementById('tour-next-btn').addEventListener('click', tourNext);
+// Skip button
 document.getElementById('tour-skip-btn').addEventListener('click', endTour);
+
+// Replay from Settings
 document.getElementById('replay-tour-btn').addEventListener('click', () => {
-  // Close settings and start tour
   showHome();
   setTimeout(() => startTour(true), 280);
 });
 
 // Reposition on resize
-window.addEventListener('resize', positionTourStep);
+window.addEventListener('resize', _positionTour);
 
-// Hook: auto-start after first API key save (from setup screen)
-(function patchApiSave() {
+// Auto-start: fires after first-ever API key save AND no channels added yet
+(function() {
   const btn = document.getElementById('api-save-btn');
   if (!btn) return;
   btn.addEventListener('click', () => {
-    // If key is valid and this is the first time, start tour after home loads
     setTimeout(() => {
-      if (!isTourDone() && getKey()) startTour(false);
-    }, 600);
+      if (!isTourDone() && getKey() && channels.length === 0) startTour(false);
+    }, 650);
   });
 })();
 
-// Hook: after channel added, if tour is on step 1, advance to step 2 automatically
-const _origAddChannel = typeof addChannel === 'function' ? addChannel : null;
-// We patch renderSidebar instead to detect channel additions during tour
-const _patchedRenderSidebar = renderSidebar;
+// Hook called by addChannelInline / addChannel when a channel is successfully added
 window._tourChannelCheck = function() {
-  if (tourActive && tourStep === 1 && channels.length > 0) {
-    // Re-render step 1 to clear the "add first" message and repoint spotlight
-    setTimeout(() => showTourStep(1), 400);
+  if (!tourActive) return;
+  const step = TOUR_STEPS[tourStep];
+  if (step.waitForChannel) {
+    // Short pause so the UI settles, then advance
+    setTimeout(() => _advanceTour(), 500);
   }
 };
 </script>
