@@ -587,14 +587,16 @@
 /* ── ONBOARDING TOUR ── */
 .tour-overlay {
   position: fixed; inset: 0; z-index: 9000;
-  pointer-events: none;
+  display: none;
+  pointer-events: none; /* overlay itself doesn't capture clicks — spotlight elements stay interactive */
 }
-.tour-overlay.active { pointer-events: all; }
+.tour-overlay.active { display: block; }
 .tour-spotlight {
   position: absolute;
   border-radius: 10px;
-  box-shadow: 0 0 0 9999px rgba(0,0,0,0.72), 0 0 0 2px var(--accent);
-  transition: left 0.35s ease, top 0.35s ease, width 0.35s ease, height 0.35s ease;
+  background: transparent;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.74), 0 0 0 2px var(--accent);
+  transition: left 0.3s ease, top 0.3s ease, width 0.3s ease, height 0.3s ease;
   pointer-events: none;
 }
 .tour-tooltip {
@@ -602,54 +604,43 @@
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 14px 16px 12px;
-  max-width: 260px;
-  min-width: 180px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.55);
+  padding: 16px 18px 14px;
+  min-width: 230px; max-width: 300px;
+  box-shadow: 0 8px 36px rgba(0,0,0,0.55);
   z-index: 9001;
-  pointer-events: none;
+  pointer-events: all;
 }
-.tour-tooltip.visible { animation: tourFadeIn 0.22s ease; }
+.tour-tooltip.anim { animation: tourFadeIn 0.2s ease; }
 @keyframes tourFadeIn { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
 .tour-step-label {
   font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 5px;
+  color: var(--accent); margin-bottom: 8px;
 }
 .tour-body {
-  font-size: 13px; color: var(--muted); line-height: 1.6;
-  margin-bottom: 10px;
+  font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 14px;
 }
-.tour-skip-btn {
-  position: fixed; bottom: 20px; right: 20px; z-index: 9002;
-  background: none; border: none; color: rgba(232,228,220,0.45);
-  font-family: 'DM Sans', sans-serif; font-size: 12px;
-  cursor: pointer; padding: 6px 8px; transition: color 0.15s;
-  pointer-events: all;
-}
-.tour-skip-btn:hover { color: var(--text); }
-.tour-dots { display: flex; gap: 5px; align-items: center; }
-.tour-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--border); transition: background 0.2s;
-}
+.tour-dots { display: flex; gap: 5px; align-items: center; margin-bottom: 12px; }
+.tour-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
 .tour-dot.active { background: var(--accent); }
-
-/* ── INLINE CHANNEL SEARCH RESULTS (sidebar) ── */
-.inline-ch-result {
-  display: flex; align-items: center; gap: 8px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 7px 8px; cursor: default;
+.tour-skip-btn {
+  display: block; width: 100%;
+  background: none; border: 1px solid var(--border);
+  border-radius: 8px; color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  cursor: pointer; padding: 8px 12px; text-align: center;
+  transition: color 0.15s, border-color 0.15s;
 }
-.inline-ch-result.added { opacity: 0.45; }
-.inline-ch-thumb-sm { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: var(--surface2); }
-.inline-ch-name-sm { font-size: 12px; color: var(--text); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tour-skip-btn:hover { color: var(--text); border-color: var(--accent2); }
+
+/* ── INLINE CHANNEL ADD BUTTON (used in search results) ── */
 .inline-ch-add-btn {
   background: none; border: 1px solid var(--accent2); color: var(--accent);
-  border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 11px;
-  font-weight: 500; padding: 3px 8px; cursor: pointer; flex-shrink: 0; transition: background 0.15s;
+  border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px;
+  font-weight: 500; padding: 5px 12px; cursor: pointer; flex-shrink: 0;
+  transition: background 0.15s; white-space: nowrap;
 }
 .inline-ch-add-btn:hover { background: rgba(107,127,255,0.12); }
-.inline-ch-add-btn:disabled { opacity: 0.4; cursor: default; }
+.inline-ch-add-btn:disabled { opacity: 0.45; cursor: default; }
 
 /* Mobile channel search — hidden on desktop */
 @media (min-width: 768px) { #mobile-channel-search-wrap { display: none !important; } }
@@ -2284,7 +2275,7 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       <div class="header-sub">Only What You Choose</div>
     </div>
 
-    <div class="sidebar-timer" style="flex-direction:column;align-items:flex-start;gap:6px">
+    <div class="sidebar-timer" id="sidebar-timer-wrap" style="flex-direction:column;align-items:flex-start;gap:6px">
       <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
         <span class="timer-label">Today's session</span>
         <span class="timer-value" id="sidebar-timer">0:00</span>
@@ -2302,7 +2293,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
         <input id="sidebar-channel-search-input" type="text" placeholder="⌕  Search channels…" autocomplete="off" autocorrect="off" spellcheck="false" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-body,'DM Sans',sans-serif);font-size:12px;font-weight:300;padding:7px 10px;outline:none;transition:border-color 0.2s;min-width:0">
         <button id="sidebar-channel-search-btn" style="background:var(--accent);border:none;border-radius:8px;color:var(--bg);font-family:var(--font-body,'DM Sans',sans-serif);font-size:12px;font-weight:500;padding:7px 11px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:opacity 0.15s">Add</button>
       </div>
-      <div id="sidebar-channel-results" style="display:none;margin-top:6px;flex-direction:column;gap:4px"></div>
     </div>
 
     <div class="sidebar-section">
@@ -2677,7 +2667,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
           <input id="mobile-channel-search-input" type="text" placeholder="Search for a YouTube channel…" class="search-input" style="flex:1;padding:9px 14px;font-size:13px" autocomplete="off" autocorrect="off" spellcheck="false">
           <button id="mobile-channel-search-btn" class="search-btn" style="padding:9px 14px;font-size:13px">Add</button>
         </div>
-        <div id="mobile-channel-results" style="margin-top:8px;display:flex;flex-direction:column;gap:8px"></div>
       </div>
       <div id="feed-container" style="flex:1;overflow-y:auto"></div>
       <!-- Xbox 360 dashboard layout -->
@@ -2897,10 +2886,10 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   <div class="tour-spotlight" id="tour-spotlight"></div>
   <div class="tour-tooltip" id="tour-tooltip">
     <div class="tour-step-label" id="tour-step-label"></div>
-    <div class="tour-body" id="tour-body"></div>
     <div class="tour-dots" id="tour-dots"></div>
+    <div class="tour-body" id="tour-body"></div>
+    <button class="tour-skip-btn" id="tour-skip-btn">Skip tour</button>
   </div>
-  <button class="tour-skip-btn" id="tour-skip-btn">Skip tour</button>
 </div>
 
 <script>
@@ -2988,6 +2977,11 @@ function showHome() {
   playXboxSound('back');
   showScreen('home-screen');
   currentChannel = null;
+  channelSearchActive = false;
+  // Clear search inputs
+  ['sidebar-channel-search-input','mobile-channel-search-input'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
   renderSidebar();
   renderChannels();
 }
@@ -3120,9 +3114,12 @@ async function renderFeed(forceRefresh) {
         <div class="empty-icon">◎</div>
         <div class="feed-empty-title">No channels yet</div>
         <div class="feed-empty-sub">Add the channels you want to watch. Their latest videos will appear here.</div>
-        <button class="empty-cta" id="empty-add-btn" style="margin-top:12px">Add your first channel</button>
+        <button class="empty-cta" id="empty-add-btn" style="margin-top:12px">Search for a channel</button>
       </div>`;
-    document.getElementById('empty-add-btn').addEventListener('click', showAdd);
+    document.getElementById('empty-add-btn').addEventListener('click', () => {
+      const inp = document.getElementById('sidebar-channel-search-input') || document.getElementById('mobile-channel-search-input');
+      if (inp) inp.focus();
+    });
     return;
   }
 
@@ -3413,23 +3410,27 @@ window.addEventListener('message', e => {
   } catch(_) {}
 });
 
-// ── Inline Channel Search ──
-// Shared results rendered into a container as compact sidebar cards or full cards
-async function searchChannelsInline(q, btnEl, resultsContainerId, compact) {
+// ── Channel Search → shows results in feed-container ──
+let channelSearchActive = false; // true while showing search results
+
+async function searchChannelsInline(q) {
   if (!q) return;
   const API_KEY = getKey();
-  const resultsEl = document.getElementById(resultsContainerId);
-  if (!resultsEl) return;
-  btnEl.disabled = true; btnEl.textContent = '…';
-  resultsEl.style.display = 'flex';
-  resultsEl.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:6px 2px">Searching…</div>`;
+  const feedContainer = document.getElementById('feed-container');
+  document.getElementById('feed-status-label').textContent = 'Channel search results';
+  feedContainer.innerHTML = `<div class="feed-loading"><div class="spinner"></div>Searching for channels…</div>`;
+  channelSearchActive = true;
   searchResults = [];
+  // Disable all search buttons while loading
+  ['sidebar-channel-search-btn','mobile-channel-search-btn'].forEach(id => {
+    const el = document.getElementById(id); if (el) { el.disabled = true; el.textContent = '…'; }
+  });
   try {
     const url = `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&q=${encodeURIComponent(q)}&part=snippet&type=channel&maxResults=6`;
     const res = await apiFetch(url, 100);
     const data = await res.json();
-    if (data.error) { resultsEl.innerHTML = `<div style="font-size:12px;color:#e07060;padding:4px 2px">${esc(data.error.message)}</div>`; return; }
-    if (!data.items || data.items.length === 0) { resultsEl.innerHTML = `<div style="font-size:12px;color:var(--muted);padding:4px 2px">No channels found.</div>`; return; }
+    if (data.error) { feedContainer.innerHTML = `<div class="status"><div class="error-msg">${esc(data.error.message)}</div></div>`; return; }
+    if (!data.items || data.items.length === 0) { feedContainer.innerHTML = `<div class="status">No channels found for that search.</div>`; return; }
     const channelIds = data.items.map(i => i.snippet.channelId).join(',');
     const statsRes = await apiFetch(`https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${channelIds}&part=statistics`, channelIds.split(',').length);
     const statsData = await statsRes.json();
@@ -3440,88 +3441,75 @@ async function searchChannelsInline(q, btnEl, resultsContainerId, compact) {
       thumb: item.snippet.thumbnails?.default?.url || '',
       subs: statsMap[item.snippet.channelId]
     }));
-    renderInlineResults(resultsEl, compact);
+    renderChannelSearchResults(feedContainer);
+    if (typeof window._tourSearchCheck === 'function') window._tourSearchCheck();
   } catch(e) {
-    resultsEl.innerHTML = `<div style="font-size:12px;color:#e07060;padding:4px 2px">Search failed. Check your connection.</div>`;
+    feedContainer.innerHTML = `<div class="status"><div class="error-msg">Search failed. Check your connection and API key.</div></div>`;
   } finally {
-    btnEl.disabled = false; btnEl.textContent = 'Add';
-  }
-}
-
-function renderInlineResults(resultsEl, compact) {
-  if (compact) {
-    // Sidebar compact style
-    resultsEl.innerHTML = searchResults.map((ch, i) => {
-      const added = channels.some(c => c.id === ch.id);
-      return `<div class="inline-ch-result${added ? ' added' : ''}" data-index="${i}">
-        <img class="inline-ch-thumb-sm" src="${ch.thumb}" alt="">
-        <span class="inline-ch-name-sm">${esc(ch.name)}</span>
-        <button class="inline-ch-add-btn" data-index="${i}"${added ? ' disabled' : ''}>${added ? '✓' : '+ Add'}</button>
-      </div>`;
-    }).join('');
-    resultsEl.querySelectorAll('.inline-ch-add-btn:not([disabled])').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        addChannelInline(parseInt(btn.dataset.index), btn);
-      });
-    });
-  } else {
-    // Mobile full style
-    resultsEl.innerHTML = searchResults.map((ch, i) => {
-      const added = channels.some(c => c.id === ch.id);
-      return `<div class="result-card${added ? ' already-added' : ''}" data-index="${i}" style="cursor:default">
-        <img class="result-thumb" src="${ch.thumb}" alt="">
-        <div class="result-info">
-          <div class="result-name">${esc(ch.name)}</div>
-          ${ch.subs ? `<div class="result-subs">${fmtSubs(ch.subs)} subscribers</div>` : ''}
-        </div>
-        <button class="inline-ch-add-btn" data-index="${i}" style="font-size:12px;padding:5px 12px"${added ? ' disabled' : ''}>${added ? 'Added ✓' : '+ Add'}</button>
-      </div>`;
-    }).join('');
-    resultsEl.querySelectorAll('.inline-ch-add-btn:not([disabled])').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        addChannelInline(parseInt(btn.dataset.index), btn);
-      });
+    ['sidebar-channel-search-btn','mobile-channel-search-btn'].forEach(id => {
+      const el = document.getElementById(id); if (el) { el.disabled = false; el.textContent = 'Add'; }
     });
   }
 }
 
-async function addChannelInline(i, btnEl) {
+function renderChannelSearchResults(container) {
+  container.innerHTML = `
+    <div style="padding:12px 20px 8px;font-size:12px;color:var(--muted)">
+      Click the <strong style="color:var(--text)">YourSpace</strong> logo top-left to return to your feed anytime.
+    </div>
+    <div id="channel-search-results-list" class="search-results" style="padding:0 20px 24px">
+      ${searchResults.map((ch, i) => {
+        const added = channels.some(c => c.id === ch.id);
+        return `<div class="result-card${added ? ' already-added' : ''}" data-index="${i}">
+          <img class="result-thumb" src="${ch.thumb}" alt="">
+          <div class="result-info">
+            <div class="result-name">${esc(ch.name)}</div>
+            ${ch.subs ? `<div class="result-subs">${fmtSubs(ch.subs)} subscribers</div>` : ''}
+          </div>
+          <button class="inline-ch-add-btn" data-index="${i}"${added ? ' disabled' : ''}>${added ? 'Added ✓' : '+ Add'}</button>
+        </div>`;
+      }).join('')}
+    </div>`;
+  container.querySelectorAll('.inline-ch-add-btn:not([disabled])').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); addChannelFromSearch(parseInt(btn.dataset.index), btn); });
+  });
+}
+
+async function addChannelFromSearch(i, btnEl) {
   const ch = searchResults[i];
   if (!ch || channels.some(c => c.id === ch.id)) return;
-  if (btnEl) { btnEl.disabled = true; btnEl.textContent = '✓'; }
-  // Mark sibling card as added
-  if (btnEl) { const card = btnEl.closest('.inline-ch-result, .result-card'); if (card) card.classList.add('added'); }
+  // Update UI immediately — stay on results so user can add more
+  if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Adding…'; }
   channels.push({ id: ch.id, name: ch.name, thumb: ch.thumb });
   saveChannels();
   renderSidebar();
+  if (btnEl) { btnEl.textContent = 'Added ✓'; const card = btnEl.closest('.result-card'); if (card) card.classList.add('already-added'); }
   if (typeof window._tourChannelCheck === 'function') window._tourChannelCheck();
-  document.getElementById('feed-status-label').textContent = `Loading ${ch.name}…`;
-  const newVideos = await fetchChannelVideos({ id: ch.id, name: ch.name, thumb: ch.thumb });
-  let cached = [];
-  try { cached = JSON.parse(localStorage.getItem('ff_feed_cache') || '[]'); } catch(e) {}
-  const merged = [...cached, ...newVideos];
-  merged.sort((a, b) => new Date(b.published) - new Date(a.published));
-  localStorage.setItem('ff_feed_cache', JSON.stringify(merged));
-  localStorage.setItem('ff_feed_date', new Date().toISOString().slice(0, 10));
-  document.getElementById('feed-status-label').textContent = 'Your feed';
-  displayFeed(merged);
+  // Fetch videos in background — don't await so results stay visible
+  (async () => {
+    try {
+      const newVideos = await fetchChannelVideos({ id: ch.id, name: ch.name, thumb: ch.thumb });
+      let cached = [];
+      try { cached = JSON.parse(localStorage.getItem('ff_feed_cache') || '[]'); } catch(e) {}
+      const merged = [...cached, ...newVideos];
+      merged.sort((a, b) => new Date(b.published) - new Date(a.published));
+      localStorage.setItem('ff_feed_cache', JSON.stringify(merged));
+      localStorage.setItem('ff_feed_date', new Date().toISOString().slice(0, 10));
+    } catch(e) {}
+  })();
 }
 
-// ── Sidebar channel search wiring ──
+// Sidebar & mobile search wiring — both call searchChannelsInline
 document.getElementById('sidebar-channel-search-btn').addEventListener('click', () => {
   const q = document.getElementById('sidebar-channel-search-input').value.trim();
-  searchChannelsInline(q, document.getElementById('sidebar-channel-search-btn'), 'sidebar-channel-results', true);
+  if (q) searchChannelsInline(q);
 });
 document.getElementById('sidebar-channel-search-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('sidebar-channel-search-btn').click();
 });
-
-// ── Mobile channel search wiring ──
 document.getElementById('mobile-channel-search-btn').addEventListener('click', () => {
   const q = document.getElementById('mobile-channel-search-input').value.trim();
-  searchChannelsInline(q, document.getElementById('mobile-channel-search-btn'), 'mobile-channel-results', false);
+  if (q) searchChannelsInline(q);
 });
 document.getElementById('mobile-channel-search-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('mobile-channel-search-btn').click();
@@ -5148,39 +5136,64 @@ function renderXboxDashboard(videos) {
 
 <script>
 // ── ONBOARDING TOUR ──
+// Check ff_tour_done on load — if present, tour never runs.
+// Tour triggers on first page load where ff_tour_done is absent.
 const TOUR_KEY = 'ff_tour_done';
 
-// Each step: targetId for desktop, mobileTargetId for mobile (<768px)
-// waitForChannel: true — step waits until user adds a channel (no auto-advance)
-// autoAdvance: ms — step auto-advances after N ms
-// isLast: true — tour ends after this step
 const TOUR_STEPS = [
+  // Step 1: spotlight channel search bar — advances when user triggers a search
   {
     targetId: 'sidebar-channel-search-wrap',
     mobileTargetId: 'mobile-channel-search-wrap',
-    label: 'Step 1 of 4',
-    body: 'Search for a YouTube channel and hit Add to get started',
-    waitForChannel: true
+    label: 'Step 1 of 7',
+    body: 'Search for a YouTube channel to add it to your feed',
+    trigger: 'search'
   },
+  // Step 2: spotlight results in feed-container — advances when user adds a channel
   {
-    targetId: 'sidebar-channel-list',
-    mobileSkip: true, // sidebar hidden on mobile; skip to next
-    label: 'Step 2 of 4',
-    body: 'Your channels live here — click one to load its videos',
+    targetId: 'feed-container',
+    label: 'Step 2 of 7',
+    body: 'Click Add to add a channel to your feed',
+    trigger: 'add'
+  },
+  // Step 3: spotlight home button — auto-advance 3s
+  {
+    targetId: 'wordmark-home-desktop',
+    mobileTargetId: 'wordmark-home-mobile',
+    label: 'Step 3 of 7',
+    body: 'Click here to return to your feed anytime',
     autoAdvance: 3000
   },
+  // Step 4: spotlight timer + tokens — auto-advance 3s
   {
-    targetId: 'sidebar-dashboard-btn',
-    mobileTargetId: 'mobile-dashboard-btn',
-    label: 'Step 3 of 4',
-    body: 'Your tools — diary, goals, reminders and more — all live here',
+    targetId: 'sidebar-timer-wrap',
+    mobileTargetId: 'mobile-timer',
+    label: 'Step 4 of 7',
+    body: 'This tracks your session time and daily API tokens used',
     autoAdvance: 3000
   },
+  // Step 5: spotlight channel list — auto-advance 3s (desktop only)
+  {
+    targetId: 'sidebar-channel-scroll',
+    mobileSkip: true,
+    label: 'Step 5 of 7',
+    body: 'Your channels live here — drag to reorder them and it changes the order in your feed, or delete to remove',
+    autoAdvance: 3000
+  },
+  // Step 6: spotlight Settings — auto-advance 3s
   {
     targetId: 'sidebar-settings-btn',
     mobileTargetId: 'mobile-settings-btn',
-    label: 'Step 4 of 4',
-    body: 'Head here to back up your data and customise your space',
+    label: 'Step 6 of 7',
+    body: 'Customise your space and back up your data here',
+    autoAdvance: 3000
+  },
+  // Step 7: spotlight Dashboard — ends tour
+  {
+    targetId: 'sidebar-dashboard-btn',
+    mobileTargetId: 'mobile-dashboard-btn',
+    label: 'Step 7 of 7',
+    body: 'Your tools — diary, goals, reminders and more — all live here',
     autoAdvance: 3000,
     isLast: true
   }
@@ -5188,143 +5201,135 @@ const TOUR_STEPS = [
 
 let tourStep = 0;
 let tourActive = false;
-let tourAutoTimer = null;
+let _tourTimer = null;
 
-function isTourDone() { return localStorage.getItem(TOUR_KEY) === '1'; }
+function isTourDone() { return !!localStorage.getItem(TOUR_KEY); }
 function markTourDone() { localStorage.setItem(TOUR_KEY, '1'); }
 
 function startTour(force) {
   if (!force && isTourDone()) return;
   tourStep = 0;
   tourActive = true;
-  const overlay = document.getElementById('tour-overlay');
-  overlay.classList.add('active');
-  overlay.setAttribute('aria-hidden', 'false');
-  _showTourStep(tourStep);
+  const ov = document.getElementById('tour-overlay');
+  ov.classList.add('active');
+  ov.setAttribute('aria-hidden', 'false');
+  _tourShow(0);
 }
 
 function endTour() {
   tourActive = false;
   markTourDone();
-  if (tourAutoTimer) { clearTimeout(tourAutoTimer); tourAutoTimer = null; }
-  const overlay = document.getElementById('tour-overlay');
-  overlay.classList.remove('active');
-  overlay.setAttribute('aria-hidden', 'true');
-  window.removeEventListener('resize', _positionTour);
+  if (_tourTimer) { clearTimeout(_tourTimer); _tourTimer = null; }
+  const ov = document.getElementById('tour-overlay');
+  ov.classList.remove('active');
+  ov.setAttribute('aria-hidden', 'true');
+  window.removeEventListener('resize', _tourPosition);
 }
 
-function _tourTarget(step) {
-  const isMob = window.innerWidth < 768;
-  if (isMob && step.mobileTargetId) return document.getElementById(step.mobileTargetId);
+function _tourEl(step) {
+  const mob = window.innerWidth < 768;
+  if (mob && step.mobileTargetId) return document.getElementById(step.mobileTargetId);
   return document.getElementById(step.targetId);
 }
 
-function _positionTour() {
+function _tourPosition() {
   if (!tourActive) return;
   const step = TOUR_STEPS[tourStep];
-  const el = _tourTarget(step);
+  const el = _tourEl(step);
   if (!el) return;
   const r = el.getBoundingClientRect();
-  const pad = 8;
+  const pad = 9;
   const spot = document.getElementById('tour-spotlight');
-  spot.style.left   = (r.left - pad) + 'px';
-  spot.style.top    = (r.top  - pad) + 'px';
-  spot.style.width  = (r.width  + pad * 2) + 'px';
-  spot.style.height = (r.height + pad * 2) + 'px';
+  spot.style.cssText = `left:${r.left-pad}px;top:${r.top-pad}px;width:${r.width+pad*2}px;height:${r.height+pad*2}px`;
 
   const tip = document.getElementById('tour-tooltip');
-  const tipW = Math.min(260, window.innerWidth - 28);
+  const tipW = Math.min(300, window.innerWidth - 24);
   tip.style.width = tipW + 'px';
-  // Horizontal: align to spotlight left, clamped
   let left = r.left - pad;
   left = Math.max(10, Math.min(left, window.innerWidth - tipW - 10));
   tip.style.left = left + 'px';
-  // Vertical: below if room, else above
-  const tipH = tip.offsetHeight || 90;
-  const belowY = r.bottom + pad + 12;
-  if (belowY + tipH < window.innerHeight - 10) {
-    tip.style.top = belowY + 'px';
-  } else {
-    tip.style.top = Math.max(10, r.top - pad - tipH - 12) + 'px';
-  }
+  const tipH = tip.offsetHeight || 140;
+  const belowY = r.bottom + pad + 14;
+  tip.style.top = (belowY + tipH < window.innerHeight - 10)
+    ? belowY + 'px'
+    : Math.max(10, r.top - pad - tipH - 14) + 'px';
 }
 
-function _showTourStep(i) {
-  if (tourAutoTimer) { clearTimeout(tourAutoTimer); tourAutoTimer = null; }
+function _tourShow(i) {
+  if (_tourTimer) { clearTimeout(_tourTimer); _tourTimer = null; }
   const step = TOUR_STEPS[i];
-  const isMob = window.innerWidth < 768;
-
-  // Skip step on mobile if no target
-  if (isMob && step.mobileSkip) {
-    _advanceTour(); return;
-  }
+  const mob = window.innerWidth < 768;
+  if (mob && step.mobileSkip) { _tourAdvance(); return; }
 
   document.getElementById('tour-step-label').textContent = step.label;
   document.getElementById('tour-body').textContent = step.body;
 
-  // Dots
-  const visibleSteps = TOUR_STEPS.filter((s, idx) => !(isMob && s.mobileSkip));
-  const visibleIdx = visibleSteps.indexOf(step);
-  document.getElementById('tour-dots').innerHTML = visibleSteps.map((_,j) =>
-    `<div class="tour-dot${j === visibleIdx ? ' active' : ''}"></div>`
-  ).join('');
+  // Progress dots (skip mobile-skipped steps)
+  const visible = TOUR_STEPS.filter(s => !(mob && s.mobileSkip));
+  const vi = visible.indexOf(step);
+  document.getElementById('tour-dots').innerHTML =
+    visible.map((_,j) => `<div class="tour-dot${j===vi?' active':''}"></div>`).join('');
 
-  // Trigger fade animation
+  // Animate tooltip
   const tip = document.getElementById('tour-tooltip');
-  tip.classList.remove('visible');
+  tip.classList.remove('anim');
   void tip.offsetWidth;
-  tip.classList.add('visible');
+  tip.classList.add('anim');
 
-  requestAnimationFrame(() => { _positionTour(); });
+  requestAnimationFrame(_tourPosition);
 
-  // Auto-advance
-  if (step.autoAdvance) {
-    tourAutoTimer = setTimeout(() => _advanceTour(), step.autoAdvance);
-  }
+  if (step.autoAdvance) _tourTimer = setTimeout(_tourAdvance, step.autoAdvance);
 }
 
-function _advanceTour() {
+function _tourAdvance() {
   if (!tourActive) return;
   const step = TOUR_STEPS[tourStep];
-  if (step.isLast || tourStep >= TOUR_STEPS.length - 1) {
-    endTour(); return;
-  }
+  if (step.isLast || tourStep >= TOUR_STEPS.length - 1) { endTour(); return; }
   tourStep++;
-  _showTourStep(tourStep);
+  _tourShow(tourStep);
 }
 
-// Skip button
+// Skip button — inside the tooltip
 document.getElementById('tour-skip-btn').addEventListener('click', endTour);
 
 // Replay from Settings
 document.getElementById('replay-tour-btn').addEventListener('click', () => {
-  showHome();
-  setTimeout(() => startTour(true), 280);
+  showHome(); setTimeout(() => startTour(true), 300);
 });
 
 // Reposition on resize
-window.addEventListener('resize', _positionTour);
+window.addEventListener('resize', _tourPosition);
 
-// Auto-start: fires after first-ever API key save AND no channels added yet
-(function() {
-  const btn = document.getElementById('api-save-btn');
-  if (!btn) return;
-  btn.addEventListener('click', () => {
-    setTimeout(() => {
-      if (!isTourDone() && getKey() && channels.length === 0) startTour(false);
-    }, 650);
-  });
-})();
+// ── Tour trigger hooks ──
 
-// Hook called by addChannelInline / addChannel when a channel is successfully added
+// Called when channel search fires (advances step 1 → step 2)
+window._tourSearchCheck = function() {
+  if (!tourActive) return;
+  if (TOUR_STEPS[tourStep].trigger === 'search') setTimeout(_tourAdvance, 400);
+};
+
+// Called when a channel is successfully added (advances step 2 → step 3)
 window._tourChannelCheck = function() {
   if (!tourActive) return;
-  const step = TOUR_STEPS[tourStep];
-  if (step.waitForChannel) {
-    // Short pause so the UI settles, then advance
-    setTimeout(() => _advanceTour(), 500);
-  }
+  if (TOUR_STEPS[tourStep].trigger === 'add') setTimeout(_tourAdvance, 600);
 };
+
+// Page-load trigger: start tour if ff_tour_done is absent
+// Fires when home screen is shown for the first time
+(function() {
+  // Check immediately on DOMContentLoaded
+  if (isTourDone()) return; // already seen — do nothing at all
+  // Observe when home-screen becomes active (after API key save)
+  const observer = new MutationObserver(() => {
+    const homeScreen = document.getElementById('home-screen');
+    if (homeScreen && homeScreen.classList.contains('active') && !isTourDone()) {
+      observer.disconnect();
+      setTimeout(() => { if (!isTourDone()) startTour(false); }, 700);
+    }
+  });
+  const main = document.getElementById('main');
+  if (main) observer.observe(main, { childList: false, subtree: true, attributes: true, attributeFilter: ['class'] });
+})();
 </script>
 
 </body>
