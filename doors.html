@@ -94,7 +94,7 @@ body::after {
   background: #000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.8s ease;
+  transition: opacity 0.4s ease;
 }
 #fade-overlay.fading { opacity: 1; pointer-events: all; }
 
@@ -112,7 +112,6 @@ body::after {
   align-items: center; justify-content: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.8s ease;
   padding: 40px 20px;
 }
 .scene.active {
@@ -919,20 +918,24 @@ function applySceneColours(key) {
 /* ── Fade transition ── */
 const fadeEl = document.getElementById('fade-overlay');
 function fadeOut(cb) {
-  fadeEl.style.transition = 'opacity 0.8s ease';
+  fadeEl.style.transition = 'opacity 0.4s ease';
   fadeEl.classList.add('fading');
-  setTimeout(cb, 820);
+  setTimeout(cb, 420);
 }
 function fadeIn(cb) {
-  fadeEl.style.transition = 'opacity 0.8s ease';
+  fadeEl.style.transition = 'opacity 0.4s ease';
   fadeEl.classList.remove('fading');
-  if (cb) setTimeout(cb, 820);
+  if (cb) setTimeout(cb, 420);
 }
 
 /* ── Show scene ── */
 let currentScene = 'ante';
 function showScene(key, onShown) {
-  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  // Disable CSS transitions so scenes swap instantly under the opaque overlay
+  document.querySelectorAll('.scene').forEach(s => {
+    s.style.transition = 'none';
+    s.classList.remove('active');
+  });
   applySceneColours(key);
   const el = document.getElementById('scene-' + key);
   if (el) el.classList.add('active');
