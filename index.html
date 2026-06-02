@@ -6524,6 +6524,34 @@ function highestStat() {
 }
 
 // ── Anthropic API ──
+const CLAUDE_FALLBACK_MODEL = 'claude-haiku-4-5-20251001';
+let _claudeModel = CLAUDE_FALLBACK_MODEL;
+
+async function initClaudeModel() {
+  const key = localStorage.getItem(ANTHRO_KEY);
+  if (!key) return;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/models', {
+      headers: {
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const models = (data.data || []).map(m => m.id).filter(id => id.includes('haiku'));
+    if (models.length) {
+      // Pick the most recent: sort descending and take first
+      models.sort((a, b) => b.localeCompare(a));
+      _claudeModel = models[0];
+    }
+  } catch (_) { /* silent fallback */ }
+}
+
+// Kick off model fetch on page load if key already stored
+if (localStorage.getItem(ANTHRO_KEY)) initClaudeModel();
+
 async function callClaude(messages, systemPrompt) {
   const key = localStorage.getItem(ANTHRO_KEY);
   if (!key) throw new Error('No Anthropic API key saved.');
@@ -6535,7 +6563,7 @@ async function callClaude(messages, systemPrompt) {
       'content-type': 'application/json',
       'anthropic-dangerous-direct-browser-access': 'true'
     },
-    body: JSON.stringify({ model:'claude-3-5-haiku-20241022', max_tokens:1024, system:systemPrompt, messages })
+    body: JSON.stringify({ model: _claudeModel, max_tokens:1024, system:systemPrompt, messages })
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error:{ message:'API error' } }));
@@ -6765,6 +6793,7 @@ document.getElementById('char-anthro-save').addEventListener('click', () => {
   }
   err.textContent = '';
   localStorage.setItem(ANTHRO_KEY, val);
+  initClaudeModel(); // fetch best available haiku model now that we have a key
   document.getElementById('char-gate').style.display  = 'none';
   document.getElementById('char-sheet').style.display = 'flex';
   renderCharSheet();
