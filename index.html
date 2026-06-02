@@ -2274,444 +2274,530 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
      CHARACTER SCREEN
   ═══════════════════════════════════════════════════════ */
 
+  /* Grain texture on the whole character screen */
+  #character-screen {
+    background: #0e0e0e;
+    position: relative;
+  }
+  #character-screen::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+    opacity: 0.04;
+  }
+  #character-screen > * { position: relative; z-index: 1; }
+
   /* ── Gate ── */
   #char-gate {
     flex: 1; display: flex; align-items: center; justify-content: center;
-    padding: 32px 20px;
+    padding: 32px 20px; min-height: 100%;
   }
   .char-gate-inner {
-    max-width: 440px; width: 100%;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 20px; padding: 32px 28px; text-align: center;
+    max-width: 460px; width: 100%;
+    background: #141414; border: 1px solid #2a2a2a;
+    border-radius: 20px; padding: 36px 32px; text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
   }
-  .char-gate-lock { font-size: 40px; margin-bottom: 16px; }
+  .char-gate-lock { font-size: 44px; margin-bottom: 14px; line-height: 1; }
   .char-gate-title {
-    font-family: 'Fredoka One', cursive; font-size: 22px;
-    color: var(--text); margin-bottom: 12px; font-weight: 400;
+    font-family: 'Fredoka One', cursive; font-size: 24px;
+    color: #e8e4dc; margin-bottom: 14px; font-weight: 400; line-height: 1.2;
   }
-  .char-gate-desc { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+  .char-gate-desc { font-size: 13px; color: #6b6760; line-height: 1.7; margin-bottom: 22px; }
+  .char-gate-privacy {
+    font-size: 11px; color: #6b6760; line-height: 1.6; margin-bottom: 18px;
+    background: rgba(107,127,255,0.06); border: 1px solid rgba(107,127,255,0.15);
+    border-radius: 10px; padding: 10px 14px; text-align: left;
+  }
   .char-gate-steps {
     text-align: left; display: flex; flex-direction: column; gap: 10px;
-    background: var(--surface2); border-radius: 12px; padding: 16px 18px;
-    margin-bottom: 20px;
+    background: #1a1a1a; border-radius: 12px; padding: 16px 18px; margin-bottom: 20px;
   }
-  .char-gate-step { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text); }
+  .char-gate-step { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #e8e4dc; }
   .char-gate-step-num {
-    width: 22px; height: 22px; border-radius: 50%; background: var(--accent);
-    color: var(--bg); font-size: 11px; font-weight: 600;
+    width: 22px; height: 22px; border-radius: 50%; background: #c9a84c;
+    color: #0e0e0e; font-size: 11px; font-weight: 700;
     display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-  .char-gate-input-row { display: flex; gap: 8px; }
+  .char-gate-input-row { display: flex; gap: 8px; margin-bottom: 8px; }
   .char-gate-input {
-    flex: 1; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 10px; color: var(--text); font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px; padding: 10px 14px; outline: none;
-    transition: border-color 0.2s;
+    flex: 1; background: #1a1a1a; border: 1px solid #2a2a2a;
+    border-radius: 10px; color: #e8e4dc; font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; padding: 10px 14px; outline: none; transition: border-color 0.2s;
   }
-  .char-gate-input:focus { border-color: var(--accent); }
+  .char-gate-input:focus { border-color: #c9a84c; }
   .char-gate-save-btn {
-    background: var(--accent); border: none; border-radius: 10px;
-    color: var(--bg); font-family: 'DM Sans', sans-serif; font-size: 13px;
-    font-weight: 500; padding: 10px 16px; cursor: pointer; white-space: nowrap;
-    transition: opacity 0.2s;
+    background: #c9a84c; border: none; border-radius: 10px;
+    color: #0e0e0e; font-family: 'Fredoka One', cursive; font-size: 15px;
+    font-weight: 400; padding: 10px 18px; cursor: pointer; white-space: nowrap;
+    transition: opacity 0.2s, transform 0.1s;
   }
-  .char-gate-save-btn:hover { opacity: 0.85; }
-  .char-gate-error { font-size: 12px; color: var(--danger); margin-top: 8px; min-height: 16px; }
+  .char-gate-save-btn:hover { opacity: 0.88; }
+  .char-gate-save-btn:active { transform: scale(0.97); }
+  .char-gate-error { font-size: 12px; color: #c0392b; margin-top: 4px; min-height: 16px; }
 
-  /* ── Topbar ── */
+  /* ── Sheet shell ── */
   #char-sheet { display: flex; flex-direction: column; flex: 1; min-height: 0; }
   .char-topbar {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 20px 10px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    padding: 14px 20px 12px; border-bottom: 1px solid #1e1e1e; flex-shrink: 0;
   }
   .char-topbar-title {
-    font-family: 'Fredoka One', cursive; font-size: 18px;
-    color: var(--text); font-weight: 400; letter-spacing: 0.5px;
+    font-family: 'Fredoka One', cursive; font-size: 20px;
+    color: #e8e4dc; font-weight: 400; letter-spacing: 1px;
   }
 
-  /* ── Layout ── */
+  /* ── Two-panel layout ── */
   .char-layout {
-    display: flex; flex: 1; gap: 0; min-height: 0;
-    overflow-y: auto; padding: 20px;
-    gap: 20px; align-items: flex-start;
+    display: flex; flex: 1; min-height: 0;
+    overflow-y: auto; padding: 20px; gap: 20px; align-items: flex-start;
   }
 
-  /* ── Left panel ── */
+  /* ── LEFT PANEL ── */
   .char-left-panel {
-    width: 30%; min-width: 220px; flex-shrink: 0;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 20px; padding: 20px 16px;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
-    position: relative; overflow: hidden;
-  }
-  /* Grain texture overlay */
-  .char-left-panel::before {
-    content: '';
-    position: absolute; inset: 0; border-radius: inherit;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    background-size: 160px 160px;
-    opacity: 0.04;
-    pointer-events: none;
+    width: 280px; flex-shrink: 0;
+    background: #131313; border: 1px solid #222;
+    border-radius: 20px; padding: 20px 18px 22px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
   }
   .char-name-row {
-    display: flex; align-items: center; gap: 8px;
-    width: 100%; justify-content: center;
+    display: flex; align-items: center; gap: 8px; width: 100%; justify-content: center;
   }
   .char-name-display {
-    font-family: 'Fredoka One', cursive; font-size: 20px;
-    color: var(--text); font-weight: 400; text-align: center; cursor: pointer;
+    font-family: 'Fredoka One', cursive; font-size: 22px;
+    color: #e8e4dc; font-weight: 400; cursor: pointer; letter-spacing: 0.5px;
   }
+  .char-name-display:hover { color: #c9a84c; }
   .char-name-edit-btn {
-    background: none; border: none; color: var(--muted); cursor: pointer;
+    background: none; border: none; color: #4a4a4a; cursor: pointer;
     font-size: 13px; padding: 2px 4px; transition: color 0.2s;
   }
-  .char-name-edit-btn:hover { color: var(--accent); }
+  .char-name-edit-btn:hover { color: #c9a84c; }
   .char-name-input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--accent);
-    border-radius: 10px; color: var(--text); font-family: 'Fredoka One', cursive;
-    font-size: 17px; padding: 8px 12px; outline: none; text-align: center;
+    width: 100%; background: #1a1a1a; border: 2px solid #c9a84c;
+    border-radius: 10px; color: #e8e4dc; font-family: 'Fredoka One', cursive;
+    font-size: 18px; padding: 8px 12px; outline: none; text-align: center;
   }
-  /* Avatar */
-  .char-avatar-wrap {
-    position: relative; width: 90px; height: 145px;
-    display: flex; align-items: center; justify-content: center;
+
+  /* Portrait */
+  .char-portrait-outer {
+    position: relative; width: 200px; height: 200px; flex-shrink: 0;
   }
-  .char-avatar-glow {
-    position: absolute; inset: -15px;
-    border-radius: 50%;
-    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
-    opacity: 0.2;
+  .char-portrait-inner {
+    position: absolute; inset: 16px;
+    background: #0a0a0c;
+    border-radius: 4px;
+    display: flex; align-items: flex-end; justify-content: center;
+    overflow: hidden;
   }
-  .char-silhouette {
-    width: 80px; height: 140px; position: relative; z-index: 1;
-    fill: var(--accent); opacity: 0.85;
-    filter: drop-shadow(0 0 8px var(--accent));
+  .char-portrait-frame-overlay {
+    position: absolute; inset: 0; z-index: 3;
+    background: url('xp-portrait-frame.png') no-repeat center / 100% 100%;
+    pointer-events: none;
   }
-  /* Level block */
-  .char-level-block { text-align: center; }
-  .char-level-label {
-    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--muted); margin-bottom: 4px;
+  /* CSS humanoid silhouette */
+  .char-sil-wrap {
+    position: relative; width: 90px; height: 155px;
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 4px;
+  }
+  .char-sil-glow {
+    position: absolute; inset: -20px; border-radius: 50%; z-index: 0;
+    background: radial-gradient(circle at 50% 50%, var(--char-highest-color, #6b7fff) 0%, transparent 70%);
+    opacity: 0.25; transition: opacity 0.4s;
+  }
+  .char-sil-head {
+    width: 34px; height: 34px; border-radius: 50%; position: relative; z-index: 1;
+    background: var(--char-highest-color, #6b7fff); opacity: 0.88;
+    margin-bottom: 2px;
+  }
+  .char-sil-neck {
+    width: 12px; height: 8px; position: relative; z-index: 1;
+    background: var(--char-highest-color, #6b7fff); opacity: 0.8;
+    border-radius: 2px; margin-bottom: 0;
+  }
+  .char-sil-body {
+    position: relative; z-index: 1;
+    width: 52px; height: 58px;
+    background: var(--char-highest-color, #6b7fff); opacity: 0.85;
+    border-radius: 10px 10px 6px 6px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .char-sil-arm {
+    width: 13px; height: 46px; margin-top: 6px;
+    background: var(--char-highest-color, #6b7fff); opacity: 0.85;
+    border-radius: 6px; flex-shrink: 0;
+  }
+  .char-sil-arm-l { transform: rotate(6deg); transform-origin: top center; }
+  .char-sil-arm-r { transform: rotate(-6deg); transform-origin: top center; }
+  .char-sil-legs {
+    display: flex; gap: 6px; position: relative; z-index: 1; margin-top: 2px;
+  }
+  .char-sil-leg {
+    width: 18px; height: 50px;
+    background: var(--char-highest-color, #6b7fff); opacity: 0.82;
+    border-radius: 4px 4px 8px 8px;
+  }
+
+  /* Overall level */
+  .char-overall-level-block { text-align: center; line-height: 1; }
+  .char-level-label-small {
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: #4a4a4a; margin-bottom: 2px;
   }
   .char-overall-level {
-    font-family: 'Fredoka One', cursive; font-size: 52px;
-    color: var(--accent); line-height: 1; font-weight: 400;
+    font-family: 'Fredoka One', cursive; font-size: 48px;
+    color: #c9a84c; font-weight: 400; line-height: 1; text-shadow: 0 0 20px rgba(201,168,76,0.4);
   }
-  /* XP bar */
-  .char-overall-bar-wrap { width: 100%; }
-  .char-bar-header {
+
+  /* XP bar (3-layer system shared by overall and stat bars) */
+  .char-bar-labels {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
-  .char-bar-label-text { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-  .char-bar-label-val { font-size: 10px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .char-xp-track {
-    height: 14px; background: var(--surface2);
-    border-radius: 10px; overflow: hidden; position: relative;
-    border: 2px solid rgba(0,0,0,0.35);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.45);
+  .char-bar-label-text { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: #4a4a4a; }
+  .char-bar-label-val { font-size: 10px; color: #6b6760; font-variant-numeric: tabular-nums; }
+  .char-xp-bar-outer {
+    position: relative; width: 100%; height: 44px;
   }
+  .char-xp-bar-outer.slim { height: 32px; }
+  /* Layer 1: dark inset bg */
+  .char-xp-bg {
+    position: absolute; inset: 8px 4px;
+    background: #0d0d0d;
+    border-radius: 4px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+  }
+  /* Layer 2: fill texture, clips to inner area */
   .char-xp-fill {
-    height: 100%; border-radius: 8px;
-    transition: width 0.55s cubic-bezier(0.34,1.56,0.64,1);
-    position: relative;
-    box-shadow: inset 0 1px 2px rgba(255,255,255,0.25), 0 1px 4px rgba(0,0,0,0.3);
+    position: absolute; top: 8px; bottom: 8px; left: 4px;
+    background: url('xp-fill-texture.png') repeat-x left center;
+    background-size: auto 100%;
+    width: 0%;
+    border-radius: 4px;
+    transition: width 0.65s cubic-bezier(0.34, 1.3, 0.64, 1);
+    overflow: hidden;
+    max-width: calc(100% - 8px);
   }
   .char-xp-fill::after {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 60%);
-    border-radius: inherit;
+    background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 55%);
   }
-  /* Segment lines over the track */
-  .char-xp-track::after {
-    content: '';
-    position: absolute; inset: 0; pointer-events: none;
-    background: repeating-linear-gradient(
-      to right,
-      transparent 0px,
-      transparent calc(10% - 1.5px),
-      rgba(0,0,0,0.25) calc(10% - 1.5px),
-      rgba(0,0,0,0.25) 10%
-    );
+  /* Layer 3: frame overlay */
+  .char-xp-frame {
+    position: absolute; inset: 0;
+    background: url('xp-bar-frame.png') no-repeat center / 100% 100%;
+    pointer-events: none; z-index: 2;
   }
-  /* Pulse animation on XP add */
   @keyframes xpPulse {
-    0%   { filter: brightness(1); }
-    30%  { filter: brightness(1.6); }
-    100% { filter: brightness(1); }
+    0%,100% { filter: brightness(1); }
+    40%      { filter: brightness(1.8) saturate(1.4); }
   }
-  .char-xp-fill.pulse { animation: xpPulse 0.5s ease; }
-  /* Prestige row */
+  .char-xp-fill.pulse { animation: xpPulse 0.55s ease; }
+
+  /* Prestige badges */
   .char-prestige-row {
-    display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; min-height: 20px;
+    display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; min-height: 16px;
   }
-  .char-prestige-star { font-size: 16px; line-height: 1; }
+  .char-prestige-star { font-size: 15px; line-height: 1; }
+
   /* Log Activity button */
   .char-log-btn {
-    width: 100%; padding: 12px; border: none; border-radius: 14px;
-    background: var(--accent); color: var(--bg);
-    font-family: 'Fredoka One', cursive; font-size: 16px; font-weight: 400;
-    cursor: pointer; letter-spacing: 0.5px;
-    transition: transform 0.15s, opacity 0.15s;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    width: 100%; padding: 13px 12px; border-radius: 14px;
+    background: #1a1608; border: 2px solid #c9a84c; color: #c9a84c;
+    font-family: 'Fredoka One', cursive; font-size: 17px; font-weight: 400;
+    cursor: pointer; letter-spacing: 0.8px;
+    transition: transform 0.15s, background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 12px rgba(201,168,76,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+    position: relative; overflow: hidden;
   }
-  .char-log-btn:hover { opacity: 0.88; }
+  @keyframes shimmer {
+    0%   { transform: translateX(-100%) skewX(-15deg); }
+    100% { transform: translateX(300%) skewX(-15deg); }
+  }
+  .char-log-btn::after {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 40%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.25), transparent);
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  .char-log-btn:hover {
+    background: #221c08; box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+  }
+  .char-log-btn:hover::after { animation: shimmer 0.7s ease forwards; }
   .char-log-btn:active { transform: scale(0.97); }
 
-  /* ── Right panel ── */
+  /* ── RIGHT PANEL ── */
   .char-right-panel {
-    flex: 1; min-width: 0;
-    display: flex; flex-direction: column; gap: 10px;
+    flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px;
+  }
+  .char-stats-heading {
+    font-family: 'Fredoka One', cursive; font-size: 13px; font-weight: 400;
+    letter-spacing: 0.25em; color: #3a3a3a; text-transform: uppercase;
+    margin-bottom: 4px; padding-left: 2px;
   }
   .char-stat-row {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 18px; padding: 14px 18px;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+    background: #131313; border: 1px solid #1e1e1e;
+    border-radius: 16px; padding: 14px 16px;
+    cursor: pointer; position: relative;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
   }
   .char-stat-row:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-    border-color: var(--accent2);
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.08);
   }
   .char-stat-top {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 11px; margin-bottom: 8px;
   }
-  .char-stat-icon { font-size: 24px; flex-shrink: 0; line-height: 1; }
+  .char-stat-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
   .char-stat-name {
-    font-family: 'Fredoka One', cursive; font-size: 18px;
+    font-family: 'Fredoka One', cursive; font-size: 17px;
     font-weight: 400; flex: 1; letter-spacing: 0.3px;
   }
   .char-stat-level {
-    font-family: 'Fredoka One', cursive; font-size: 28px;
+    font-family: 'Fredoka One', cursive; font-size: 22px;
     font-weight: 400; line-height: 1; flex-shrink: 0;
   }
-  .char-stat-prestige { font-size: 12px; color: var(--muted); flex-shrink: 0; }
-  .char-stat-bar-row {
-    display: flex; align-items: center; gap: 10px;
-  }
-  .char-stat-xp-wrap { flex: 1; }
-  .char-stat-xp-label { font-size: 10px; color: var(--muted); margin-top: 5px; text-align: right; }
-  /* Prestige button */
+  .char-stat-prestige { font-size: 11px; color: #c9a84c; flex-shrink: 0; letter-spacing: 0.02em; }
+  .char-stat-xp-label { font-size: 10px; color: #4a4a4a; margin-top: 4px; text-align: right; }
   .char-prestige-btn {
-    background: none; border: 2px solid gold; border-radius: 10px;
-    color: gold; font-family: 'Fredoka One', cursive; font-size: 13px;
-    padding: 5px 12px; cursor: pointer; transition: background 0.2s;
-    flex-shrink: 0;
+    background: none; border: 1.5px solid #c9a84c; border-radius: 8px;
+    color: #c9a84c; font-family: 'Fredoka One', cursive; font-size: 12px;
+    padding: 4px 10px; cursor: pointer; transition: background 0.2s; flex-shrink: 0;
   }
-  .char-prestige-btn:hover { background: rgba(255,215,0,0.12); }
+  .char-prestige-btn:hover { background: rgba(201,168,76,0.1); }
+  /* Level-up flash on stat row */
+  @keyframes statLevelUp {
+    0%   { box-shadow: none; }
+    20%  { box-shadow: 0 0 0 3px var(--flash-color, #c9a84c); }
+    50%  { box-shadow: 0 0 20px 6px var(--flash-color, #c9a84c); }
+    100% { box-shadow: none; }
+  }
+  .char-stat-row.level-up-flash { animation: statLevelUp 1.4s ease forwards; }
+  /* Floating LEVEL UP text */
+  .char-stat-levelup-text {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0);
+    font-family: 'Fredoka One', cursive; font-size: 22px; font-weight: 400;
+    color: #ffd700; text-shadow: 0 0 12px rgba(255,215,0,0.8), 0 2px 4px rgba(0,0,0,0.8);
+    pointer-events: none; z-index: 10;
+    letter-spacing: 2px;
+  }
+  @keyframes levelupText {
+    0%   { opacity: 0; transform: translate(-50%,-50%) scale(0); }
+    20%  { opacity: 1; transform: translate(-50%,-50%) scale(1.2); }
+    40%  { transform: translate(-50%,-50%) scale(1); }
+    70%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%,-60%) scale(0.9); }
+  }
+  .char-stat-levelup-text.show { animation: levelupText 1.5s ease forwards; }
 
-  /* ── Activity Modal ── */
+  /* ── Activity / Skill overlays ── */
   .char-overlay {
     position: fixed; inset: 0; z-index: 9500;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.82);
     display: flex; align-items: center; justify-content: center;
-    padding: 20px;
-    backdrop-filter: blur(4px);
+    padding: 20px; backdrop-filter: blur(6px);
   }
   .char-modal-box {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 22px; padding: 28px; width: 100%; max-width: 520px;
+    background: #141414; border: 1px solid #2a2a2a;
+    border-radius: 22px; padding: 28px; width: 100%; max-width: 540px;
     max-height: 90vh; overflow-y: auto; position: relative;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.7);
   }
   .char-modal-close {
-    position: absolute; top: 16px; right: 16px;
-    background: var(--surface2); border: 1px solid var(--border);
+    position: absolute; top: 14px; right: 14px;
+    background: #1e1e1e; border: 1px solid #2a2a2a;
     border-radius: 50%; width: 30px; height: 30px;
-    color: var(--muted); font-size: 14px; cursor: pointer;
+    color: #6b6760; font-size: 14px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: color 0.2s, border-color 0.2s;
+    transition: color 0.2s; z-index: 1;
   }
-  .char-modal-close:hover { color: var(--text); border-color: var(--text); }
+  .char-modal-close:hover { color: #e8e4dc; }
   .char-modal-step-title {
-    font-family: 'Fredoka One', cursive; font-size: 20px;
-    color: var(--text); margin-bottom: 6px; font-weight: 400;
+    font-family: 'Fredoka One', cursive; font-size: 22px;
+    color: #e8e4dc; margin-bottom: 6px; font-weight: 400;
   }
-  .char-modal-step-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
-  /* Stat picker cards */
+  .char-modal-step-sub { font-size: 13px; color: #6b6760; margin-bottom: 18px; line-height: 1.5; }
+  /* Stat pick grid */
   .char-stat-pick-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-    margin-bottom: 16px;
-  }
-  @media (min-width: 420px) {
-    .char-stat-pick-grid { grid-template-columns: repeat(3, 1fr); }
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 8px;
   }
   .char-stat-pick-card {
-    background: var(--surface2); border: 2px solid var(--border);
-    border-radius: 16px; padding: 16px 10px; text-align: center;
+    background: #1a1a1a; border: 2px solid #222;
+    border-radius: 14px; padding: 16px 8px; text-align: center;
     cursor: pointer; transition: border-color 0.2s, transform 0.15s, background 0.15s;
     -webkit-tap-highlight-color: transparent;
   }
   .char-stat-pick-card:hover { transform: translateY(-2px); }
-  .char-stat-pick-icon { font-size: 28px; display: block; margin-bottom: 8px; }
-  .char-stat-pick-name {
-    font-family: 'Fredoka One', cursive; font-size: 14px; font-weight: 400;
-  }
+  .char-stat-pick-card.selected { border-color: currentColor; background: rgba(255,255,255,0.05); }
+  .char-stat-pick-icon { font-size: 26px; display: block; margin-bottom: 7px; }
+  .char-stat-pick-name { font-family: 'Fredoka One', cursive; font-size: 13px; font-weight: 400; }
+  .char-stat-pick-level { font-size: 10px; color: #6b6760; margin-top: 3px; }
   /* Activity list */
   .char-activity-list { display: flex; flex-direction: column; gap: 8px; }
   .char-activity-item {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 12px; padding: 12px 16px;
+    background: #1a1a1a; border: 1px solid #222;
+    border-radius: 12px; padding: 12px 14px;
     cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-    transition: border-color 0.2s, background 0.15s;
+    gap: 12px; transition: border-color 0.2s, background 0.15s;
     -webkit-tap-highlight-color: transparent;
   }
-  .char-activity-item:hover { border-color: var(--accent2); background: var(--surface); }
-  .char-activity-name { font-size: 13px; color: var(--text); }
-  .char-activity-xp {
-    font-family: 'Fredoka One', cursive; font-size: 14px;
-    font-weight: 400; flex-shrink: 0; margin-left: 12px;
-  }
-  /* Verification UI */
+  .char-activity-item:hover:not(.item-locked) { border-color: #333; background: #1e1e1e; }
+  .char-activity-item.item-locked { opacity: 0.5; pointer-events: none; }
+  .char-activity-name { font-size: 13px; color: #e8e4dc; flex: 1; line-height: 1.4; }
+  .char-activity-xp { font-family: 'Fredoka One', cursive; font-size: 14px; font-weight: 400; flex-shrink: 0; }
+  .char-activity-lock { font-size: 11px; color: #6b6760; margin-top: 3px; }
+  /* Verify */
   .char-verify-section { display: flex; flex-direction: column; gap: 14px; }
   .char-privacy-notice {
-    background: rgba(107,127,255,0.08); border: 1px solid rgba(107,127,255,0.2);
-    border-radius: 10px; padding: 12px 14px; font-size: 12px;
-    color: var(--muted); line-height: 1.6;
+    background: rgba(107,127,255,0.06); border: 1px solid rgba(107,127,255,0.15);
+    border-radius: 10px; padding: 11px 14px; font-size: 11.5px; color: #6b6760; line-height: 1.6;
   }
-  .char-upload-btn {
-    background: var(--surface2); border: 2px dashed var(--border);
-    border-radius: 12px; padding: 20px; text-align: center;
+  .char-upload-zone {
+    background: #1a1a1a; border: 2px dashed #2a2a2a;
+    border-radius: 12px; padding: 24px 16px; text-align: center;
     cursor: pointer; transition: border-color 0.2s;
-    font-size: 13px; color: var(--muted);
     display: flex; flex-direction: column; align-items: center; gap: 8px;
   }
-  .char-upload-btn:hover { border-color: var(--accent); color: var(--text); }
-  .char-upload-icon { font-size: 28px; }
+  .char-upload-zone:hover { border-color: #c9a84c; }
+  .char-upload-icon { font-size: 30px; }
+  .char-upload-label { font-size: 13px; color: #6b6760; }
   .char-textarea {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 12px; color: var(--text); font-family: 'DM Sans', sans-serif;
+    width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a;
+    border-radius: 12px; color: #e8e4dc; font-family: 'DM Sans', sans-serif;
     font-size: 13px; padding: 12px 14px; outline: none; resize: vertical;
     min-height: 120px; transition: border-color 0.2s; line-height: 1.6;
   }
-  .char-textarea:focus { border-color: var(--accent); }
-  .char-word-count { font-size: 11px; color: var(--muted); text-align: right; margin-top: 4px; }
-  .char-book-input {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif;
+  .char-textarea:focus { border-color: #4a5a6a; }
+  .char-word-count { font-size: 11px; color: #6b6760; text-align: right; }
+  .char-text-input {
+    width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a;
+    border-radius: 10px; color: #e8e4dc; font-family: 'DM Sans', sans-serif;
     font-size: 13px; padding: 10px 14px; outline: none; transition: border-color 0.2s;
     margin-bottom: 8px;
   }
-  .char-book-input:focus { border-color: var(--accent); }
-  .char-quiz-question { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-  .char-quiz-q-text { font-size: 13px; color: var(--text); font-weight: 400; line-height: 1.5; }
+  .char-text-input:focus { border-color: #4a5a6a; }
+  .char-quiz-q { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+  .char-quiz-q-text { font-size: 13px; color: #e8e4dc; line-height: 1.5; }
   .char-submit-btn {
-    width: 100%; padding: 12px; border: none; border-radius: 14px;
-    background: var(--accent); color: var(--bg);
-    font-family: 'Fredoka One', cursive; font-size: 16px; font-weight: 400;
-    cursor: pointer; transition: opacity 0.2s; letter-spacing: 0.3px;
-    margin-top: 8px;
+    width: 100%; padding: 13px; border-radius: 14px; border: none;
+    background: #c9a84c; color: #0e0e0e;
+    font-family: 'Fredoka One', cursive; font-size: 17px; font-weight: 400;
+    cursor: pointer; transition: opacity 0.2s; letter-spacing: 0.3px; margin-top: 6px;
   }
   .char-submit-btn:hover { opacity: 0.88; }
-  .char-submit-btn:disabled { opacity: 0.45; cursor: default; }
+  .char-submit-btn:disabled { opacity: 0.35; cursor: default; }
+  .char-submit-btn.secondary {
+    background: #1e1e1e; color: #6b6760; border: 1px solid #2a2a2a;
+  }
   .char-back-link {
-    background: none; border: none; color: var(--muted); font-family: 'DM Sans', sans-serif;
-    font-size: 12px; cursor: pointer; padding: 0; margin-top: 4px;
-    text-decoration: underline; text-underline-offset: 2px;
+    background: none; border: none; color: #6b6760; font-family: 'DM Sans', sans-serif;
+    font-size: 12px; cursor: pointer; padding: 0; text-decoration: underline;
+    text-underline-offset: 2px;
   }
-  .char-back-link:hover { color: var(--text); }
-  /* XP Award screen */
-  .char-xp-award { text-align: center; padding: 16px 0; }
-  .char-xp-award-icon { font-size: 40px; margin-bottom: 12px; }
-  .char-xp-award-amount {
-    font-family: 'Fredoka One', cursive; font-size: 36px;
-    color: var(--accent); font-weight: 400; margin-bottom: 4px;
-  }
-  .char-xp-award-label { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
-  .char-xp-award-bar-wrap { margin-bottom: 16px; }
+  .char-back-link:hover { color: #e8e4dc; }
   .char-loading {
     display: flex; flex-direction: column; align-items: center;
-    gap: 12px; padding: 32px 0; color: var(--muted); font-size: 13px;
+    gap: 12px; padding: 36px 0; color: #6b6760; font-size: 13px;
   }
   .char-error-block {
     background: rgba(192,57,43,0.08); border: 1px solid rgba(192,57,43,0.2);
     border-radius: 10px; padding: 12px 14px; font-size: 12px; color: #e07060;
     line-height: 1.6; margin-bottom: 12px;
   }
+  /* XP award */
+  .char-xp-award { text-align: center; padding: 10px 0; }
+  .char-xp-award-icon { font-size: 38px; margin-bottom: 10px; }
+  .char-xp-award-amount {
+    font-family: 'Fredoka One', cursive; font-size: 40px;
+    color: #c9a84c; font-weight: 400; margin-bottom: 4px;
+    text-shadow: 0 0 20px rgba(201,168,76,0.5);
+  }
+  .char-xp-award-label { font-size: 13px; color: #6b6760; margin-bottom: 20px; }
 
-  /* ── Skill Tree ── */
+  /* ── Skill tree ── */
   .char-skill-box {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 22px; width: 100%; max-width: 620px;
-    max-height: 90vh; overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    position: relative;
+    background: #141414; border: 1px solid #2a2a2a;
+    border-radius: 22px; width: 100%; max-width: 640px;
+    max-height: 90vh; overflow-y: auto; position: relative;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.7);
   }
   .char-skill-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; background: var(--surface); z-index: 1;
+    padding: 20px 24px 16px; border-bottom: 1px solid #1e1e1e;
+    position: sticky; top: 0; background: #141414; z-index: 1;
   }
   .char-skill-title-row { display: flex; align-items: center; gap: 10px; }
   .char-skill-icon { font-size: 24px; }
   .char-skill-title {
-    font-family: 'Fredoka One', cursive; font-size: 20px;
-    color: var(--text); font-weight: 400;
+    font-family: 'Fredoka One', cursive; font-size: 22px; color: #e8e4dc; font-weight: 400;
   }
   .char-skill-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 12px; padding: 20px 24px 28px;
   }
   .char-skill-card {
-    background: var(--surface2); border: 2px solid var(--border);
-    border-radius: 16px; padding: 16px 12px; text-align: center;
+    background: #1a1a1a; border: 2px solid #222;
+    border-radius: 14px; padding: 16px 12px; text-align: center;
     transition: border-color 0.2s, transform 0.15s;
   }
-  .char-skill-card.unlocked {
-    border-color: var(--accent2);
-    background: linear-gradient(135deg, var(--surface), var(--surface2));
-  }
+  .char-skill-card.unlocked { background: #1c1c14; }
   .char-skill-card.unlocked:hover { transform: translateY(-2px); }
-  .char-skill-lock { font-size: 20px; margin-bottom: 6px; opacity: 0.4; }
+  .char-skill-lock { font-size: 18px; margin-bottom: 5px; opacity: 0.35; }
   .char-skill-level {
-    font-family: 'Fredoka One', cursive; font-size: 12px;
-    color: var(--muted); margin-bottom: 8px; font-weight: 400;
+    font-family: 'Fredoka One', cursive; font-size: 11px;
+    color: #4a4a4a; margin-bottom: 6px; font-weight: 400; letter-spacing: 0.08em;
   }
-  .char-skill-reward {
-    font-size: 12px; color: var(--text); line-height: 1.4;
-  }
-  .char-skill-card.locked .char-skill-reward { color: var(--muted); opacity: 0.6; }
+  .char-skill-card.unlocked .char-skill-level { color: #c9a84c; }
+  .char-skill-reward { font-size: 12px; color: #6b6760; line-height: 1.4; }
+  .char-skill-card.unlocked .char-skill-reward { color: #e8e4dc; }
 
-  /* ── Level Up notification ── */
+  /* ── Level-up overlay ── */
   .char-levelup-notif {
     position: fixed; inset: 0; z-index: 9999;
     display: flex; align-items: center; justify-content: center;
     pointer-events: none;
   }
   @keyframes levelupAnim {
-    0%   { opacity: 0; transform: scale(0.6); }
-    15%  { opacity: 1; transform: scale(1.1); }
+    0%   { opacity: 0; transform: scale(0.5); }
+    15%  { opacity: 1; transform: scale(1.15); }
     30%  { transform: scale(1); }
     70%  { opacity: 1; }
     100% { opacity: 0; transform: scale(1.05); }
   }
   .char-levelup-inner {
-    background: linear-gradient(135deg, #b8860b, #ffd700, #b8860b);
-    border: 3px solid #ffd700; border-radius: 20px;
-    padding: 24px 40px; text-align: center;
-    box-shadow: 0 0 40px rgba(255,215,0,0.5), 0 20px 40px rgba(0,0,0,0.5);
+    background: linear-gradient(135deg, #6b4a00, #c9a84c, #6b4a00);
+    border: 3px solid #c9a84c; border-radius: 20px;
+    padding: 24px 44px; text-align: center;
+    box-shadow: 0 0 50px rgba(201,168,76,0.6), 0 20px 40px rgba(0,0,0,0.6);
     animation: levelupAnim 2.2s ease forwards;
   }
-  .char-levelup-star { font-size: 32px; margin-bottom: 4px; }
+  .char-levelup-star { font-size: 30px; margin-bottom: 4px; }
   .char-levelup-text {
-    font-family: 'Fredoka One', cursive; font-size: 32px;
-    color: #1a1000; font-weight: 400; letter-spacing: 2px;
+    font-family: 'Fredoka One', cursive; font-size: 34px;
+    color: #0e0e0e; font-weight: 400; letter-spacing: 3px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.3);
   }
   .char-levelup-sub {
     font-family: 'Fredoka One', cursive; font-size: 16px;
-    color: #3a2800; margin-top: 4px; font-weight: 400;
+    color: #2a1800; margin-top: 4px; font-weight: 400;
   }
 
   /* ── Responsive ── */
   @media (max-width: 767px) {
-    .char-layout { flex-direction: column; padding: 14px; gap: 14px; }
-    .char-left-panel { width: 100%; min-width: unset; }
+    .char-layout { flex-direction: column; padding: 12px; gap: 14px; }
+    .char-left-panel { width: 100%; }
+    .char-portrait-outer { width: 170px; height: 170px; }
     .char-overall-level { font-size: 40px; }
-    .char-stat-pick-grid { grid-template-columns: repeat(2, 1fr); }
-    .char-skill-grid { grid-template-columns: repeat(2, 1fr); padding: 14px 16px 20px; }
-    .char-modal-box { padding: 20px 16px; max-height: 85vh; }
+    .char-stat-pick-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .char-skill-grid { grid-template-columns: repeat(2, 1fr); padding: 14px 16px; }
+    .char-modal-box { padding: 20px 16px; }
+    .char-xp-bar-outer { height: 36px; }
+    .char-xp-bg { inset: 6px 3px; }
+    .char-xp-fill { top: 6px; bottom: 6px; left: 3px; max-width: calc(100% - 6px); }
   }
 
   /* ═══════════════════════════════════════════════════════
@@ -3447,86 +3533,104 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     <!-- ══════════════ CHARACTER SCREEN ══════════════ -->
     <div id="character-screen" class="screen">
 
-      <!-- API Key Gate (shown when ff_anthropic_key not set) -->
+      <!-- API Key Gate -->
       <div id="char-gate">
         <div class="char-gate-inner">
-          <div class="char-gate-lock">🔒</div>
+          <div class="char-gate-lock">⚿</div>
           <h2 class="char-gate-title">Activity Verification Required</h2>
-          <p class="char-gate-desc">Your Character uses Claude AI to verify your activities and award XP. You need a free Anthropic API key to use this feature.</p>
+          <p class="char-gate-desc">Your Character uses Claude AI to verify your real-world activities before awarding XP. You need a free Anthropic API key to unlock this feature.</p>
           <div class="char-gate-steps">
             <div class="char-gate-step"><span class="char-gate-step-num">1</span>Go to <strong>console.anthropic.com</strong></div>
             <div class="char-gate-step"><span class="char-gate-step-num">2</span>Sign up or log in</div>
-            <div class="char-gate-step"><span class="char-gate-step-num">3</span>Click <strong>API Keys</strong></div>
-            <div class="char-gate-step"><span class="char-gate-step-num">4</span>Create a new key</div>
-            <div class="char-gate-step"><span class="char-gate-step-num">5</span>Paste it below</div>
+            <div class="char-gate-step"><span class="char-gate-step-num">3</span>Click <strong>API Keys</strong> in the left menu</div>
+            <div class="char-gate-step"><span class="char-gate-step-num">4</span>Click <strong>Create new key</strong></div>
+            <div class="char-gate-step"><span class="char-gate-step-num">5</span>Copy and paste it below</div>
           </div>
+          <p class="char-gate-privacy">This app stores nothing on any server. All your data lives only in your browser's local storage. Images sent for verification go directly from your browser to Claude's API and are never stored anywhere.</p>
           <div class="char-gate-input-row">
             <input type="password" id="char-anthro-input" class="char-gate-input" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
-            <button id="char-anthro-save" class="char-gate-save-btn">Save &amp; Unlock</button>
+            <button id="char-anthro-save" class="char-gate-save-btn">Unlock</button>
           </div>
           <div id="char-anthro-error" class="char-gate-error"></div>
-          <button class="back-btn" id="char-gate-back" style="margin-top:20px">← Back</button>
+          <button class="back-btn" id="char-gate-back" style="margin-top:18px">← Back</button>
         </div>
       </div>
 
-      <!-- Full Character Sheet (shown when API key set) -->
+      <!-- Character Sheet -->
       <div id="char-sheet" style="display:none">
         <div class="char-topbar">
           <button class="back-btn" id="char-back-btn">← Back</button>
           <div class="char-topbar-title">Your Character</div>
-          <div style="width:70px"></div>
+          <div style="width:64px"></div>
         </div>
 
         <div class="char-layout">
-          <!-- Left panel -->
+          <!-- LEFT PANEL (280px) -->
           <div class="char-left-panel">
+
+            <!-- Name -->
             <div class="char-name-row">
               <span class="char-name-display" id="char-name-display">Hero</span>
               <button class="char-name-edit-btn" id="char-name-edit-btn" title="Edit name">✏</button>
             </div>
-            <input type="text" id="char-name-input" class="char-name-input" style="display:none" maxlength="24" placeholder="Your name…">
+            <input type="text" id="char-name-input" class="char-name-input" style="display:none" maxlength="24" placeholder="Your character name…">
 
-            <div class="char-avatar-wrap">
-              <div class="char-avatar-glow" id="char-avatar-glow"></div>
-              <svg class="char-silhouette" id="char-silhouette" viewBox="0 0 80 140" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="40" cy="18" r="14"/>
-                <rect x="35" y="31" width="10" height="8" rx="3"/>
-                <path d="M20 39 Q18 62 17 84 L63 84 Q62 62 60 39 Q50 35 40 35 Q30 35 20 39Z"/>
-                <path d="M20 41 L7 72 Q5 77 9 79 L22 50Z"/>
-                <path d="M60 41 L73 72 Q75 77 71 79 L58 50Z"/>
-                <path d="M27 84 L21 124 Q19 130 25 130 L33 90Z"/>
-                <path d="M53 84 L59 124 Q61 130 55 130 L47 90Z"/>
-              </svg>
+            <!-- Portrait with frame -->
+            <div class="char-portrait-outer">
+              <div class="char-portrait-inner" id="char-portrait-inner">
+                <div class="char-sil-wrap" id="char-sil-wrap">
+                  <div class="char-sil-glow" id="char-sil-glow"></div>
+                  <div class="char-sil-head" id="char-sil-head"></div>
+                  <div class="char-sil-neck" id="char-sil-neck"></div>
+                  <div class="char-sil-body" id="char-sil-body">
+                    <div class="char-sil-arm char-sil-arm-l" id="char-sil-arm-l"></div>
+                    <div class="char-sil-arm char-sil-arm-r" id="char-sil-arm-r"></div>
+                  </div>
+                  <div class="char-sil-legs">
+                    <div class="char-sil-leg"></div>
+                    <div class="char-sil-leg"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="char-portrait-frame-overlay"></div>
             </div>
 
-            <div class="char-level-block">
-              <div class="char-level-label">Character Level</div>
-              <div class="char-overall-level" id="char-overall-level">1</div>
+            <!-- Overall level -->
+            <div class="char-overall-level-block">
+              <div class="char-level-label-small">Character Level</div>
+              <div class="char-overall-level" id="char-overall-level">LVL 1</div>
             </div>
 
-            <div class="char-overall-bar-wrap">
-              <div class="char-bar-header">
+            <!-- Overall XP bar (3-layer) -->
+            <div class="char-overall-bar-wrap" style="width:100%">
+              <div class="char-bar-labels">
                 <span class="char-bar-label-text">Overall XP</span>
                 <span class="char-bar-label-val" id="char-overall-xp-label">0 / 500</span>
               </div>
-              <div class="char-xp-track">
-                <div class="char-xp-fill" id="char-overall-bar" style="width:0%;background:#a78bfa"></div>
-                <div class="char-xp-segments"></div>
+              <div class="char-xp-bar-outer slim">
+                <div class="char-xp-bg"></div>
+                <div class="char-xp-fill" id="char-overall-bar" style="width:0%"></div>
+                <div class="char-xp-frame"></div>
               </div>
             </div>
 
+            <!-- Prestige badges -->
             <div class="char-prestige-row" id="char-prestige-row"></div>
 
-            <button class="char-log-btn" id="char-log-btn">⚡ Log Activity</button>
+            <!-- Log Activity -->
+            <button class="char-log-btn" id="char-log-btn">⚔ Log Activity</button>
           </div>
 
-          <!-- Right panel — stat rows -->
-          <div class="char-right-panel" id="char-stats-panel"></div>
+          <!-- RIGHT PANEL -->
+          <div class="char-right-panel">
+            <div class="char-stats-heading">Your Stats</div>
+            <div id="char-stats-panel"></div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- ACTIVITY LOGGING MODAL -->
+    <!-- ACTIVITY MODAL -->
     <div id="char-activity-modal" class="char-overlay" style="display:none">
       <div class="char-modal-box">
         <button class="char-modal-close" id="char-modal-close">✕</button>
@@ -3539,8 +3643,8 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       <div class="char-skill-box">
         <div class="char-skill-header">
           <div class="char-skill-title-row">
-            <span class="char-skill-icon" id="char-skill-icon"></span>
-            <span class="char-skill-title" id="char-skill-title"></span>
+            <span id="char-skill-icon" class="char-skill-icon"></span>
+            <span id="char-skill-title" class="char-skill-title"></span>
           </div>
           <button class="char-modal-close" id="char-skill-close">✕</button>
         </div>
@@ -6035,14 +6139,14 @@ window._tourChannelCheck = function() {
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
-   YOUR CHARACTER — RPG stat tracker with AI verification
+   YOUR CHARACTER — Fantasy RPG stat tracker (v2)
 ═══════════════════════════════════════════════════════════════ */
 
 // ── Constants ──
-const CHAR_XP_KEY   = 'ff_char_xp';
-const CHAR_NAME_KEY = 'ff_char_name';
-const CHAR_LOGS_KEY = 'ff_char_logs';
-const ANTHRO_KEY    = 'ff_anthropic_key';
+const CHAR_STATS_KEY = 'ff_char_stats';   // {strength:{level,xp,prestige,multiplier}, …}
+const CHAR_NAME_KEY  = 'ff_char_name';
+const CHAR_LOGS_KEY  = 'ff_char_logs';
+const ANTHRO_KEY     = 'ff_anthropic_key';
 const MAX_STAT_LEVEL = 50;
 
 const STATS_CFG = [
@@ -6052,6 +6156,7 @@ const STATS_CFG = [
   { key:'charisma',   name:'Charisma',   icon:'❤️', color:'#f472b6' },
   { key:'creativity', name:'Creativity', icon:'🎨', color:'#34d399' },
 ];
+const STAT_KEYS = STATS_CFG.map(s => s.key);
 
 const ACTIVITIES_CFG = {
   strength: [
@@ -6093,27 +6198,58 @@ const ACTIVITIES_CFG = {
   ],
 };
 
-const SKILL_TREE = {
-  strength:   ['Warrior\'s Start','Iron Body','Endurance I','Power Lift','Warrior\'s Creed','Iron Will','Endurance II','Unstoppable','Peak Human'],
-  wisdom:     ['First Steps','Scholar\'s Eye','Memory I','Deep Reading','Scholar\'s Path','Memory II','Quick Mind','Sage Sight','Omniscient'],
-  discipline: ['Self Starter','Morning Warrior','Habit Forge','Focus I','Iron Routine','Focus II','Time Mastery','Unbroken','The Monk'],
-  charisma:   ['Approachable','Good Listener','Storyteller I','Connector','Presence','Storyteller II','Magnetic','Diplomat','Beloved'],
-  creativity: ['First Spark','Creative Eye','Flow State I','Maker\'s Eye','Creative Burst','Flow State II','Innovation','Master Craft','Genius'],
+const SKILL_TREE_DATA = {
+  strength:   [
+    { lv:5,  label:'Workout Logger 🔓' },   { lv:10, label:'Body Metrics 🔓' },
+    { lv:15, label:'Warrior Badge 🎨' },     { lv:20, label:'Training Split Planner 🔓' },
+    { lv:25, label:'Iron Body Protocol 🔓' },{ lv:30, label:'Iron Theme 🎨' },
+    { lv:35, label:'Performance Analytics 🔓' },{ lv:40, label:'Champion Portrait 🎨' },
+    { lv:50, label:'Elite Coach Mode 🔓' }
+  ],
+  wisdom:     [
+    { lv:5,  label:'Reading List 🔓' },      { lv:10, label:'Book Notes 🔓' },
+    { lv:15, label:'Scholar Badge 🎨' },     { lv:20, label:'Study Planner 🔓' },
+    { lv:25, label:'Speed Reading 🔓' },     { lv:30, label:'Ancient Theme 🎨' },
+    { lv:35, label:'Knowledge Map 🔓' },     { lv:40, label:'Sage Portrait 🎨' },
+    { lv:50, label:'Deep Research Mode 🔓' }
+  ],
+  discipline: [
+    { lv:5,  label:'Streak Calendar 🔓' },   { lv:10, label:'Morning Routine Builder 🔓' },
+    { lv:15, label:'Guardian Badge 🎨' },    { lv:20, label:'Habit Stacking 🔓' },
+    { lv:25, label:'Focus Blocks 🔓' },      { lv:30, label:'Stoic Theme 🎨' },
+    { lv:35, label:'Life Audit Tool 🔓' },   { lv:40, label:'Sentinel Portrait 🎨' },
+    { lv:50, label:'Iron Will Mode 🔓' }
+  ],
+  charisma:   [
+    { lv:5,  label:'Connection Tracker 🔓' },{ lv:10, label:'Conversation Journal 🔓' },
+    { lv:15, label:'Diplomat Badge 🎨' },    { lv:20, label:'Social Goals 🔓' },
+    { lv:25, label:'Empathy Journal 🔓' },   { lv:30, label:'Neon Social Theme 🎨' },
+    { lv:35, label:'Relationship Map 🔓' },  { lv:40, label:'Champion Portrait 🎨' },
+    { lv:50, label:'Life Coach Mode 🔓' }
+  ],
+  creativity: [
+    { lv:5,  label:'Project Tracker 🔓' },   { lv:10, label:'Inspiration Board 🔓' },
+    { lv:15, label:'Artisan Badge 🎨' },     { lv:20, label:'Skill Roadmap 🔓' },
+    { lv:25, label:'Creative Log 🔓' },      { lv:30, label:'Canvas Theme 🎨' },
+    { lv:35, label:'Portfolio Log 🔓' },     { lv:40, label:'Master Craftsman Portrait 🎨' },
+    { lv:50, label:'Creative Director Mode 🔓' }
+  ],
 };
-const SKILL_LEVELS = [5,10,15,20,25,30,35,40,50];
 
 // ── Data helpers ──
-function getCharXP() {
-  try { return JSON.parse(localStorage.getItem(CHAR_XP_KEY)||'{}'); } catch(e) { return {}; }
+function getCharStats() {
+  try { return JSON.parse(localStorage.getItem(CHAR_STATS_KEY)||'{}'); } catch(e) { return {}; }
 }
-function saveCharXP(d) { localStorage.setItem(CHAR_XP_KEY, JSON.stringify(d)); }
+function saveCharStats(d) { localStorage.setItem(CHAR_STATS_KEY, JSON.stringify(d)); }
 function getCharLogs() {
   try { return JSON.parse(localStorage.getItem(CHAR_LOGS_KEY)||'{}'); } catch(e) { return {}; }
 }
 function saveCharLogs(d) { localStorage.setItem(CHAR_LOGS_KEY, JSON.stringify(d)); }
 function getCharName() { return localStorage.getItem(CHAR_NAME_KEY) || 'Hero'; }
+
 function statEntry(key) {
-  const d = getCharXP(); return d[key] || { level:1, xp:0, prestige:0, multiplier:1 };
+  const d = getCharStats();
+  return d[key] || { level:1, xp:0, prestige:0, multiplier:1 };
 }
 
 function xpPerLevel(level) {
@@ -6130,55 +6266,54 @@ function overallCharLevel() {
 }
 
 function overallXPInfo() {
-  const lv = overallCharLevel();
+  const lv   = overallCharLevel();
   const needed = xpPerLevel(lv);
-  // Average fractional progress
-  const avgXP = STATS_CFG.map(s => statEntry(s.key).xp).reduce((a,b)=>a+b,0) / STATS_CFG.length;
-  return { level:lv, xp: Math.round(avgXP), needed };
-}
-
-function todayStr() { return new Date().toISOString().slice(0,10); }
-function yesterdayStr() {
-  const d = new Date(); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10);
+  const avgXP = Math.round(STATS_CFG.map(s => statEntry(s.key).xp).reduce((a,b)=>a+b,0) / STATS_CFG.length);
+  return { level:lv, xp:avgXP, needed };
 }
 
 function isLoggedToday(statKey, activityName) {
   const logs = getCharLogs();
-  const key = `${statKey}::${activityName}`;
-  return logs[key] === todayStr();
+  return logs[statKey + '::' + activityName] === todayStr();
 }
 function markLogged(statKey, activityName) {
   const logs = getCharLogs();
-  logs[`${statKey}::${activityName}`] = todayStr();
+  logs[statKey + '::' + activityName] = todayStr();
   saveCharLogs(logs);
 }
 
-function addXP(statKey, baseXP) {
-  const data = getCharXP();
+function addXPToStat(statKey, baseXP) {
+  const data = getCharStats();
   if (!data[statKey]) data[statKey] = { level:1, xp:0, prestige:0, multiplier:1 };
   const s = data[statKey];
-  const earned = Math.round(baseXP * (s.multiplier||1));
+  const earned = Math.round(baseXP * (s.multiplier || 1));
   s.xp += earned;
   let levelsGained = 0;
   while (s.level < MAX_STAT_LEVEL) {
     const needed = xpPerLevel(s.level);
     if (s.xp >= needed) { s.xp -= needed; s.level++; levelsGained++; } else break;
   }
-  if (s.level >= MAX_STAT_LEVEL) { s.level = MAX_STAT_LEVEL; }
+  if (s.level >= MAX_STAT_LEVEL) s.level = MAX_STAT_LEVEL;
   data[statKey] = s;
-  saveCharXP(data);
-  return { earned, levelsGained, newLevel: s.level };
+  saveCharStats(data);
+  return { earned, levelsGained, newLevel: s.level, stat: s };
 }
 
 function prestigeStat(statKey) {
-  const data = getCharXP();
-  if (!data[statKey]) return;
-  if (data[statKey].level < MAX_STAT_LEVEL) return;
-  data[statKey].prestige = (data[statKey].prestige||0) + 1;
-  data[statKey].multiplier = parseFloat(((data[statKey].multiplier||1) * 1.25).toFixed(4));
-  data[statKey].level = 1;
-  data[statKey].xp = 0;
-  saveCharXP(data);
+  const data = getCharStats();
+  if (!data[statKey] || data[statKey].level < MAX_STAT_LEVEL) return;
+  data[statKey].prestige   = (data[statKey].prestige || 0) + 1;
+  data[statKey].multiplier = parseFloat(((data[statKey].multiplier || 1) * 1.25).toFixed(4));
+  data[statKey].level      = 1;
+  data[statKey].xp         = 0;
+  saveCharStats(data);
+}
+
+// Returns the stat with the highest level (for silhouette colour)
+function highestStat() {
+  let best = STATS_CFG[0];
+  STATS_CFG.forEach(s => { if (statEntry(s.key).level > statEntry(best.key).level) best = s; });
+  return best;
 }
 
 // ── Anthropic API ──
@@ -6195,72 +6330,107 @@ async function callClaude(messages, systemPrompt) {
     },
     body: JSON.stringify({ model:'claude-3-5-haiku-20241022', max_tokens:1024, system:systemPrompt, messages })
   });
-  if (!res.ok) { const err = await res.json().catch(()=>({error:{message:'API error'}})); throw new Error(err.error?.message || `API error ${res.status}`); }
-  const data = await res.json();
-  return data.content[0].text;
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error:{ message:'API error' } }));
+    throw new Error(err.error?.message || 'API error ' + res.status);
+  }
+  return (await res.json()).content[0].text;
 }
 
-async function verifyImage(imageB64, mediaType, activityName, statName, baseXP) {
-  const sys = `You are verifying a ${statName} activity for an XP system. Be fair but firm — only verify clear genuine evidence. Reply only in JSON with no markdown.`;
-  const msg = [{
+async function verifyImageWithClaude(b64, mType, actName, statName, baseXP) {
+  const sys = `You are verifying a ${statName} activity for a real-world XP reward system. Reply only in valid JSON, no markdown.`;
+  const prompt = `The user claims they completed: "${actName}" today. Examine the image. Reply only in valid JSON: {"verified":true,"evidence_found":"...","xp_to_award":${baseXP},"reason":"..."} or {"verified":false,"evidence_found":"","xp_to_award":0,"reason":"..."}`;
+  const raw = await callClaude([{
     role:'user',
     content:[
-      { type:'image', source:{ type:'base64', media_type:mediaType, data:imageB64 } },
-      { type:'text', text:`The user claims they completed: "${activityName}" today. Does this image provide genuine evidence? Base XP value: ${baseXP}. Reply only in JSON: {"verified":true,"evidence_found":"...","xp_to_award":${baseXP},"reason":"..."} or {"verified":false,"evidence_found":"","xp_to_award":0,"reason":"..."}` }
+      { type:'image', source:{ type:'base64', media_type:mType, data:b64 } },
+      { type:'text',  text: prompt }
     ]
-  }];
-  const raw = await callClaude(msg, sys);
+  }], sys);
   return JSON.parse(raw.replace(/```json|```/g,'').trim());
 }
 
-async function generateQuiz(topic, ref, quizLen) {
-  const sys = 'Generate comprehension questions that test genuine engagement. Reply only in JSON array, no markdown.';
-  const prompt = `Generate ${quizLen} questions testing genuine understanding of: ${topic} "${ref}". Questions must test specific details not findable from a blurb. Return JSON array: [{"question":"...","answer":"..."}]`;
+async function generateQuizQuestions(topic, ref, quizLen) {
+  const sys = 'Generate comprehension questions. Reply only in valid JSON array, no markdown.';
+  const prompt = `Generate ${quizLen} questions testing genuine knowledge of ${topic} "${ref}". Not answerable from a blurb. Return only JSON: [{"question":"...","answer":"..."}]`;
   const raw = await callClaude([{role:'user',content:prompt}], sys);
   return JSON.parse(raw.replace(/```json|```/g,'').trim());
 }
 
-async function markQuiz(topic, ref, questionsAndAnswers, userAnswers) {
-  const sys = 'Score quiz answers fairly. Accept answers showing genuine understanding. Reply only in JSON, no markdown.';
-  const qaText = questionsAndAnswers.map((q,i)=>`Q${i+1}: ${q.question}\nCorrect: ${q.answer}\nUser: ${userAnswers[i]||''}`).join('\n\n');
-  const prompt = `Score these answers about "${ref}" (${topic}):\n${qaText}\n\nReturn only JSON: {"score":X,"total":${questionsAndAnswers.length},"passed":true,"feedback":"..."}`;
+async function markQuizAnswers(topic, ref, qa, userAnswers) {
+  const sys = 'Score quiz answers generously — accept genuine understanding. Reply only in valid JSON, no markdown.';
+  const qText = qa.map((q,i) => `Q${i+1}: ${q.question}\nCorrect: ${q.answer}\nUser: ${userAnswers[i]||''}`).join('\n\n');
+  const raw = await callClaude([{role:'user',content:`Score answers about "${ref}" (${topic}):\n${qText}\nReturn only JSON: {"score":X,"out_of":${qa.length},"passed":true,"feedback":"..."}`}], sys);
+  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+}
+
+async function checkReflection(actName, text) {
+  const sys = 'Verify activity reflections for an XP system. Reply only in valid JSON, no markdown.';
+  const prompt = `Activity: "${actName}"\nReflection: "${text}"\nIs this genuine and specific? Return JSON: {"seems_genuine":true,"follow_up_question":"..."}`;
   const raw = await callClaude([{role:'user',content:prompt}], sys);
   return JSON.parse(raw.replace(/```json|```/g,'').trim());
 }
 
-async function verifyReflection(activityName, reflectionText) {
-  const sys = 'You verify activity reflections for an XP system. Reply only in JSON, no markdown.';
-  const prompt = `The user claims they completed: "${activityName}" and wrote:\n"${reflectionText}"\n\nIs this genuine and specific? Return JSON: {"seems_genuine":true,"follow_up_question":"...","provisional_xp_note":"ask one follow-up only someone who did this could answer"}`;
+async function confirmReflectionAnswer(actName, text, followUp) {
+  const sys = 'Final XP verification. Reply only in valid JSON, no markdown.';
+  const prompt = `Activity: "${actName}"\nReflection: "${text}"\nFollow-up: "${followUp}"\nAward XP? Return JSON: {"award_xp":true,"reason":"..."}`;
   const raw = await callClaude([{role:'user',content:prompt}], sys);
   return JSON.parse(raw.replace(/```json|```/g,'').trim());
 }
 
-async function confirmReflection(activityName, reflectionText, followUpAnswer) {
-  const sys = 'Final XP verification. Reply only in JSON, no markdown.';
-  const prompt = `Activity: "${activityName}"\nReflection: "${reflectionText}"\nFollow-up answer: "${followUpAnswer}"\n\nAward XP? Return JSON: {"award_xp":true,"reason":"..."}`;
-  const raw = await callClaude([{role:'user',content:prompt}], sys);
-  return JSON.parse(raw.replace(/```json|```/g,'').trim());
-}
-
-// ── Render helpers ──
-function buildXPBar(xp, needed, color, id) {
-  const pct = Math.min(100, needed > 0 ? (xp / needed * 100) : 0);
-  return `<div class="char-xp-track">
-    <div class="char-xp-fill" id="${id||''}" style="width:${pct}%;background:${color}"></div>
-    <div class="char-xp-segments"></div>
+// ── XP bar HTML builder (3-layer) ──
+function xpBarHTML(pct, fillId) {
+  return `<div class="char-xp-bar-outer">
+    <div class="char-xp-bg"></div>
+    <div class="char-xp-fill" id="${fillId||''}" style="width:${pct}%"></div>
+    <div class="char-xp-frame"></div>
   </div>`;
 }
 
+// ── Level-up overlay ──
 function showLevelUp(statName, newLevel) {
-  const el = document.getElementById('char-levelup-notif');
+  const el  = document.getElementById('char-levelup-notif');
   const sub = document.getElementById('char-levelup-sub');
   if (!el || !sub) return;
-  sub.textContent = `${statName} → Level ${newLevel}`;
+  sub.textContent = statName + ' → Level ' + newLevel;
   el.style.display = 'flex';
-  setTimeout(() => { el.style.display = 'none'; }, 2400);
+  setTimeout(() => { el.style.display = 'none'; }, 2500);
 }
 
-// ── Main render ──
+// Level-up flash on a stat row in the panel
+function flashStatRow(statKey, color) {
+  const panel = document.getElementById('char-stats-panel');
+  if (!panel) return;
+  const rows = panel.querySelectorAll('.char-stat-row');
+  rows.forEach(row => {
+    if (row.dataset.statKey === statKey) {
+      row.style.setProperty('--flash-color', color);
+      row.classList.remove('level-up-flash');
+      void row.offsetWidth; // reflow
+      row.classList.add('level-up-flash');
+      // floating text
+      let txt = row.querySelector('.char-stat-levelup-text');
+      if (!txt) {
+        txt = document.createElement('div');
+        txt.className = 'char-stat-levelup-text';
+        txt.textContent = 'LEVEL UP!';
+        row.appendChild(txt);
+      }
+      txt.classList.remove('show');
+      void txt.offsetWidth;
+      txt.classList.add('show');
+    }
+  });
+  // Portrait glow pulse
+  const glow = document.getElementById('char-sil-glow');
+  if (glow) {
+    glow.style.opacity = '0.65';
+    glow.style.transition = 'opacity 0.3s';
+    setTimeout(() => { glow.style.opacity = '0.25'; }, 500);
+  }
+}
+
+// ── showCharacter ──
 function showCharacter() {
   showScreen('character-screen');
   const hasKey = !!localStorage.getItem(ANTHRO_KEY);
@@ -6272,62 +6442,84 @@ function showCharacter() {
 function renderCharSheet() {
   // Name
   document.getElementById('char-name-display').textContent = getCharName();
+
+  // Silhouette colour = highest stat
+  const best = highestStat();
+  const silParts = ['char-sil-head','char-sil-neck','char-sil-body','char-sil-arm-l','char-sil-arm-r','char-sil-glow'];
+  document.documentElement.style.setProperty('--char-highest-color', best.color);
+  silParts.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.background = el.id === 'char-sil-glow'
+      ? `radial-gradient(circle at 50% 50%, ${best.color} 0%, transparent 70%)`
+      : best.color;
+  });
+
   // Overall level
   const ovl = overallCharLevel();
-  document.getElementById('char-overall-level').textContent = ovl;
-  // Overall XP bar
-  const { xp:ovXP, needed:ovNeeded } = overallXPInfo();
-  document.getElementById('char-overall-xp-label').textContent = `${ovXP} / ${ovNeeded}`;
-  const barEl = document.getElementById('char-overall-bar');
-  if (barEl) { barEl.style.width = Math.min(100, ovNeeded>0 ? ovXP/ovNeeded*100 : 0) + '%'; }
+  document.getElementById('char-overall-level').textContent = 'LVL ' + ovl;
+
+  // Overall bar
+  const { xp: ovXP, needed: ovNeeded } = overallXPInfo();
+  document.getElementById('char-overall-xp-label').textContent = ovXP + ' / ' + ovNeeded;
+  const ovBar = document.getElementById('char-overall-bar');
+  if (ovBar) ovBar.style.width = Math.min(100, ovNeeded > 0 ? ovXP / ovNeeded * 100 : 0) + '%';
+
   // Prestige badges
   const pRow = document.getElementById('char-prestige-row');
   if (pRow) {
     pRow.innerHTML = STATS_CFG.map(s => {
-      const p = statEntry(s.key).prestige||0;
-      return p > 0 ? `<span class="char-prestige-star" style="color:${s.color}" title="${s.name} Prestige ${p}">⭐</span>`.repeat(Math.min(p,5)) : '';
+      const p = statEntry(s.key).prestige || 0;
+      return p > 0
+        ? Array(Math.min(p, 5)).fill(`<span class="char-prestige-star" style="color:${s.color}" title="${s.name} Prestige ${p}">⭐</span>`).join('')
+        : '';
     }).join('');
   }
+
   // Stat rows
   const panel = document.getElementById('char-stats-panel');
   if (!panel) return;
   panel.innerHTML = '';
   STATS_CFG.forEach(s => {
-    const e = statEntry(s.key);
+    const e      = statEntry(s.key);
     const needed = xpPerLevel(e.level);
-    const pct = Math.min(100, needed>0 ? e.xp/needed*100 : 0);
-    const isMax = e.level >= MAX_STAT_LEVEL;
+    const pct    = Math.min(100, needed > 0 ? e.xp / needed * 100 : 0);
+    const isMax  = e.level >= MAX_STAT_LEVEL;
+
     const row = document.createElement('div');
-    row.className = 'char-stat-row';
+    row.className    = 'char-stat-row';
+    row.dataset.statKey = s.key;
+    row.style.setProperty('--stat-color', s.color);
     row.innerHTML = `
       <div class="char-stat-top">
         <span class="char-stat-icon">${s.icon}</span>
         <span class="char-stat-name" style="color:${s.color}">${s.name}</span>
-        <span class="char-stat-level" style="color:${s.color}">${e.level}</span>
+        <span class="char-stat-level" style="color:${s.color}">LVL ${e.level}</span>
         ${e.prestige > 0 ? `<span class="char-stat-prestige">⭐×${e.prestige}</span>` : ''}
         ${isMax ? `<button class="char-prestige-btn" data-stat="${s.key}">✨ Prestige</button>` : ''}
       </div>
-      <div class="char-stat-bar-row">
-        <div class="char-stat-xp-wrap">
-          <div class="char-xp-track">
-            <div class="char-xp-fill" style="width:${pct}%;background:${s.color}"></div>
-            <div class="char-xp-segments"></div>
-          </div>
-          <div class="char-stat-xp-label">${isMax ? 'MAX LEVEL' : `${e.xp} / ${needed} XP`}${e.multiplier>1 ? ` · ${e.multiplier.toFixed(2)}× XP` : ''}</div>
-        </div>
-      </div>`;
-    row.addEventListener('click', e => {
-      if (e.target.classList.contains('char-prestige-btn')) return;
+      <div class="char-xp-bar-outer">
+        <div class="char-xp-bg"></div>
+        <div class="char-xp-fill" style="width:${pct}%"></div>
+        <div class="char-xp-frame"></div>
+      </div>
+      <div class="char-stat-xp-label">${isMax ? 'MAX LEVEL' : e.xp + ' / ' + needed + ' XP'}${e.multiplier > 1 ? ' · ' + e.multiplier.toFixed(2) + '× XP' : ''}</div>`;
+
+    row.addEventListener('click', evt => {
+      if (evt.target.classList.contains('char-prestige-btn')) return;
       openSkillTree(s);
     });
     const pb = row.querySelector('.char-prestige-btn');
-    if (pb) pb.addEventListener('click', ev => { ev.stopPropagation(); doPrestige(s); });
+    if (pb) pb.addEventListener('click', evt => { evt.stopPropagation(); doPrestige(s); });
     panel.appendChild(row);
+
+    // Hover glow shadow in stat colour
+    row.addEventListener('mouseenter', () => { row.style.boxShadow = '0 6px 20px ' + s.color + '4d'; });
+    row.addEventListener('mouseleave', () => { row.style.boxShadow = ''; });
   });
 }
 
 function doPrestige(s) {
-  if (!confirm(`Prestige ${s.name}? Your level resets to 1 but you keep all skill unlocks and gain a permanent 1.25× XP multiplier.`)) return;
+  if (!confirm('Prestige ' + s.name + '? Resets to Level 1, keeps skill unlocks, gains 1.25× XP multiplier permanently.')) return;
   prestigeStat(s.key);
   renderCharSheet();
 }
@@ -6336,11 +6528,10 @@ function doPrestige(s) {
 document.getElementById('char-name-edit-btn').addEventListener('click', () => {
   const disp = document.getElementById('char-name-display');
   const inp  = document.getElementById('char-name-input');
-  const row  = document.getElementById('char-name-row') || disp.closest('.char-name-row');
-  inp.value = getCharName();
-  disp.parentElement.style.display = 'none';
+  inp.value  = getCharName();
+  disp.closest('.char-name-row').style.display = 'none';
   inp.style.display = 'block';
-  inp.focus();
+  inp.focus(); inp.select();
 });
 document.getElementById('char-name-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' || e.key === 'Escape') saveCharName();
@@ -6351,7 +6542,7 @@ function saveCharName() {
   const val = inp.value.trim() || 'Hero';
   localStorage.setItem(CHAR_NAME_KEY, val);
   inp.style.display = 'none';
-  const row = inp.previousElementSibling;
+  const row = document.getElementById('char-name-display').closest('.char-name-row');
   if (row) row.style.display = '';
   document.getElementById('char-name-display').textContent = val;
 }
@@ -6375,26 +6566,24 @@ document.getElementById('char-anthro-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('char-anthro-save').click();
 });
 
-// ── Back buttons ──
+// ── Back buttons & sidebar wiring ──
 document.getElementById('char-back-btn').addEventListener('click', showHome);
-
-// ── Sidebar / nav wiring ──
 document.getElementById('sidebar-character-btn').addEventListener('click', showCharacter);
 
 // ── Skill tree ──
 function openSkillTree(stat) {
   const ov = document.getElementById('char-skill-overlay');
   document.getElementById('char-skill-icon').textContent  = stat.icon;
-  document.getElementById('char-skill-title').textContent = stat.name + ' — Skill Tree';
-  const grid = document.getElementById('char-skill-grid');
-  const e = statEntry(stat.key);
-  const tree = SKILL_TREE[stat.key] || [];
-  grid.innerHTML = SKILL_LEVELS.map((reqLv, i) => {
-    const unlocked = e.level >= reqLv || (e.prestige||0) > 0;
-    return `<div class="char-skill-card ${unlocked?'unlocked':'locked'}">
-      <div class="char-skill-lock">${unlocked?'✅':'🔒'}</div>
-      <div class="char-skill-level" style="color:${stat.color}">Level ${reqLv}</div>
-      <div class="char-skill-reward">${tree[i]||'Reward'}</div>
+  document.getElementById('char-skill-title').textContent = stat.name + ' Skill Tree';
+  const e    = statEntry(stat.key);
+  const tree = SKILL_TREE_DATA[stat.key] || [];
+  document.getElementById('char-skill-grid').innerHTML = tree.map(node => {
+    const unlocked = e.level >= node.lv || (e.prestige || 0) > 0;
+    return `<div class="char-skill-card ${unlocked ? 'unlocked' : 'locked'}"
+               style="${unlocked ? 'border-color:' + stat.color + '55' : ''}">
+      <div class="char-skill-lock">${unlocked ? '✅' : '🔒'}</div>
+      <div class="char-skill-level">LEVEL ${node.lv}</div>
+      <div class="char-skill-reward">${node.label}</div>
     </div>`;
   }).join('');
   ov.style.display = 'flex';
@@ -6407,7 +6596,7 @@ document.getElementById('char-skill-overlay').addEventListener('click', e => {
 });
 
 // ── Activity modal ──
-let _actStat = null, _actActivity = null, _quizData = null, _reflectionText = '';
+let _actStat = null, _actActivity = null, _quizData = null, _reflText = '';
 
 document.getElementById('char-log-btn').addEventListener('click', openActivityModal);
 document.getElementById('char-modal-close').addEventListener('click', closeActivityModal);
@@ -6416,7 +6605,7 @@ document.getElementById('char-activity-modal').addEventListener('click', e => {
 });
 
 function openActivityModal() {
-  _actStat = null; _actActivity = null; _quizData = null;
+  _actStat = null; _actActivity = null; _quizData = null; _reflText = '';
   document.getElementById('char-activity-modal').style.display = 'flex';
   renderModalStep1();
 }
@@ -6429,26 +6618,30 @@ function renderModalStep1() {
   const body = document.getElementById('char-modal-body');
   body.innerHTML = `
     <div class="char-modal-step-title">Log Activity</div>
-    <div class="char-modal-step-sub">Which stat does this activity improve?</div>
+    <div class="char-modal-step-sub">Which stat does this activity build?</div>
     <div class="char-stat-pick-grid">
-      ${STATS_CFG.map(s => `
-        <div class="char-stat-pick-card" data-stat="${s.key}" style="border-color:${s.color}22">
+      ${STATS_CFG.map(s => {
+        const e = statEntry(s.key);
+        return `<div class="char-stat-pick-card" data-stat="${s.key}"
+                     style="border-color:${s.color}33">
           <span class="char-stat-pick-icon">${s.icon}</span>
           <span class="char-stat-pick-name" style="color:${s.color}">${s.name}</span>
-        </div>`).join('')}
+          <div class="char-stat-pick-level">LVL ${e.level}</div>
+        </div>`;
+      }).join('')}
     </div>`;
   body.querySelectorAll('.char-stat-pick-card').forEach(card => {
     card.addEventListener('click', () => {
       _actStat = STATS_CFG.find(s => s.key === card.dataset.stat);
       renderModalStep2();
     });
-    card.addEventListener('mouseover', () => {
+    card.addEventListener('mouseenter', () => {
       const s = STATS_CFG.find(s => s.key === card.dataset.stat);
-      card.style.borderColor = s.color; card.style.background = s.color+'18';
+      card.style.borderColor = s.color; card.style.background = s.color + '18';
     });
-    card.addEventListener('mouseout', () => {
+    card.addEventListener('mouseleave', () => {
       const s = STATS_CFG.find(s => s.key === card.dataset.stat);
-      card.style.borderColor = s.color+'22'; card.style.background = '';
+      card.style.borderColor = s.color + '33'; card.style.background = '';
     });
   });
 }
@@ -6463,17 +6656,19 @@ function renderModalStep2() {
       <div class="char-modal-step-title" style="margin:0">${_actStat.icon} ${_actStat.name}</div>
     </div>
     <div class="char-activity-list">
-      ${acts.map((a,i) => {
+      ${acts.map((a, i) => {
         const logged = isLoggedToday(_actStat.key, a.name);
-        const xpDisplay = a.xp > 0 ? `+${a.xp} XP` : '+XP';
-        return `<div class="char-activity-item${logged?' disabled-item':''}" data-idx="${i}" ${logged?'style="opacity:0.45;pointer-events:none"':''}>
-          <span class="char-activity-name">${a.name}${logged?' ✓ logged today':''}</span>
-          <span class="char-activity-xp" style="color:${_actStat.color}">${xpDisplay}</span>
+        return `<div class="char-activity-item${logged ? ' item-locked' : ''}" data-idx="${i}">
+          <div>
+            <div class="char-activity-name">${a.name}</div>
+            ${logged ? '<div class="char-activity-lock">🔒 Already logged today</div>' : ''}
+          </div>
+          <span class="char-activity-xp" style="color:${_actStat.color}">${a.xp > 0 ? '+' + a.xp : '+XP'}</span>
         </div>`;
       }).join('')}
     </div>`;
   body.querySelector('#mod-back-s1').addEventListener('click', renderModalStep1);
-  body.querySelectorAll('.char-activity-item:not(.disabled-item)').forEach(item => {
+  body.querySelectorAll('.char-activity-item:not(.item-locked)').forEach(item => {
     item.addEventListener('click', () => {
       _actActivity = acts[parseInt(item.dataset.idx)];
       renderModalStep3();
@@ -6483,189 +6678,163 @@ function renderModalStep2() {
 
 // Step 3 — verify
 function renderModalStep3() {
-  const a = _actActivity;
-  const v = a.verify;
-
+  const v = _actActivity.verify;
   if (v === 'auto_goals') {
-    const allDone = checkAllGoalsDone();
-    if (allDone) { awardXP(a.xp, 'All daily goals completed ✓'); }
-    else { showModalError('Your daily goals are not all completed yet. Go to Your Dashboard → Today to complete them first.'); }
-    return;
-  }
-  if (v === 'auto_timer') {
-    const budget = getTimerBudget();
-    const elapsed = getTimerElapsed();
-    if (budget && elapsed <= budget) { awardXP(a.xp, 'Under watch time budget ✓'); }
-    else { showModalError('Your session timer has exceeded the budget, or no budget is set.'); }
-    return;
-  }
-  if (v === 'image' || v === 'image_or_reflection') {
-    renderImageVerify(v === 'image_or_reflection');
+    const done = (() => { try { const g = JSON.parse(localStorage.getItem('ff_goals')||'[]'); return g.length > 0 && g.every(x=>x.done); } catch(e){ return false; } })();
+    done ? awardXP(_actActivity.xp, 'All daily goals completed ✓') : showModalError('Your daily goals are not all completed yet. Go to Your Dashboard → Today.');
+  } else if (v === 'auto_timer') {
+    const budget = parseInt(localStorage.getItem('ff_timer_budget')||'0')||0;
+    const elapsed = parseInt(localStorage.getItem('ff_session_seconds')||'0')||0;
+    (budget && elapsed <= budget) ? awardXP(_actActivity.xp, 'Under watch time budget ✓') : showModalError('Session timer exceeded budget or no budget set.');
+  } else if (v === 'image' || v === 'image_or_reflection') {
+    renderVerifyImage(v === 'image_or_reflection');
   } else if (v === 'reflection') {
-    renderReflectionVerify();
+    renderVerifyReflection();
   } else if (v === 'quiz') {
-    renderQuizStart();
+    renderVerifyQuiz();
   }
 }
 
-function checkAllGoalsDone() {
-  try {
-    const goals = JSON.parse(localStorage.getItem('ff_goals')||'[]');
-    return goals.length > 0 && goals.every(g => g.done);
-  } catch(e) { return false; }
-}
-function getTimerBudget() { return parseInt(localStorage.getItem('ff_timer_budget')||'0')||0; }
-function getTimerElapsed() {
-  try { return parseInt(localStorage.getItem('ff_session_seconds')||'0')||0; } catch(e){ return 0; }
-}
-
-// Image verification
-function renderImageVerify(offerReflection) {
+// Image upload
+function renderVerifyImage(offerAlt) {
   const body = document.getElementById('char-modal-body');
   body.innerHTML = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <button class="char-back-link" id="mod-back-s2">← Back</button>
+      <button class="char-back-link" id="vimg-back">← Back</button>
       <div class="char-modal-step-title" style="margin:0">Upload Evidence</div>
     </div>
     <div class="char-verify-section">
-      <div class="char-privacy-notice">🔒 <strong>Privacy note:</strong> This app stores nothing on any server. All data lives in your browser only. When you upload an image, it is sent directly from your browser to Claude's API and is not stored anywhere. We recommend blurring personal details before uploading — Claude only needs to see evidence of the activity.</div>
-      <div class="char-upload-btn" id="char-upload-zone">
-        <span class="char-upload-icon">📷</span>
-        <span>Tap to upload photo evidence</span>
-        <span style="font-size:11px">JPEG, PNG, HEIC, WEBP</span>
+      <div class="char-privacy-notice">🔒 <strong>Privacy:</strong> This app stores nothing on any server. All data lives only in your browser. Images are sent directly from your browser to Claude's API and are never stored anywhere. We recommend blurring personal details before uploading — Claude only needs to see evidence of the activity.</div>
+      <div class="char-upload-zone" id="vimg-zone">
+        <div class="char-upload-icon">📷</div>
+        <div class="char-upload-label">Tap to upload photo evidence</div>
+        <div style="font-size:11px;color:#4a4a4a">JPEG · PNG · HEIC · WEBP</div>
       </div>
-      <input type="file" id="char-img-input" accept="image/*" style="display:none">
-      <div id="char-img-preview" style="display:none;margin-top:4px"></div>
-      <button class="char-submit-btn" id="char-img-submit" disabled>Verify with Claude</button>
-      ${offerReflection ? `<button class="char-back-link" id="mod-switch-reflect" style="text-align:center">Or write a reflection instead →</button>` : ''}
+      <input type="file" id="vimg-file" accept="image/*" style="display:none">
+      <div id="vimg-preview" style="display:none;margin-top:4px"></div>
+      <button class="char-submit-btn" id="vimg-verify" disabled>Verify with Claude</button>
+      ${offerAlt ? '<button class="char-back-link" id="vimg-alt" style="text-align:center;margin-top:4px">Or write a reflection instead →</button>' : ''}
     </div>`;
-  body.querySelector('#mod-back-s2').addEventListener('click', renderModalStep2);
-  const input = body.querySelector('#char-img-input');
-  body.querySelector('#char-upload-zone').addEventListener('click', () => input.click());
-  let imgB64 = '', imgType = '';
-  input.addEventListener('change', e => {
+  body.querySelector('#vimg-back').addEventListener('click', renderModalStep2);
+  if (offerAlt) body.querySelector('#vimg-alt').addEventListener('click', renderVerifyReflection);
+  const fileInput = body.querySelector('#vimg-file');
+  body.querySelector('#vimg-zone').addEventListener('click', () => fileInput.click());
+  let b64 = '', mType = '';
+  fileInput.addEventListener('change', e => {
     const file = e.target.files[0]; if (!file) return;
+    mType = file.type || 'image/jpeg';
     const reader = new FileReader();
     reader.onload = ev => {
-      const res = ev.target.result;
-      imgType = file.type || 'image/jpeg';
-      imgB64 = res.split(',')[1];
-      body.querySelector('#char-img-preview').innerHTML = `<img src="${res}" style="max-width:100%;max-height:180px;border-radius:10px;border:1px solid var(--border)">`;
-      body.querySelector('#char-img-preview').style.display = 'block';
-      body.querySelector('#char-img-submit').disabled = false;
+      const res = ev.target.result; b64 = res.split(',')[1];
+      body.querySelector('#vimg-preview').innerHTML = `<img src="${res}" style="max-width:100%;max-height:180px;border-radius:10px;border:1px solid #2a2a2a">`;
+      body.querySelector('#vimg-preview').style.display = 'block';
+      body.querySelector('#vimg-verify').disabled = false;
     };
     reader.readAsDataURL(file);
   });
-  body.querySelector('#char-img-submit').addEventListener('click', async () => {
-    if (!imgB64) return;
+  body.querySelector('#vimg-verify').addEventListener('click', async () => {
+    if (!b64) return;
     showModalLoading('Verifying with Claude…');
     try {
-      const result = await verifyImage(imgB64, imgType, _actActivity.name, _actStat.name, _actActivity.xp);
-      if (result.verified) {
-        awardXP(result.xp_to_award || _actActivity.xp, result.evidence_found || 'Verified ✓');
-      } else {
-        showVerifyFailed(result.reason, offerReflection);
-      }
-    } catch(err) {
-      showModalError('Verification failed: ' + err.message);
-    }
+      const r = await verifyImageWithClaude(b64, mType, _actActivity.name, _actStat.name, _actActivity.xp);
+      r.verified ? awardXP(r.xp_to_award || _actActivity.xp, r.evidence_found || 'Verified ✓')
+                 : showVerifyFailed(r.reason, offerAlt);
+    } catch(err) { showModalError('Verification error: ' + err.message); }
   });
-  if (offerReflection) {
-    body.querySelector('#mod-switch-reflect').addEventListener('click', renderReflectionVerify);
-  }
 }
 
-// Reflection verification
-function renderReflectionVerify(prefillText) {
+// Written reflection
+function renderVerifyReflection(prefill) {
   const body = document.getElementById('char-modal-body');
   body.innerHTML = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <button class="char-back-link" id="mod-back-s2r">← Back</button>
+      <button class="char-back-link" id="vref-back">← Back</button>
       <div class="char-modal-step-title" style="margin:0">Written Reflection</div>
     </div>
     <div class="char-verify-section">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6">Write about what you did — be specific. Minimum 100 words. Claude will ask one follow-up question.</p>
-      <textarea class="char-textarea" id="char-reflection-text" placeholder="Describe what you did, how it went, what you felt…">${prefillText||''}</textarea>
-      <div class="char-word-count" id="char-wcount">0 / 100 words minimum</div>
-      <button class="char-submit-btn" id="char-reflect-submit" disabled>Submit Reflection</button>
+      <p style="font-size:13px;color:#6b6760;line-height:1.6;margin-bottom:10px">Be specific — minimum 100 words. Claude will ask one follow-up question to confirm.</p>
+      <textarea class="char-textarea" id="vref-text" placeholder="Describe what you did, how it went, what you felt…">${prefill||''}</textarea>
+      <div class="char-word-count" id="vref-wc">0 words — need 100 minimum</div>
+      <button class="char-submit-btn" id="vref-submit" disabled>Submit Reflection</button>
     </div>`;
-  body.querySelector('#mod-back-s2r').addEventListener('click', renderModalStep2);
-  const ta = body.querySelector('#char-reflection-text');
-  const wc = body.querySelector('#char-wcount');
-  const btn = body.querySelector('#char-reflect-submit');
+  body.querySelector('#vref-back').addEventListener('click', renderModalStep2);
+  const ta = body.querySelector('#vref-text');
+  const wc = body.querySelector('#vref-wc');
+  const btn = body.querySelector('#vref-submit');
   ta.addEventListener('input', () => {
-    const words = ta.value.trim().split(/\s+/).filter(Boolean).length;
-    wc.textContent = `${words} / 100 words minimum`;
-    wc.style.color = words >= 100 ? 'var(--accent)' : 'var(--muted)';
-    btn.disabled = words < 100;
+    const n = ta.value.trim().split(/\s+/).filter(Boolean).length;
+    wc.textContent = n + ' words' + (n < 100 ? ' — need 100 minimum' : ' ✓');
+    wc.style.color  = n >= 100 ? '#c9a84c' : '#6b6760';
+    btn.disabled    = n < 100;
   });
   btn.addEventListener('click', async () => {
-    _reflectionText = ta.value.trim();
+    _reflText = ta.value.trim();
     showModalLoading('Claude is reading your reflection…');
     try {
-      const result = await verifyReflection(_actActivity.name, _reflectionText);
-      renderFollowUp(result.follow_up_question);
-    } catch(err) { showModalError('Verification failed: ' + err.message); }
+      const r = await checkReflection(_actActivity.name, _reflText);
+      renderFollowUp(r.follow_up_question);
+    } catch(err) { showModalError('Verification error: ' + err.message); }
   });
 }
 
-// Follow-up question
+// Follow-up
 function renderFollowUp(question) {
   const body = document.getElementById('char-modal-body');
   body.innerHTML = `
     <div class="char-modal-step-title">One More Question</div>
     <div class="char-modal-step-sub">Claude wants to confirm your reflection is genuine.</div>
     <div class="char-verify-section">
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:13px;color:var(--text);line-height:1.6;margin-bottom:14px;font-style:italic">"${question}"</div>
-      <textarea class="char-textarea" id="char-followup-text" placeholder="Your answer…" style="min-height:80px"></textarea>
-      <button class="char-submit-btn" id="char-followup-submit">Confirm &amp; Earn XP</button>
+      <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:12px;padding:14px;font-size:13px;color:#e8e4dc;line-height:1.6;font-style:italic;margin-bottom:4px">"${question}"</div>
+      <textarea class="char-textarea" id="vfu-text" style="min-height:80px" placeholder="Your answer…"></textarea>
+      <button class="char-submit-btn" id="vfu-submit">Confirm &amp; Earn XP</button>
     </div>`;
-  body.querySelector('#char-followup-submit').addEventListener('click', async () => {
-    const ans = body.querySelector('#char-followup-text').value.trim();
+  body.querySelector('#vfu-submit').addEventListener('click', async () => {
+    const ans = body.querySelector('#vfu-text').value.trim();
     if (!ans) return;
     showModalLoading('Confirming…');
     try {
-      const result = await confirmReflection(_actActivity.name, _reflectionText, ans);
-      if (result.award_xp) {
-        const xp = _actActivity.isAlt ? Math.round(getAltXP(_actStat.key) * 0.85) : Math.round(_actActivity.xp * 0.85);
+      const r = await confirmReflectionAnswer(_actActivity.name, _reflText, ans);
+      if (r.award_xp) {
+        const xp = _actActivity.isAlt
+          ? Math.round(getAltXP(_actStat.key) * 0.85)
+          : Math.round((_actActivity.xp || 100) * 0.85);
         awardXP(xp, 'Reflection verified ✓');
       } else {
-        showVerifyFailed(result.reason, false);
+        showVerifyFailed(r.reason, false);
       }
-    } catch(err) { showModalError('Verification failed: ' + err.message); }
+    } catch(err) { showModalError('Verification error: ' + err.message); }
   });
 }
 
 function getAltXP(statKey) {
   const acts = (ACTIVITIES_CFG[statKey]||[]).filter(a=>!a.isAlt);
-  return acts.length > 0 ? Math.round(acts.reduce((s,a)=>s+a.xp,0)/acts.length) : 100;
+  return acts.length ? Math.round(acts.reduce((s,a)=>s+a.xp,0)/acts.length) : 100;
 }
 
 // Quiz
-function renderQuizStart() {
+function renderVerifyQuiz() {
   const a = _actActivity;
-  const needsRef = a.topic === 'reading';
+  const needsBook = a.topic === 'reading';
   const body = document.getElementById('char-modal-body');
   body.innerHTML = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <button class="char-back-link" id="mod-back-s2q">← Back</button>
+      <button class="char-back-link" id="vqz-back">← Back</button>
       <div class="char-modal-step-title" style="margin:0">Quiz Verification</div>
     </div>
     <div class="char-verify-section">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">${needsRef ? 'Enter the book title and author. Claude will generate comprehension questions you must answer.' : 'Enter the topic you studied. Claude will generate questions to verify genuine engagement.'}</p>
-      <input class="char-book-input" id="char-quiz-ref" placeholder="${needsRef ? 'Book title and author…' : 'Topic / subject…'}">
-      ${needsRef ? '<input class="char-book-input" id="char-quiz-author" placeholder="Author (optional)">' : ''}
-      <button class="char-submit-btn" id="char-quiz-gen">Generate Questions</button>
+      <p style="font-size:13px;color:#6b6760;line-height:1.5;margin-bottom:12px">${needsBook ? 'Enter the book title and author — Claude will generate comprehension questions.' : 'Enter the topic — Claude will generate questions to verify genuine engagement.'}</p>
+      <input class="char-text-input" id="vqz-ref" placeholder="${needsBook ? 'Book title…' : 'Topic / subject…'}">
+      ${needsBook ? '<input class="char-text-input" id="vqz-author" placeholder="Author (optional)">' : ''}
+      <button class="char-submit-btn" id="vqz-gen">Generate Questions</button>
     </div>`;
-  body.querySelector('#mod-back-s2q').addEventListener('click', renderModalStep2);
-  body.querySelector('#char-quiz-gen').addEventListener('click', async () => {
-    const ref = body.querySelector('#char-quiz-ref').value.trim();
-    const author = needsRef ? (body.querySelector('#char-quiz-author')?.value.trim()||'') : '';
-    if (!ref) return;
-    const fullRef = author ? `${ref} by ${author}` : ref;
-    showModalLoading(`Generating ${a.quizLen} questions about "${ref}"…`);
+  body.querySelector('#vqz-back').addEventListener('click', renderModalStep2);
+  body.querySelector('#vqz-gen').addEventListener('click', async () => {
+    const ref    = body.querySelector('#vqz-ref').value.trim(); if (!ref) return;
+    const author = needsBook ? (body.querySelector('#vqz-author')?.value.trim()||'') : '';
+    const fullRef = author ? ref + ' by ' + author : ref;
+    showModalLoading('Generating ' + a.quizLen + ' questions about "' + ref + '"…');
     try {
-      _quizData = await generateQuiz(a.topic||a.name, fullRef, a.quizLen);
+      _quizData = await generateQuizQuestions(a.topic || a.name, fullRef, a.quizLen || 5);
       renderQuizForm(fullRef);
     } catch(err) { showModalError('Failed to generate quiz: ' + err.message); }
   });
@@ -6673,91 +6842,87 @@ function renderQuizStart() {
 
 function renderQuizForm(ref) {
   const body = document.getElementById('char-modal-body');
+  const passN = Math.ceil(_quizData.length * (_actActivity.pass || 0.6));
   body.innerHTML = `
     <div class="char-modal-step-title">Answer the Questions</div>
-    <div class="char-modal-step-sub" style="margin-bottom:16px">Pass ${Math.round((_actActivity.quizLen * (_actActivity.pass||0.6))/1)} of ${_actActivity.quizLen} questions to earn ${_actActivity.xp} XP.</div>
+    <div class="char-modal-step-sub">Pass ${passN} of ${_quizData.length} to earn ${_actActivity.xp} XP</div>
     <div class="char-verify-section">
       ${_quizData.map((q,i) => `
-        <div class="char-quiz-question">
+        <div class="char-quiz-q">
           <div class="char-quiz-q-text"><strong>Q${i+1}:</strong> ${q.question}</div>
-          <textarea class="char-textarea" id="cq-ans-${i}" style="min-height:60px" placeholder="Your answer…"></textarea>
+          <textarea class="char-textarea" id="qans-${i}" style="min-height:56px" placeholder="Your answer…"></textarea>
         </div>`).join('')}
-      <button class="char-submit-btn" id="char-quiz-submit">Submit Answers</button>
+      <button class="char-submit-btn" id="vqz-submit">Submit Answers</button>
     </div>`;
-  body.querySelector('#char-quiz-submit').addEventListener('click', async () => {
-    const answers = _quizData.map((_,i) => (body.querySelector(`#cq-ans-${i}`)?.value||'').trim());
+  body.querySelector('#vqz-submit').addEventListener('click', async () => {
+    const answers = _quizData.map((_,i) => (body.querySelector('#qans-'+i)?.value||'').trim());
     showModalLoading('Marking your answers…');
     try {
-      const result = await markQuiz(_actActivity.topic||_actActivity.name, ref, _quizData, answers);
-      if (result.passed) {
-        awardXP(_actActivity.xp, `Quiz passed: ${result.score}/${result.total}`);
+      const r = await markQuizAnswers(_actActivity.topic || _actActivity.name, ref, _quizData, answers);
+      if (r.passed) {
+        awardXP(_actActivity.xp, 'Quiz passed: ' + r.score + '/' + r.out_of);
       } else {
-        showVerifyFailed(`Score: ${result.score}/${result.total}. ${result.feedback || ''} You can retry after 24 hours.`, false);
-        markLogged(_actStat.key, _actActivity.name + '_failed');
+        showVerifyFailed('Score: ' + r.score + '/' + r.out_of + '. ' + (r.feedback||'') + ' Retry after 24 hours.', false);
+        markLogged(_actStat.key, _actActivity.name + '_quiz_failed');
       }
     } catch(err) { showModalError('Marking failed: ' + err.message); }
   });
 }
 
-// ── Modal state helpers ──
+// ── Modal helpers ──
 function showModalLoading(msg) {
-  document.getElementById('char-modal-body').innerHTML = `
-    <div class="char-loading"><div class="spinner"></div><span>${msg}</span></div>`;
+  document.getElementById('char-modal-body').innerHTML =
+    '<div class="char-loading"><div class="spinner"></div><span>' + msg + '</span></div>';
 }
-
 function showModalError(msg) {
-  document.getElementById('char-modal-body').innerHTML = `
-    <div class="char-error-block">${msg}</div>
-    <button class="char-submit-btn" onclick="closeActivityModal()">Close</button>`;
+  document.getElementById('char-modal-body').innerHTML =
+    '<div class="char-error-block">' + msg + '</div>' +
+    '<button class="char-submit-btn secondary" style="margin-top:8px" onclick="closeActivityModal()">Close</button>';
 }
-
 function showVerifyFailed(reason, offerReflect) {
-  document.getElementById('char-modal-body').innerHTML = `
-    <div class="char-modal-step-title">Not Verified</div>
-    <div class="char-error-block">${reason}</div>
-    ${offerReflect ? '<p style="font-size:13px;color:var(--muted);margin-bottom:14px">You can earn 85% XP by writing a reflection instead.</p>' : ''}
-    <div style="display:flex;flex-direction:column;gap:8px">
-      ${offerReflect ? `<button class="char-submit-btn" id="vf-reflect">Write Reflection (+${Math.round((_actActivity.xp||100)*0.85)} XP)</button>` : ''}
-      <button class="char-submit-btn" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border)" onclick="closeActivityModal()">Close</button>
-    </div>`;
-  if (offerReflect) {
-    document.getElementById('vf-reflect')?.addEventListener('click', renderReflectionVerify);
-  }
+  document.getElementById('char-modal-body').innerHTML =
+    '<div class="char-modal-step-title">Not Verified</div>' +
+    '<div class="char-error-block">' + reason + '</div>' +
+    (offerReflect ? '<p style="font-size:13px;color:#6b6760;margin-bottom:12px">Earn 85% XP by writing a reflection instead.</p>' : '') +
+    '<div style="display:flex;flex-direction:column;gap:8px">' +
+    (offerReflect ? '<button class="char-submit-btn" id="vf-refl">Write Reflection (+' + Math.round((_actActivity.xp||100)*0.85) + ' XP)</button>' : '') +
+    '<button class="char-submit-btn secondary" onclick="closeActivityModal()">Close</button></div>';
+  if (offerReflect) document.getElementById('vf-refl')?.addEventListener('click', renderVerifyReflection);
 }
 
-// ── Award XP & animate ──
+// ── Award XP ──
 function awardXP(xp, label) {
   markLogged(_actStat.key, _actActivity.name);
-  const result = addXP(_actStat.key, xp);
-  const s = statEntry(_actStat.key);
+  const result = addXPToStat(_actStat.key, xp);
+  const s      = statEntry(_actStat.key);
   const needed = xpPerLevel(s.level);
-  const pct = Math.min(100, needed>0 ? s.xp/needed*100 : 0);
+  const pct    = Math.min(100, needed > 0 ? s.xp / needed * 100 : 0);
+
   document.getElementById('char-modal-body').innerHTML = `
     <div class="char-xp-award">
       <div class="char-xp-award-icon">${_actStat.icon}</div>
-      <div class="char-xp-award-amount" style="color:${_actStat.color}">+${result.earned} XP</div>
+      <div class="char-xp-award-amount">+${result.earned} XP</div>
       <div class="char-xp-award-label">${label}</div>
-      <div class="char-xp-award-bar-wrap">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px">
-          <span style="font-family:'Fredoka One',cursive;color:${_actStat.color}">${_actStat.name} Level ${s.level}</span>
+      <div style="margin-bottom:18px">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:#6b6760;margin-bottom:5px">
+          <span style="font-family:'Fredoka One',cursive;color:${_actStat.color}">${_actStat.name} LVL ${s.level}</span>
           <span>${s.xp} / ${needed} XP</span>
         </div>
-        ${buildXPBar(s.xp, needed, _actStat.color, 'award-bar')}
+        ${xpBarHTML(pct, 'award-bar')}
       </div>
-      <button class="char-submit-btn" style="margin-top:12px" onclick="closeActivityModal();renderCharSheet()">Done ✓</button>
+      <button class="char-submit-btn" onclick="closeActivityModal();renderCharSheet()">Done ✓</button>
     </div>`;
-  // Animate bar
-  setTimeout(() => {
-    const bar = document.getElementById('award-bar');
-    if (bar) { bar.classList.add('pulse'); }
-  }, 200);
-  // Level up notification
+
+  setTimeout(() => { document.getElementById('award-bar')?.classList.add('pulse'); }, 250);
+
   if (result.levelsGained > 0) {
-    setTimeout(() => showLevelUp(_actStat.name, result.newLevel), 400);
+    setTimeout(() => {
+      showLevelUp(_actStat.name, result.newLevel);
+      flashStatRow(_actStat.key, _actStat.color);
+    }, 350);
   }
-  if (document.getElementById('char-sheet')?.style.display !== 'none') {
-    renderCharSheet();
-  }
+
+  if (document.getElementById('char-sheet')?.style.display !== 'none') renderCharSheet();
 }
 </script>
 
