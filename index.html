@@ -2428,15 +2428,288 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   }
 
   /* ═══════════════════════════════════════════════════════
-     CHARACTER SCREEN
+     CHARACTER SCREEN — fixed 960×560 game canvas
   ═══════════════════════════════════════════════════════ */
 
-  /* Grain texture on the whole character screen */
-  #character-screen {
-    background: #0e0e0e;
+  /* Screen takes full viewport as transparent overlay */
+  #character-screen.active {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 500 !important;
+    overflow: hidden !important;
+  }
+
+  /* Back button sits outside the canvas, always in top-left of viewport */
+  #char-back-btn {
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 600;
+    color: rgba(232,213,176,0.7);
+    font-size: 13px;
+  }
+  #char-back-btn:hover { color: #e8d5b0; }
+
+  /* ── Gate (API key entry) ── */
+  #char-gate {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; z-index: 501;
+  }
+  /* rest of the old gate style stays untouched — gate inner etc. already defined below */
+
+  /* ── Canvas ── */
+  #char-canvas {
+    position: fixed;
+    top: 50%; left: 50%;
+    width: 960px; height: 560px;
+    transform-origin: center center;
+    /* JS applies: translate(-50%, -50%) scale(X) */
+    background: rgba(10, 8, 5, 0.92);
+    border-radius: 16px;
+    border: 2px solid #5a3e1b;
+    display: flex;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.04);
+  }
+
+  /* ── Left panel — 240px ── */
+  .cv-left {
+    width: 240px; flex-shrink: 0; height: 560px;
+    border-right: 1px solid #3a2610;
+    padding: 18px 16px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 10px;
+    background: rgba(8, 5, 2, 0.55);
+  }
+  .cv-name-row {
+    display: flex; align-items: center; gap: 6px;
+    width: 100%; justify-content: center;
+  }
+  .cv-name {
+    font-family: 'Fredoka One', cursive; font-size: 18px;
+    color: #e8d5b0; cursor: pointer; font-weight: 400;
+    text-align: center; letter-spacing: 0.3px;
+  }
+  .cv-name:hover { color: #c9a84c; }
+  .cv-name-edit { background: none; border: none; color: #4a3a2a; cursor: pointer; font-size: 11px; padding: 0 2px; }
+  .cv-name-edit:hover { color: #c9a84c; }
+  .cv-name-input {
+    width: 100%; background: rgba(20,14,8,0.9); border: 2px solid #c9a84c;
+    border-radius: 8px; color: #e8d5b0;
+    font-family: 'Fredoka One', cursive; font-size: 16px;
+    padding: 6px 10px; outline: none; text-align: center;
+  }
+  /* Portrait 180×180 */
+  .cv-portrait {
+    position: relative; width: 180px; height: 180px; flex-shrink: 0;
+  }
+  .cv-portrait-inner {
+    position: absolute; inset: 14px;
+    background: #111;
+    border-radius: 4px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-end;
+    padding-bottom: 10px;
+    overflow: hidden;
+  }
+  /* CSS silhouette — head + body with glow */
+  .cv-sil { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .cv-sil-glow {
+    position: absolute; inset: -20px;
+    border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle at 50% 50%, var(--cv-stat-color, #6b7fff) 0%, transparent 70%);
+    opacity: 0.3;
+  }
+  .cv-sil-head {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--cv-stat-color, #6b7fff);
+    opacity: 0.75;
+    position: relative; z-index: 1;
+    box-shadow: 0 0 12px var(--cv-stat-color, #6b7fff);
+  }
+  .cv-sil-body {
+    width: 50px; height: 60px; border-radius: 10px 10px 6px 6px;
+    background: var(--cv-stat-color, #6b7fff);
+    opacity: 0.7;
+    position: relative; z-index: 1;
+    box-shadow: 0 0 10px var(--cv-stat-color, #6b7fff);
+  }
+  /* Frame overlay on top of portrait */
+  .cv-portrait-frame {
+    position: absolute; inset: 0;
+    background: url('xp-portrait-frame.png') no-repeat center / contain;
+    pointer-events: none; z-index: 2;
+  }
+  /* Overall level */
+  .cv-level {
+    font-family: 'Fredoka One', cursive; font-size: 36px;
+    color: #c9a84c; font-weight: 400; line-height: 1;
+    text-shadow: 0 0 16px rgba(201,168,76,0.4);
+  }
+  /* Overall XP bar */
+  .cv-overall-bar-wrap { width: 100%; }
+  .cv-overall-bar-labels {
+    display: flex; justify-content: space-between;
+    font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #6b5a40; margin-bottom: 4px;
+  }
+  .cv-overall-bar {
+    width: 200px; height: 24px;
+    background: #0d1a0d; border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.08);
+    position: relative; overflow: hidden;
+  }
+  .cv-overall-bar-fill {
+    position: absolute; top: 0; left: 0; height: 100%;
+    background: repeating-linear-gradient(90deg, #4caf50 0px, #6abf4b 18px, #2d7a2d 18px, #2d7a2d 20px);
+    width: 0%;
+    transition: width 0.65s cubic-bezier(0.34,1.3,0.64,1);
+  }
+  .cv-bar-segments {
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(90deg, transparent 0px, transparent 17px, rgba(0,0,0,0.3) 17px, rgba(0,0,0,0.3) 20px);
+  }
+  /* Prestige badges */
+  .cv-prestige-row { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; min-height: 14px; }
+  .cv-prestige-star { font-size: 13px; line-height: 1; }
+  /* Log Activity button */
+  .cv-log-btn {
+    width: 100%; height: 40px; border-radius: 10px; border: 2px solid #c9a84c;
+    background: rgba(90,62,27,0.7); color: #e8d5b0;
+    font-family: 'Fredoka One', cursive; font-size: 16px; font-weight: 400;
+    cursor: pointer; letter-spacing: 0.5px; margin-top: auto;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 2px 10px rgba(201,168,76,0.2);
+    position: relative; overflow: hidden;
+  }
+  .cv-log-btn:hover { background: rgba(120,85,35,0.85); }
+  .cv-log-btn:active { transform: scale(0.97); }
+  @keyframes cvShimmer {
+    0%   { transform: translateX(-100%) skewX(-15deg); }
+    100% { transform: translateX(300%) skewX(-15deg); }
+  }
+  .cv-log-btn::after {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 40%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  .cv-log-btn:hover::after { animation: cvShimmer 0.65s ease forwards; }
+
+  /* ── Right panel — 720px ── */
+  .cv-right {
+    flex: 1; height: 560px;
+    padding: 16px 20px 16px 20px;
+    display: flex; flex-direction: column;
+  }
+  .cv-stats-heading {
+    font-family: 'Fredoka One', cursive; font-size: 12px; font-weight: 400;
+    letter-spacing: 3px; color: #4a3a28; text-transform: uppercase;
+    margin-bottom: 10px; flex-shrink: 0;
+  }
+  .cv-stats-panel {
+    flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  /* Stat row — exactly 60px tall */
+  .cv-stat-row {
+    height: 60px; display: flex; align-items: center; gap: 10px;
+    cursor: pointer; border-radius: 8px; padding: 0 4px;
+    transition: background 0.15s;
     position: relative;
   }
-  #character-screen::before {
+  .cv-stat-row:hover { background: rgba(255,255,255,0.03); }
+  /* Icon circle 52px */
+  .cv-stat-icon {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: 3px solid #999; /* overridden inline */
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0; line-height: 1;
+    background: rgba(0,0,0,0.35);
+  }
+  /* Stat name 80px */
+  .cv-stat-name {
+    font-family: 'Fredoka One', cursive; font-size: 14px; font-weight: 400;
+    width: 80px; flex-shrink: 0; letter-spacing: 0.2px;
+  }
+  /* Bar — 460px wide, 36px tall */
+  .cv-stat-bar-wrap { width: 460px; flex-shrink: 0; }
+  .cv-stat-bar {
+    width: 460px; height: 36px;
+    background: #1a3a1a;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,0.1);
+    position: relative; overflow: hidden;
+  }
+  /* Unfilled dark bg with segment dividers always visible */
+  .cv-stat-bar::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, transparent 0px, transparent 17px, rgba(0,0,0,0.35) 17px, rgba(0,0,0,0.35) 20px);
+    z-index: 2; pointer-events: none;
+  }
+  .cv-stat-bar-fill {
+    position: absolute; top: 0; left: 0; height: 100%;
+    width: 0%;
+    transition: width 0.65s cubic-bezier(0.34,1.3,0.64,1);
+    z-index: 1;
+  }
+  .cv-stat-bar-fill::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  @keyframes cvXpPulse {
+    0%,100% { filter: brightness(1); }
+    40%      { filter: brightness(1.7) saturate(1.3); }
+  }
+  .cv-stat-bar-fill.pulse { animation: cvXpPulse 0.55s ease; }
+  /* Level number 50px */
+  .cv-stat-lvl {
+    font-family: 'Fredoka One', cursive; font-size: 16px; font-weight: 400;
+    width: 50px; text-align: right; flex-shrink: 0;
+  }
+  /* XP sub-label under bar */
+  .cv-stat-xp-label { font-size: 9px; color: #4a3a28; text-align: right; margin-top: 2px; }
+  /* Level-up flash */
+  @keyframes cvStatFlash {
+    0%   { box-shadow: none; }
+    30%  { box-shadow: 0 0 0 2px var(--cv-flash, #c9a84c); }
+    70%  { box-shadow: 0 0 14px 4px var(--cv-flash, #c9a84c); }
+    100% { box-shadow: none; }
+  }
+  .cv-stat-row.flash { animation: cvStatFlash 1.4s ease forwards; }
+  .cv-stat-levelup-text {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    font-family: 'Fredoka One', cursive; font-size: 20px;
+    color: #ffd700; pointer-events: none; z-index: 10;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255,215,0,0.8), 0 2px 4px rgba(0,0,0,0.9);
+  }
+  @keyframes cvLevelupText {
+    0%   { opacity:0; transform: translate(-50%,-50%) scale(0); }
+    20%  { opacity:1; transform: translate(-50%,-50%) scale(1.2); }
+    40%  { transform: translate(-50%,-50%) scale(1); }
+    70%  { opacity:1; }
+    100% { opacity:0; transform: translate(-50%,-60%) scale(0.9); }
+  }
+  .cv-stat-levelup-text.show { animation: cvLevelupText 1.5s ease forwards; }
+  /* Prestige button */
+  .cv-prestige-btn {
+    background: none; border: 1.5px solid #c9a84c; border-radius: 6px;
+    color: #c9a84c; font-family: 'Fredoka One', cursive; font-size: 11px;
+    padding: 3px 8px; cursor: pointer;
+  }
+  .cv-prestige-btn:hover { background: rgba(201,168,76,0.1); }
+
+  /* ── Gate (API key entry) ── */
+  #char-gate {
     content: '';
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
@@ -3164,6 +3437,179 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     #mobile-channel-search-wrap { flex-shrink: 0; }
   }
 
+  /* ── DISABLED OVERLAY THEMES — hidden from desktop picker too ── */
+  #theme-grid .theme-swatch[data-preset="9"],
+  #theme-grid .theme-swatch[data-preset="12"],
+  #theme-grid .theme-swatch[data-preset="13"] { display: none !important; }
+
+  /* ── CHARACTER CANVAS EXTRAS ── */
+
+  /* Title under name */
+  .cv-char-title {
+    font-family: 'Fredoka One', cursive; font-size: 12px; font-weight: 400;
+    color: #c9a84c; letter-spacing: 1px; text-align: center;
+    margin-top: -6px; min-height: 16px;
+  }
+
+  /* Emblem 40×40 */
+  .cv-emblem {
+    width: 40px; height: 40px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  /* Level 1 — simple circle */
+  .cv-emblem-1::after {
+    content:''; position:absolute; inset:4px;
+    border-radius:50%; border:2px solid #c9a84c;
+    background:rgba(201,168,76,0.12);
+  }
+  /* Level 5 — circle + inner star dot */
+  .cv-emblem-5::after { content:''; position:absolute; inset:4px; border-radius:50%; border:2px solid #c9a84c; background:rgba(201,168,76,0.12); }
+  .cv-emblem-5::before { content:'★'; position:absolute; font-size:12px; color:#c9a84c; line-height:1; }
+  /* Level 10 — shield */
+  .cv-emblem-10::after {
+    content:''; position:absolute; inset:3px;
+    background:rgba(201,168,76,0.12);
+    border:2px solid #c9a84c;
+    clip-path:polygon(50% 0%, 100% 15%, 100% 65%, 50% 100%, 0% 65%, 0% 15%);
+  }
+  .cv-emblem-10::before { content:'✦'; position:absolute; font-size:11px; color:#c9a84c; line-height:1; }
+  /* Level 20 — shield + crown */
+  .cv-emblem-20::after {
+    content:''; position:absolute; inset:2px;
+    background:rgba(201,168,76,0.18);
+    border:2px solid #c9a84c;
+    clip-path:polygon(50% 0%, 100% 15%, 100% 65%, 50% 100%, 0% 65%, 0% 15%);
+  }
+  .cv-emblem-20::before { content:'♛'; position:absolute; font-size:14px; color:#c9a84c; line-height:1; }
+  /* Level 30 — diamond with rays */
+  .cv-emblem-30::after {
+    content:''; position:absolute; inset:4px;
+    background:rgba(201,168,76,0.18);
+    border:2px solid #c9a84c;
+    clip-path:polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    box-shadow:0 0 8px rgba(201,168,76,0.6);
+  }
+  .cv-emblem-30::before { content:'✦'; position:absolute; font-size:13px; color:#c9a84c; line-height:1; text-shadow:0 0 6px #c9a84c; }
+  /* Level 50 — ornate multi-layer glow */
+  .cv-emblem-50 {
+    filter:drop-shadow(0 0 6px #c9a84c);
+  }
+  .cv-emblem-50::after {
+    content:''; position:absolute; inset:1px;
+    border:2px solid #c9a84c;
+    border-radius:50%;
+    background:conic-gradient(from 0deg, rgba(201,168,76,0.3) 0%, transparent 30%, rgba(201,168,76,0.3) 60%, transparent 90%, rgba(201,168,76,0.3) 100%);
+    box-shadow:0 0 12px rgba(201,168,76,0.8), inset 0 0 8px rgba(201,168,76,0.3);
+  }
+  .cv-emblem-50::before { content:'⚜'; position:absolute; font-size:16px; color:#c9a84c; line-height:1; text-shadow:0 0 8px #c9a84c; }
+
+  /* API cost display */
+  .cv-api-cost {
+    font-family: 'Fredoka One', cursive; font-size: 11px; font-weight: 400;
+    color: #4a3a28; text-align: center; line-height: 1.4;
+    margin-top: 4px; position: relative;
+  }
+  .cv-api-info {
+    cursor: help; color: #5a4a30;
+    font-size: 10px;
+  }
+  .cv-api-info:hover::after {
+    content: attr(data-tip);
+    position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+    background: #1a1206; border: 1px solid #5a3e1b; border-radius: 8px;
+    padding: 8px 10px; font-size: 10px; color: #c9a84c;
+    white-space: normal; width: 200px; z-index: 99; line-height: 1.5;
+    font-family: 'DM Sans', sans-serif; font-weight: 300;
+  }
+
+  /* ── SIDE PANEL ── */
+  /* Wrapper is same height as canvas (560px), wide enough to hold canvas+panel side by side.
+     It gets the same translate(-50%,-50%) scale(X) transform as the canvas from JS. */
+  #cv-side-wrap {
+    position: fixed;
+    top: 50%; left: 50%;
+    width: 1248px; /* 960 canvas + 8 gap + 280 panel */
+    height: 560px;
+    transform-origin: center center;
+    pointer-events: none;
+    z-index: 508;
+  }
+  #cv-side-panel {
+    position: absolute;
+    left: 968px; top: 0; height: 560px;
+    width: 280px;
+    background: rgba(10,8,5,0.95);
+    border: 2px solid #5a3e1b;
+    border-radius: 16px;
+    display: flex; flex-direction: column;
+    pointer-events: auto;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+  }
+  #cv-side-panel.collapsed { transform: translateX(288px); }
+  .cv-panel-tab {
+    position: absolute; left: -34px; top: 50%;
+    transform: translateY(-50%);
+    background: rgba(10,8,5,0.95);
+    border: 2px solid #5a3e1b; border-right: none;
+    border-radius: 10px 0 0 10px;
+    color: #c9a84c; font-family: 'Fredoka One', cursive;
+    font-size: 16px; font-weight: 400;
+    width: 32px; height: 48px;
+    cursor: pointer; pointer-events: auto;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cv-panel-tab:hover { background: rgba(20,14,8,0.98); }
+  .cv-panel-inner {
+    flex: 1; overflow-y: auto; padding: 16px;
+    scrollbar-width: thin; scrollbar-color: #3a2610 transparent;
+  }
+  .cv-panel-inner::-webkit-scrollbar { width: 4px; }
+  .cv-panel-inner::-webkit-scrollbar-thumb { background: #3a2610; border-radius: 4px; }
+  .cv-panel-section { margin-bottom: 20px; }
+  .cv-panel-heading {
+    font-family: 'Fredoka One', cursive; font-size: 11px; font-weight: 400;
+    letter-spacing: 2px; color: #c9a84c; text-transform: uppercase;
+    margin-bottom: 8px; border-bottom: 1px solid #3a2610; padding-bottom: 6px;
+  }
+  .cv-panel-text {
+    font-size: 11px; color: #6b5a40; line-height: 1.65;
+  }
+  .cv-panel-rules {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .cv-panel-rules li {
+    font-size: 10px; color: #6b5a40; line-height: 1.5;
+    padding-left: 12px; position: relative;
+  }
+  .cv-panel-rules li::before { content: '◆'; position: absolute; left: 0; color: #5a3e1b; font-size: 7px; top: 3px; }
+  /* Skill tree accordion */
+  .cv-skill-accord { margin-bottom: 6px; border: 1px solid #2a1a0a; border-radius: 8px; overflow: hidden; }
+  .cv-skill-accord-hd {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 10px; cursor: pointer;
+    font-family: 'Fredoka One', cursive; font-size: 12px; font-weight: 400;
+    background: rgba(20,14,8,0.7);
+    transition: background 0.15s;
+  }
+  .cv-skill-accord-hd:hover { background: rgba(30,20,10,0.8); }
+  .cv-skill-accord-hd .cv-sa-arrow { margin-left: auto; font-size: 9px; color: #4a3a28; transition: transform 0.2s; }
+  .cv-skill-accord.open .cv-sa-arrow { transform: rotate(90deg); }
+  .cv-skill-accord-body { display: none; padding: 6px 10px 8px; background: rgba(10,6,2,0.5); }
+  .cv-skill-accord.open .cv-skill-accord-body { display: block; }
+  .cv-milestone {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; color: #6b5a40; padding: 3px 0;
+    border-bottom: 1px solid rgba(90,62,27,0.15);
+  }
+  .cv-milestone:last-child { border-bottom: none; }
+  .cv-milestone.unlocked { color: #c9a84c; }
+  .cv-milestone-lv { font-family: 'Fredoka One', cursive; font-size: 10px; min-width: 36px; color: #5a3e1b; }
+  .cv-milestone.unlocked .cv-milestone-lv { color: #c9a84c; }
+  .cv-milestone-icon { font-size: 11px; }
+
 </style>
 </head>
 <body>
@@ -3745,78 +4191,104 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
         </div>
       </div>
 
-      <!-- Character Sheet -->
-      <div id="char-sheet" style="display:none">
-        <div class="char-topbar">
-          <button class="back-btn" id="char-back-btn">← Back</button>
-          <div class="char-topbar-title">Your Character</div>
-          <div style="width:64px"></div>
-        </div>
+      <!-- Back button — outside canvas, always top-left -->
+      <button class="back-btn" id="char-back-btn">← Back</button>
 
-        <div class="char-layout">
-          <!-- LEFT PANEL (280px) -->
-          <div class="char-left-panel">
+      <!-- Canvas 960×560 -->
+      <div id="char-canvas" style="display:none">
 
-            <!-- Name -->
-            <div class="char-name-row">
-              <span class="char-name-display" id="char-name-display">Hero</span>
-              <button class="char-name-edit-btn" id="char-name-edit-btn" title="Edit name">✏</button>
-            </div>
-            <input type="text" id="char-name-input" class="char-name-input" style="display:none" maxlength="24" placeholder="Your character name…">
+        <!-- LEFT PANEL 240px -->
+        <div class="cv-left">
 
-            <!-- Portrait with frame -->
-            <div class="char-portrait-outer">
-              <div class="char-portrait-inner" id="char-portrait-inner">
-                <div class="char-sil-wrap" id="char-sil-wrap">
-                  <div class="char-sil-glow" id="char-sil-glow"></div>
-                  <div class="char-sil-head" id="char-sil-head"></div>
-                  <div class="char-sil-neck" id="char-sil-neck"></div>
-                  <div class="char-sil-body" id="char-sil-body">
-                    <div class="char-sil-arm char-sil-arm-l" id="char-sil-arm-l"></div>
-                    <div class="char-sil-arm char-sil-arm-r" id="char-sil-arm-r"></div>
-                  </div>
-                  <div class="char-sil-legs">
-                    <div class="char-sil-leg"></div>
-                    <div class="char-sil-leg"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="char-portrait-frame-overlay"></div>
-            </div>
+          <!-- Emblem + Name -->
+          <div class="cv-name-row">
+            <div class="cv-emblem cv-emblem-1" id="cv-emblem"></div>
+            <span class="cv-name" id="char-name-display">Hero</span>
+            <button class="cv-name-edit" id="char-name-edit-btn" title="Edit name">✏</button>
+          </div>
+          <input type="text" id="char-name-input" class="cv-name-input" style="display:none" maxlength="24" placeholder="Your character name…">
 
-            <!-- Overall level -->
-            <div class="char-overall-level-block">
-              <div class="char-level-label-small">Character Level</div>
-              <div class="char-overall-level" id="char-overall-level">LVL 1</div>
-            </div>
+          <!-- Title -->
+          <div class="cv-char-title" id="cv-char-title">Wanderer</div>
 
-            <!-- Overall XP bar (3-layer) -->
-            <div class="char-overall-bar-wrap" style="width:100%">
-              <div class="char-bar-labels">
-                <span class="char-bar-label-text">Overall XP</span>
-                <span class="char-bar-label-val" id="char-overall-xp-label">0 / 500</span>
-              </div>
-              <div class="char-xp-bar-outer slim">
-                <div class="char-xp-bg"></div>
-                <div class="char-xp-fill" id="char-overall-bar" style="width:0%"></div>
-                <div class="char-xp-frame"></div>
+          <!-- Portrait 180×180 -->
+          <div class="cv-portrait">
+            <div class="cv-portrait-inner" id="cv-portrait-inner">
+              <div class="cv-sil">
+                <div class="cv-sil-glow" id="cv-sil-glow"></div>
+                <div class="cv-sil-head" id="cv-sil-head"></div>
+                <div class="cv-sil-body" id="cv-sil-body"></div>
               </div>
             </div>
-
-            <!-- Prestige badges -->
-            <div class="char-prestige-row" id="char-prestige-row"></div>
-
-            <!-- Log Activity -->
-            <button class="char-log-btn" id="char-log-btn">⚔ Log Activity</button>
+            <div class="cv-portrait-frame"></div>
           </div>
 
-          <!-- RIGHT PANEL -->
-          <div class="char-right-panel">
-            <div class="char-stats-heading">Your Stats</div>
-            <div id="char-stats-panel"></div>
+          <!-- Overall level -->
+          <div class="cv-level" id="char-overall-level">LVL 1</div>
+
+          <!-- Overall XP bar -->
+          <div class="cv-overall-bar-wrap">
+            <div class="cv-overall-bar-labels">
+              <span>Overall XP</span>
+              <span id="char-overall-xp-label">0 / 500</span>
+            </div>
+            <div class="cv-overall-bar">
+              <div class="cv-overall-bar-fill" id="char-overall-bar" style="width:0%"></div>
+              <div class="cv-bar-segments"></div>
+            </div>
+          </div>
+
+          <!-- Prestige badges -->
+          <div class="cv-prestige-row" id="char-prestige-row"></div>
+
+          <!-- Log Activity -->
+          <button class="cv-log-btn" id="char-log-btn">⚔ Log Activity</button>
+
+          <!-- API cost estimate -->
+          <div class="cv-api-cost" id="cv-api-cost">
+            Est. API cost today: $<span id="cv-api-cost-val">0.000</span>
+            <span class="cv-api-info" data-tip="Image verification +$0.02, quiz generation +$0.003, written reflection +$0.001. Resets at midnight. Honour-system logs don't count.">ⓘ</span>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL 720px -->
+        <div class="cv-right">
+          <div class="cv-stats-heading">YOUR STATS</div>
+          <div class="cv-stats-panel" id="char-stats-panel"></div>
+        </div>
+      </div>
+
+      <!-- Side panel (rules + skill tree) -->
+      <div id="cv-side-wrap" style="display:none">
+        <div id="cv-side-panel">
+          <button class="cv-panel-tab" id="cv-panel-tab">?</button>
+          <div class="cv-panel-inner">
+
+            <div class="cv-panel-section">
+              <div class="cv-panel-heading">Your Character</div>
+              <p class="cv-panel-text">Level up in real life. Log real activities and earn XP across 5 stats. Every activity requires proof so your progress means something.</p>
+            </div>
+
+            <div class="cv-panel-section">
+              <div class="cv-panel-heading">The Rules</div>
+              <ul class="cv-panel-rules">
+                <li>One log per activity per day</li>
+                <li>Written reflections must be 100+ words</li>
+                <li>Blur personal details on photo uploads</li>
+                <li>Data never leaves your device except for verification calls</li>
+                <li>Reach level 50 to prestige a stat</li>
+              </ul>
+            </div>
+
+            <div class="cv-panel-section">
+              <div class="cv-panel-heading">Skill Tree</div>
+              <div id="cv-skill-tree-accords"></div>
+            </div>
+
           </div>
         </div>
       </div>
+
     </div>
 
     <!-- ACTIVITY MODAL -->
@@ -4887,8 +5359,16 @@ document.getElementById('reset-theme-btn').addEventListener('click', () => {
   renderThemePanel();
 });
 
-// Apply saved theme on load
-applyTheme(loadTheme());
+// Apply saved theme on load — fall back if a disabled overlay theme is stored
+(function applyThemeOnLoad() {
+  const DISABLED_THEMES = ['Lofi Cafe', 'Xbox 360', 'Cyberpunk Bedroom'];
+  let t = loadTheme();
+  if (DISABLED_THEMES.includes(t.presetName)) {
+    t = { ...PRESETS[0], presetName: PRESETS[0].name };
+    saveTheme(t);
+  }
+  applyTheme(t);
+})();
 
 // ── QUOTA TRACKER ──
 const QUOTA_KEY = 'ff_quota';
@@ -6667,29 +7147,31 @@ function flashStatRow(statKey, color) {
 function showCharacter() {
   showScreen('character-screen');
   const hasKey = !!localStorage.getItem(ANTHRO_KEY);
-  document.getElementById('char-gate').style.display  = hasKey ? 'none' : 'flex';
-  document.getElementById('char-sheet').style.display = hasKey ? 'flex' : 'none';
-  if (hasKey) renderCharSheet();
+  document.getElementById('char-gate').style.display    = hasKey ? 'none' : 'flex';
+  document.getElementById('char-canvas').style.display  = hasKey ? 'flex' : 'none';
+  const sw = document.getElementById('cv-side-wrap');
+  if (sw) sw.style.display = hasKey ? 'block' : 'none';
+  if (hasKey) { renderCharSheet(); scaleCharacterScreen(); }
 }
 
 function renderCharSheet() {
   // Name
   document.getElementById('char-name-display').textContent = getCharName();
 
-  // Silhouette colour = highest stat
+  // Silhouette colour = highest stat (cv- elements)
   const best = highestStat();
-  const silParts = ['char-sil-head','char-sil-neck','char-sil-body','char-sil-arm-l','char-sil-arm-r','char-sil-glow'];
-  document.documentElement.style.setProperty('--char-highest-color', best.color);
-  silParts.forEach(id => {
+  ['cv-sil-head','cv-sil-body','cv-sil-glow'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.style.background = el.id === 'char-sil-glow'
+    if (el) el.style.background = id === 'cv-sil-glow'
       ? `radial-gradient(circle at 50% 50%, ${best.color} 0%, transparent 70%)`
       : best.color;
   });
+  document.documentElement.style.setProperty('--cv-stat-color', best.color);
 
-  // Overall level
+  // Overall level + title/emblem
   const ovl = overallCharLevel();
   document.getElementById('char-overall-level').textContent = 'LVL ' + ovl;
+  updateCharTitleEmblem(ovl);
 
   // Overall bar
   const { xp: ovXP, needed: ovNeeded } = overallXPInfo();
@@ -6703,12 +7185,12 @@ function renderCharSheet() {
     pRow.innerHTML = STATS_CFG.map(s => {
       const p = statEntry(s.key).prestige || 0;
       return p > 0
-        ? Array(Math.min(p, 5)).fill(`<span class="char-prestige-star" style="color:${s.color}" title="${s.name} Prestige ${p}">⭐</span>`).join('')
+        ? Array(Math.min(p, 5)).fill(`<span class="cv-prestige-star" style="color:${s.color}" title="${s.name} Prestige ${p}">⭐</span>`).join('')
         : '';
     }).join('');
   }
 
-  // Stat rows
+  // Stat rows (cv canvas layout)
   const panel = document.getElementById('char-stats-panel');
   if (!panel) return;
   panel.innerHTML = '';
@@ -6719,38 +7201,36 @@ function renderCharSheet() {
     const isMax  = e.level >= MAX_STAT_LEVEL;
 
     const row = document.createElement('div');
-    row.className    = 'char-stat-row';
+    row.className = 'cv-stat-row';
     row.dataset.statKey = s.key;
-    row.style.setProperty('--stat-color', s.color);
     row.innerHTML = `
-      <div class="char-stat-left">
-        <span class="char-stat-icon">${s.icon}</span>
-        <span class="char-stat-name" style="color:${s.color}">${s.name}</span>
-      </div>
-      <div class="char-stat-bar-wrap">
-        <div class="char-stat-bar" style="border-color:${s.color}">
-          <div class="char-stat-bar-fill" style="width:${pct}%"></div>
+      <div class="cv-stat-icon" style="border-color:${s.color}">${s.icon}</div>
+      <div class="cv-stat-name" style="color:${s.color}">${s.name}</div>
+      <div class="cv-stat-bar-wrap">
+        <div class="cv-stat-bar">
+          <div class="cv-stat-bar-fill" style="width:${pct}%;background:${s.color}"></div>
         </div>
-        <div class="char-stat-xp-label">${isMax ? 'MAX LEVEL' : e.xp + ' / ' + needed + ' XP'}${e.multiplier > 1 ? ' · ' + e.multiplier.toFixed(2) + '× XP' : ''}</div>
+        <div class="cv-stat-xp-label">${isMax ? 'MAX LEVEL' : e.xp + ' / ' + needed + ' XP'}${e.multiplier > 1 ? ' · ' + e.multiplier.toFixed(2) + '×' : ''}</div>
       </div>
-      <div class="char-stat-right">
-        <span class="char-stat-level" style="color:${s.color}">LVL ${e.level}</span>
-        ${e.prestige > 0 ? `<span class="char-stat-prestige">⭐×${e.prestige}</span>` : ''}
-        ${isMax ? `<button class="char-prestige-btn" data-stat="${s.key}">✨ Prestige</button>` : ''}
-      </div>`;
+      <div class="cv-stat-lvl" style="color:${s.color}">LVL ${e.level}${isMax ? `<br><button class="cv-prestige-btn" data-stat="${s.key}" style="font-size:9px;padding:2px 5px;margin-top:2px">✨ Prestige</button>` : ''}</div>`;
 
     row.addEventListener('click', evt => {
-      if (evt.target.classList.contains('char-prestige-btn')) return;
+      if (evt.target.closest('.cv-prestige-btn')) return;
       openSkillTree(s);
     });
-    const pb = row.querySelector('.char-prestige-btn');
+    const pb = row.querySelector('.cv-prestige-btn');
     if (pb) pb.addEventListener('click', evt => { evt.stopPropagation(); doPrestige(s); });
     panel.appendChild(row);
 
-    // Hover glow shadow in stat colour
-    row.addEventListener('mouseenter', () => { row.style.boxShadow = '0 6px 20px ' + s.color + '4d'; });
+    row.addEventListener('mouseenter', () => { row.style.boxShadow = '0 4px 16px ' + s.color + '44'; });
     row.addEventListener('mouseleave', () => { row.style.boxShadow = ''; });
   });
+
+  // Side panel skill tree
+  renderSidePanelSkillTree();
+
+  // API cost
+  renderApiCost();
 }
 
 function doPrestige(s) {
@@ -6759,12 +7239,141 @@ function doPrestige(s) {
   renderCharSheet();
 }
 
+// ── Canvas scaling ──
+function scaleCharacterScreen() {
+  const canvas = document.getElementById('char-canvas');
+  if (!canvas || canvas.style.display === 'none') return;
+  const scaleX = window.innerWidth / 960;
+  const scaleY = window.innerHeight / 560;
+  const scale  = Math.min(scaleX, scaleY, 1);
+  const tx = 'translate(-50%, -50%) scale(' + scale + ')';
+  canvas.style.transform = tx;
+  // Side-wrap: centred on the same point, but 1248px wide so the panel sits
+  // naturally to the right of the 960px canvas within the same scaled space.
+  const sw = document.getElementById('cv-side-wrap');
+  if (sw) sw.style.transform = tx;
+}
+window.addEventListener('resize', scaleCharacterScreen);
+
+// ── Title / Emblem system ──
+const CHAR_TITLE_KEY  = 'ff_char_title';
+const CHAR_EMBLEM_KEY = 'ff_char_emblem';
+
+const TITLE_TIERS = [
+  { lv:50, title:'Immortal',   emblem:50 },
+  { lv:40, title:'Ascended',   emblem:50 },
+  { lv:30, title:'Mythic',     emblem:30 },
+  { lv:25, title:'Legend',     emblem:30 },
+  { lv:20, title:'Champion',   emblem:20 },
+  { lv:15, title:'Elite',      emblem:20 },
+  { lv:10, title:'Veteran',    emblem:10 },
+  { lv:8,  title:'Adventurer', emblem:10 },
+  { lv:5,  title:'Journeyman', emblem:5  },
+  { lv:3,  title:'Apprentice', emblem:5  },
+  { lv:1,  title:'Wanderer',   emblem:1  },
+];
+
+function getCharTier(ovl) {
+  return TITLE_TIERS.find(t => ovl >= t.lv) || TITLE_TIERS[TITLE_TIERS.length - 1];
+}
+
+function updateCharTitleEmblem(ovl) {
+  const tier = getCharTier(ovl);
+  localStorage.setItem(CHAR_TITLE_KEY, tier.title);
+  localStorage.setItem(CHAR_EMBLEM_KEY, tier.emblem);
+
+  const titleEl = document.getElementById('cv-char-title');
+  if (titleEl) titleEl.textContent = tier.title;
+
+  const emblemEl = document.getElementById('cv-emblem');
+  if (emblemEl) {
+    emblemEl.className = 'cv-emblem cv-emblem-' + tier.emblem;
+  }
+}
+
+// ── Side panel ──
+const PANEL_KEY = 'ff_char_panel_open';
+
+function renderSidePanelSkillTree() {
+  const container = document.getElementById('cv-skill-tree-accords');
+  if (!container) return;
+  const MILESTONES = [5, 10, 20, 30, 50];
+  container.innerHTML = STATS_CFG.map(s => {
+    const e = statEntry(s.key);
+    const items = MILESTONES.map(lv => {
+      const unlocked = e.level >= lv || (e.prestige || 0) > 0;
+      const tree = SKILL_TREE_DATA[s.key] || [];
+      const node = tree.find(n => n.lv === lv);
+      return `<div class="cv-milestone${unlocked ? ' unlocked' : ''}">
+        <span class="cv-milestone-icon">${unlocked ? '✅' : '🔒'}</span>
+        <span class="cv-milestone-lv">Lv ${lv}</span>
+        <span>${node ? node.label : 'Milestone'}</span>
+      </div>`;
+    }).join('');
+    return `<div class="cv-skill-accord" id="cva-${s.key}">
+      <div class="cv-skill-accord-hd" data-key="${s.key}" style="color:${s.color}">
+        <span>${s.icon}</span><span>${s.name}</span>
+        <span class="cv-sa-arrow">▶</span>
+      </div>
+      <div class="cv-skill-accord-body">${items}</div>
+    </div>`;
+  }).join('');
+
+  container.querySelectorAll('.cv-skill-accord-hd').forEach(hd => {
+    hd.addEventListener('click', () => {
+      hd.closest('.cv-skill-accord').classList.toggle('open');
+    });
+  });
+}
+
+(function initSidePanel() {
+  const panel = document.getElementById('cv-side-panel');
+  const tab   = document.getElementById('cv-panel-tab');
+  if (!panel || !tab) return;
+  const open = localStorage.getItem(PANEL_KEY) !== 'false';
+  if (!open) panel.classList.add('collapsed');
+  tab.addEventListener('click', () => {
+    const isOpen = !panel.classList.contains('collapsed');
+    panel.classList.toggle('collapsed', isOpen);
+    localStorage.setItem(PANEL_KEY, !isOpen);
+  });
+})();
+
+// ── API cost counter ──
+const API_COST_KEY      = 'ff_char_api_cost';
+const API_COST_DATE_KEY = 'ff_char_api_cost_date';
+
+function getTodayCostStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function getApiCost() {
+  if (localStorage.getItem(API_COST_DATE_KEY) !== getTodayCostStr()) {
+    localStorage.setItem(API_COST_DATE_KEY, getTodayCostStr());
+    localStorage.setItem(API_COST_KEY, '0');
+  }
+  return parseFloat(localStorage.getItem(API_COST_KEY) || '0');
+}
+
+function addApiCost(amount) {
+  const cur = getApiCost();
+  const next = Math.round((cur + amount) * 10000) / 10000;
+  localStorage.setItem(API_COST_KEY, next.toString());
+  localStorage.setItem(API_COST_DATE_KEY, getTodayCostStr());
+  renderApiCost();
+}
+
+function renderApiCost() {
+  const el = document.getElementById('cv-api-cost-val');
+  if (el) el.textContent = getApiCost().toFixed(3);
+}
+
 // ── Name editing ──
 document.getElementById('char-name-edit-btn').addEventListener('click', () => {
   const disp = document.getElementById('char-name-display');
   const inp  = document.getElementById('char-name-input');
   inp.value  = getCharName();
-  disp.closest('.char-name-row').style.display = 'none';
+  disp.closest('.cv-name-row').style.display = 'none';
   inp.style.display = 'block';
   inp.focus(); inp.select();
 });
@@ -6777,7 +7386,7 @@ function saveCharName() {
   const val = inp.value.trim() || 'Hero';
   localStorage.setItem(CHAR_NAME_KEY, val);
   inp.style.display = 'none';
-  const row = document.getElementById('char-name-display').closest('.char-name-row');
+  const row = document.getElementById('char-name-display').closest('.cv-name-row');
   if (row) row.style.display = '';
   document.getElementById('char-name-display').textContent = val;
 }
@@ -6794,9 +7403,11 @@ document.getElementById('char-anthro-save').addEventListener('click', () => {
   err.textContent = '';
   localStorage.setItem(ANTHRO_KEY, val);
   initClaudeModel(); // fetch best available haiku model now that we have a key
-  document.getElementById('char-gate').style.display  = 'none';
-  document.getElementById('char-sheet').style.display = 'flex';
-  renderCharSheet();
+  document.getElementById('char-gate').style.display   = 'none';
+  document.getElementById('char-canvas').style.display = 'flex';
+  const _sw = document.getElementById('cv-side-wrap');
+  if (_sw) _sw.style.display = 'block';
+  renderCharSheet(); scaleCharacterScreen();
 });
 document.getElementById('char-anthro-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('char-anthro-save').click();
@@ -6973,6 +7584,7 @@ function renderVerifyImage(offerAlt) {
     showModalLoading('Verifying with Claude…');
     try {
       const r = await verifyImageWithClaude(b64, mType, _actActivity.name, _actStat.name, _actActivity.xp);
+      addApiCost(0.02);
       r.verified ? awardXP(r.xp_to_award || _actActivity.xp, r.evidence_found || 'Verified ✓')
                  : showVerifyFailed(r.reason, offerAlt);
     } catch(err) { showModalError('Verification error: ' + err.message); }
@@ -7008,6 +7620,7 @@ function renderVerifyReflection(prefill) {
     showModalLoading('Claude is reading your reflection…');
     try {
       const r = await checkReflection(_actActivity.name, _reflText);
+      addApiCost(0.001);
       renderFollowUp(r.follow_up_question);
     } catch(err) { showModalError('Verification error: ' + err.message); }
   });
@@ -7071,6 +7684,7 @@ function renderVerifyQuiz() {
     showModalLoading('Generating ' + a.quizLen + ' questions about "' + ref + '"…');
     try {
       _quizData = await generateQuizQuestions(a.topic || a.name, fullRef, a.quizLen || 5);
+      addApiCost(0.003);
       renderQuizForm(fullRef);
     } catch(err) { showModalError('Failed to generate quiz: ' + err.message); }
   });
