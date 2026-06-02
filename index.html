@@ -3,10 +3,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="YourSpace">
+<link rel="manifest" href="/manifest.json">
 <title>YourSpace</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
@@ -2291,15 +2292,23 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     /* settings/dashboard inner — let the .screen handle scrolling */
     .settings-inner { overflow-y: visible; }
 
+    /* 1b ── STOP iOS INPUT ZOOM (font-size must be ≥16px) ── */
+    input, textarea, select { font-size: 16px !important; }
+
     /* 2 ── BOTTOM NAV ── */
     #mobile-bottom-nav {
       display: flex;
-      flex-shrink: 0;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       background: var(--bg);
       border-top: 1px solid var(--border);
       padding-bottom: env(safe-area-inset-bottom, 0px);
       z-index: 200;
     }
+    /* Pad the bottom of every active screen so content clears the fixed nav */
+    .screen.active { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
     .mob-nav-btn {
       flex: 1;
       background: none;
