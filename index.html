@@ -2270,6 +2270,163 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     body.cyberpunk-bedroom-theme .mobile-header { display: flex !important; }
   }
 
+  /* ── RPG TAVERN THEME ── */
+  body.rpg-tavern-theme {
+    background-image: url('theme-rpg.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+    overflow: hidden !important;
+    font-family: 'Cinzel', 'DM Serif Display', serif !important;
+  }
+  body.rpg-tavern-theme #app {
+    flex-direction: row !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+  }
+  body.rpg-tavern-theme #sidebar {
+    background: rgba(12, 8, 4, 0.88) !important;
+    border-right: 2px solid #5a3e1b !important;
+    backdrop-filter: blur(4px) !important;
+  }
+  body.rpg-tavern-theme #main {
+    background: transparent !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+  }
+  body.rpg-tavern-theme #main::-webkit-scrollbar { width: 7px; }
+  body.rpg-tavern-theme #main::-webkit-scrollbar-track { background: rgba(20, 10, 2, 0.3); }
+  body.rpg-tavern-theme #main::-webkit-scrollbar-thumb { background: #5a3e1b; border-radius: 999px; }
+  body.rpg-tavern-theme .screen.active { background: transparent !important; border: 0 !important; margin: 0 !important; outline: 0 !important; }
+  /* Sidebar internals */
+  body.rpg-tavern-theme .sidebar-header,
+  body.rpg-tavern-theme .sidebar-timer,
+  body.rpg-tavern-theme #sidebar > div[style*="padding:8px 12px"],
+  body.rpg-tavern-theme .sidebar-section,
+  body.rpg-tavern-theme .sidebar-channel-scroll,
+  body.rpg-tavern-theme .sidebar-bottom {
+    background: transparent !important;
+    border-color: #5a3e1b !important;
+  }
+  body.rpg-tavern-theme .wordmark {
+    font-family: 'Cinzel', serif !important;
+    color: #e8d5b0 !important;
+    text-shadow: 0 0 14px rgba(201, 168, 76, 0.5) !important;
+  }
+  body.rpg-tavern-theme .wordmark em { color: #c9a84c !important; font-style: normal !important; }
+  body.rpg-tavern-theme .header-sub { color: #8a7355 !important; font-family: 'DM Sans', sans-serif !important; }
+  body.rpg-tavern-theme .timer-label,
+  body.rpg-tavern-theme .section-label {
+    color: #8a7355 !important;
+    font-family: 'Cinzel', serif !important;
+    letter-spacing: 0.1em !important;
+  }
+  body.rpg-tavern-theme .timer-value,
+  body.rpg-tavern-theme #sidebar-quota { color: #c9a84c !important; }
+  body.rpg-tavern-theme .sidebar-ch-name {
+    color: #e8d5b0 !important;
+    font-family: 'Cinzel', serif !important;
+    font-size: 12px !important;
+  }
+  body.rpg-tavern-theme .sidebar-channel { border-color: transparent !important; }
+  body.rpg-tavern-theme .sidebar-channel:hover,
+  body.rpg-tavern-theme .sidebar-channel.active {
+    background: rgba(90, 62, 27, 0.45) !important;
+    border-left: 3px solid #c9a84c !important;
+  }
+  body.rpg-tavern-theme .sidebar-channel-scroll::-webkit-scrollbar { width: 5px; }
+  body.rpg-tavern-theme .sidebar-channel-scroll::-webkit-scrollbar-thumb { background: #5a3e1b; border-radius: 999px; }
+  /* Sidebar buttons */
+  body.rpg-tavern-theme .sidebar-bottom-btn,
+  body.rpg-tavern-theme .sidebar-widget-btn,
+  body.rpg-tavern-theme #sidebar-search-btn {
+    background: rgba(90, 62, 27, 0.8) !important;
+    border: 1px solid #c9a84c !important;
+    color: #e8d5b0 !important;
+    font-family: 'Cinzel', serif !important;
+    font-size: 11px !important;
+  }
+  body.rpg-tavern-theme .sidebar-bottom-btn:hover,
+  body.rpg-tavern-theme .sidebar-widget-btn:hover,
+  body.rpg-tavern-theme #sidebar-search-btn:hover {
+    background: rgba(120, 85, 35, 0.9) !important;
+    border-color: #e8d5b0 !important;
+    color: #fff !important;
+  }
+  /* Panels, cards, surfaces */
+  body.rpg-tavern-theme .settings-inner,
+  body.rpg-tavern-theme .dashboard-inner,
+  body.rpg-tavern-theme .video-tile,
+  body.rpg-tavern-theme .feed-channel-section,
+  body.rpg-tavern-theme .channel-card,
+  body.rpg-tavern-theme .result-card,
+  body.rpg-tavern-theme .char-left-panel,
+  body.rpg-tavern-theme .char-stat-row,
+  body.rpg-tavern-theme .char-modal-box,
+  body.rpg-tavern-theme .char-gate-inner,
+  body.rpg-tavern-theme .char-skill-box,
+  body.rpg-tavern-theme .goal-item,
+  body.rpg-tavern-theme #tour-tooltip {
+    background: rgba(20, 14, 8, 0.85) !important;
+    border-color: #5a3e1b !important;
+  }
+  /* General buttons */
+  body.rpg-tavern-theme .add-btn,
+  body.rpg-tavern-theme .search-btn,
+  body.rpg-tavern-theme .sort-pill,
+  body.rpg-tavern-theme .load-more-btn,
+  body.rpg-tavern-theme .sidebar-add-btn,
+  body.rpg-tavern-theme .empty-cta,
+  body.rpg-tavern-theme .done-back-btn,
+  body.rpg-tavern-theme .settings-action-btn,
+  body.rpg-tavern-theme .back-btn {
+    background: rgba(90, 62, 27, 0.8) !important;
+    border: 1px solid #c9a84c !important;
+    color: #e8d5b0 !important;
+    border-radius: 6px !important;
+    font-family: 'Cinzel', serif !important;
+  }
+  body.rpg-tavern-theme .add-btn:hover,
+  body.rpg-tavern-theme .search-btn:hover,
+  body.rpg-tavern-theme .load-more-btn:hover,
+  body.rpg-tavern-theme .sidebar-add-btn:hover,
+  body.rpg-tavern-theme .done-back-btn:hover,
+  body.rpg-tavern-theme .settings-action-btn:hover {
+    background: rgba(120, 85, 35, 0.9) !important;
+    color: #fff !important;
+  }
+  body.rpg-tavern-theme .sort-pill.active {
+    background: #5a3e1b !important;
+    color: #e8d5b0 !important;
+    border-color: #c9a84c !important;
+  }
+  /* Inputs */
+  body.rpg-tavern-theme .search-input,
+  body.rpg-tavern-theme .api-input,
+  body.rpg-tavern-theme input[type="text"],
+  body.rpg-tavern-theme textarea {
+    background: rgba(20, 14, 8, 0.75) !important;
+    border: 1px solid #5a3e1b !important;
+    color: #e8d5b0 !important;
+  }
+  body.rpg-tavern-theme .search-input:focus,
+  body.rpg-tavern-theme .api-input:focus,
+  body.rpg-tavern-theme input[type="text"]:focus,
+  body.rpg-tavern-theme textarea:focus { border-color: #c9a84c !important; }
+  /* Feed channel headers use Cinzel */
+  body.rpg-tavern-theme .feed-ch-title,
+  body.rpg-tavern-theme .channels-header .section-label {
+    font-family: 'Cinzel', serif !important;
+    color: #e8d5b0 !important;
+  }
+  /* Mobile: hide RPG Tavern — desktop only theme */
+  @media (max-width: 767px) {
+    body.rpg-tavern-theme { overflow: auto !important; background-attachment: scroll !important; }
+    body.rpg-tavern-theme #app { flex-direction: column !important; height: auto !important; }
+    body.rpg-tavern-theme #sidebar { display: none !important; }
+    body.rpg-tavern-theme .mobile-header { display: flex !important; }
+  }
+
   /* ═══════════════════════════════════════════════════════
      CHARACTER SCREEN
   ═══════════════════════════════════════════════════════ */
@@ -2957,11 +3114,12 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     .mob-video-meta { font-size: 11px; color: var(--muted); }
 
     /* 4 ── HIDE GAMECUBE + XBOX IN THEME PICKER ── */
-    /* PRESETS indices: 9 = Xbox 360, 10 = GameCube, 12 = Lofi Cafe, 13 = Cyberpunk Bedroom */
+    /* PRESETS indices: 9 = Xbox 360, 10 = GameCube, 12 = Lofi Cafe, 13 = Cyberpunk Bedroom, 14 = RPG Tavern */
     #theme-grid .theme-swatch[data-preset="9"],
     #theme-grid .theme-swatch[data-preset="10"],
     #theme-grid .theme-swatch[data-preset="12"],
-    #theme-grid .theme-swatch[data-preset="13"] { display: none !important; }
+    #theme-grid .theme-swatch[data-preset="13"],
+    #theme-grid .theme-swatch[data-preset="14"] { display: none !important; }
 
     /* 5 ── BACKGROUND IMAGE / OVERLAY THEMES ── */
     body.has-bg-image { background-size: cover !important; background-position: center !important; }
@@ -4453,6 +4611,15 @@ const PRESETS = [
     bgPattern: 'radial-gradient(circle at 62% 28%, #10143a 0%, #050815 55%, #02030a 100%)',
     bgPatternSize: '100% 100%'
   },
+  {
+    name: 'RPG Tavern',
+    bg: '#0e0a06', surface: 'rgba(20,14,8,0.82)', surface2: 'rgba(30,20,10,0.75)',
+    border: '#5a3e1b', text: '#e8d5b0', muted: '#8a7355',
+    accent: '#4ab8c4', accent2: '#c9a84c',
+    font: 'Cinzel',
+    bgPattern: "url('theme-rpg.jpg')",
+    bgPatternSize: 'cover'
+  },
 ];
 
 const ACCENTS = [
@@ -4507,6 +4674,14 @@ function applyTheme(t) {
 
   document.body.classList.toggle('lofi-cafe-theme', t.presetName === 'Lofi Cafe');
   document.body.classList.toggle('cyberpunk-bedroom-theme', t.presetName === 'Cyberpunk Bedroom');
+  document.body.classList.toggle('rpg-tavern-theme', t.presetName === 'RPG Tavern');
+  // Load Cinzel only when RPG Tavern is active (avoid unnecessary font download)
+  if (t.presetName === 'RPG Tavern' && !document.getElementById('cinzel-font-link')) {
+    const _cl = document.createElement('link');
+    _cl.id = 'cinzel-font-link'; _cl.rel = 'stylesheet';
+    _cl.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap';
+    document.head.appendChild(_cl);
+  }
   if (!_wasW && document.body.classList.contains('win95-theme')) setTimeout(()=>playWin95Sound('startup'),300);
   if (!_wasXbox && document.body.classList.contains('xbox-theme')) setTimeout(()=>playXboxSound('startup'),300);
   document.body.classList.toggle('xbox-theme', t.presetName === 'Xbox 360');
@@ -4516,6 +4691,7 @@ function applyTheme(t) {
                 : t.font === 'Inter' ? "'Inter', sans-serif"
                 : t.font === 'Orbitron' ? "'Orbitron', sans-serif"
                 : t.font === 'VT323' ? "'VT323', monospace"
+                : t.font === 'Cinzel' ? "'Cinzel', 'DM Serif Display', serif"
                 : "'DM Sans', sans-serif";
     root.style.setProperty('--font-body', stack);
     document.body.style.fontFamily = stack;
