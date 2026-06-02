@@ -2706,20 +2706,30 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     transform: translateY(-2px);
     border-color: rgba(255,255,255,0.08);
   }
-  .char-stat-top {
-    display: flex; align-items: center; gap: 11px; margin-bottom: 8px;
+  /* Stat row: single horizontal flex — [icon+name] | [400px bar] | [LVL] */
+  .char-stat-row { display: flex; align-items: center; gap: 14px; }
+  .char-stat-left {
+    display: flex; align-items: center; gap: 9px;
+    min-width: 150px; flex-shrink: 0;
   }
   .char-stat-icon { font-size: 22px; flex-shrink: 0; line-height: 1; }
   .char-stat-name {
     font-family: 'Fredoka One', cursive; font-size: 17px;
-    font-weight: 400; flex: 1; letter-spacing: 0.3px;
+    font-weight: 400; letter-spacing: 0.3px; white-space: nowrap;
+  }
+  .char-stat-bar-wrap {
+    width: 400px; max-width: 400px; flex-shrink: 0;
+  }
+  .char-stat-xp-label { font-size: 10px; color: #4a4a4a; margin-top: 3px; text-align: right; }
+  .char-stat-right {
+    display: flex; flex-direction: column; align-items: flex-end;
+    flex-shrink: 0; gap: 2px;
   }
   .char-stat-level {
     font-family: 'Fredoka One', cursive; font-size: 22px;
     font-weight: 400; line-height: 1; flex-shrink: 0;
   }
   .char-stat-prestige { font-size: 11px; color: #c9a84c; flex-shrink: 0; letter-spacing: 0.02em; }
-  .char-stat-xp-label { font-size: 10px; color: #4a4a4a; margin-top: 4px; text-align: right; }
   .char-prestige-btn {
     background: none; border: 1.5px solid #c9a84c; border-radius: 8px;
     color: #c9a84c; font-family: 'Fredoka One', cursive; font-size: 12px;
@@ -2955,6 +2965,10 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     .char-xp-bar-outer { height: 36px; }
     .char-xp-bg { inset: 6px 3px; }
     .char-xp-fill { top: 6px; bottom: 6px; left: 3px; max-width: calc(100% - 6px); }
+    .char-stat-row { flex-wrap: wrap; gap: 8px; }
+    .char-stat-left { min-width: 120px; }
+    .char-stat-bar-wrap { width: 100%; max-width: 100%; flex-shrink: 1; order: 3; }
+    .char-stat-right { order: 2; margin-left: auto; }
   }
 
   /* ═══════════════════════════════════════════════════════
@@ -6666,19 +6680,23 @@ function renderCharSheet() {
     row.dataset.statKey = s.key;
     row.style.setProperty('--stat-color', s.color);
     row.innerHTML = `
-      <div class="char-stat-top">
+      <div class="char-stat-left">
         <span class="char-stat-icon">${s.icon}</span>
         <span class="char-stat-name" style="color:${s.color}">${s.name}</span>
+      </div>
+      <div class="char-stat-bar-wrap">
+        <div class="char-xp-bar-outer">
+          <div class="char-xp-bg"></div>
+          <div class="char-xp-fill" style="width:${pct}%"></div>
+          <div class="char-xp-frame"></div>
+        </div>
+        <div class="char-stat-xp-label">${isMax ? 'MAX LEVEL' : e.xp + ' / ' + needed + ' XP'}${e.multiplier > 1 ? ' · ' + e.multiplier.toFixed(2) + '× XP' : ''}</div>
+      </div>
+      <div class="char-stat-right">
         <span class="char-stat-level" style="color:${s.color}">LVL ${e.level}</span>
         ${e.prestige > 0 ? `<span class="char-stat-prestige">⭐×${e.prestige}</span>` : ''}
         ${isMax ? `<button class="char-prestige-btn" data-stat="${s.key}">✨ Prestige</button>` : ''}
-      </div>
-      <div class="char-xp-bar-outer">
-        <div class="char-xp-bg"></div>
-        <div class="char-xp-fill" style="width:${pct}%"></div>
-        <div class="char-xp-frame"></div>
-      </div>
-      <div class="char-stat-xp-label">${isMax ? 'MAX LEVEL' : e.xp + ' / ' + needed + ' XP'}${e.multiplier > 1 ? ' · ' + e.multiplier.toFixed(2) + '× XP' : ''}</div>`;
+      </div>`;
 
     row.addEventListener('click', evt => {
       if (evt.target.classList.contains('char-prestige-btn')) return;
