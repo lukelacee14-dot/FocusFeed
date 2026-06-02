@@ -2467,9 +2467,10 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   #char-canvas {
     position: fixed;
     top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
     width: 960px; height: 560px;
     transform-origin: center center;
-    /* JS applies: translate(-50%, -50%) scale(X) */
+    /* JS overrides transform to: translate(-50%, -50%) scale(X) */
     background: rgba(10, 8, 5, 0.92);
     border-radius: 16px;
     border: 2px solid #5a3e1b;
