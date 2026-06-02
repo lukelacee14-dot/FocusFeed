@@ -56,7 +56,7 @@
     border-bottom: 1px solid var(--border);
     flex-direction: column; gap: 4px;
   }
-  .wordmark { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); letter-spacing: -0.5px; }
+  .wordmark { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); letter-spacing: -0.5px; cursor: pointer; }
   .wordmark em { font-style: italic; color: var(--accent); }
   .header-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
 
@@ -108,13 +108,17 @@
     display: flex; flex-direction: column; gap: 4px;
   }
   .sidebar-bottom-btn {
-    width: 100%; padding: 7px 12px;
-    background: none; border: 1px dashed var(--border);
-    border-radius: 8px; color: var(--muted);
-    font-family: 'DM Sans', sans-serif; font-size: 11px;
-    cursor: pointer; text-align: center; transition: border-color 0.2s, color 0.2s;
+    width: 100%; padding: 8px 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 400;
+    cursor: pointer; text-align: center;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
   }
-  .sidebar-bottom-btn:hover { border-color: var(--accent2); color: var(--accent); }
+  .sidebar-bottom-btn:hover {
+    background: var(--surface); border-color: var(--accent2); color: var(--accent);
+  }
   .sidebar-widget-btn {
     width: 100%; padding: 6px 12px;
     background: none; border: 1px solid var(--border);
@@ -2311,20 +2315,30 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     .screen.active { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
     .mob-nav-btn {
       flex: 1;
-      background: none;
+      background: var(--surface);
       border: none;
+      border-radius: 8px;
       color: var(--muted);
       font-family: 'DM Sans', sans-serif;
       font-size: 12px;
       font-weight: 400;
       letter-spacing: 0.02em;
-      padding: 14px 6px;
+      padding: 10px 6px;
+      margin: 6px 4px;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      transition: color 0.15s;
+      transition: color 0.15s, background 0.15s, transform 0.1s;
       touch-action: manipulation;
     }
-    .mob-nav-btn.active { color: var(--accent); }
+    .mob-nav-btn.active {
+      color: var(--accent);
+      background: var(--surface2);
+    }
+    .mob-nav-btn:active {
+      transform: scale(0.93);
+      background: var(--surface2);
+      color: var(--accent);
+    }
     /* Header icon buttons replaced by bottom nav */
     #mobile-dashboard-btn, #mobile-settings-btn { display: none !important; }
 
@@ -2607,77 +2621,17 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
             </div>
           </div>
 
-          <!-- Accent colour accordion -->
-          <div class="customise-accordion">
-            <button class="customise-accordion-header" data-accordion="accent">
-              <span class="customise-accordion-label">
-                <span class="customise-accordion-icon">●</span>
-                <span>
-                  <span class="customise-accordion-title">Accent colour</span>
-                  <span class="customise-accordion-sub">Choose a highlight colour</span>
-                </span>
-              </span>
-              <span class="customise-accordion-arrow">›</span>
-            </button>
-            <div class="customise-accordion-body" id="accordion-accent">
-              <div class="accent-row" id="accent-row"></div>
-            </div>
-          </div>
-
-          <!-- Font accordion -->
-          <div class="customise-accordion">
-            <button class="customise-accordion-header" data-accordion="font">
-              <span class="customise-accordion-label">
-                <span class="customise-accordion-icon">T</span>
-                <span>
-                  <span class="customise-accordion-title">Font</span>
-                  <span class="customise-accordion-sub" id="active-font-label">Clean sans-serif</span>
-                </span>
-              </span>
-              <span class="customise-accordion-arrow">›</span>
-            </button>
-            <div class="customise-accordion-body" id="accordion-font">
-              <div class="font-options" id="font-options"></div>
-            </div>
-          </div>
-
-          <!-- Colour accordion -->
-          <div class="customise-accordion">
-            <button class="customise-accordion-header" data-accordion="colour">
-              <span class="customise-accordion-label">
-                <span class="customise-accordion-icon">◑</span>
-                <span>
-                  <span class="customise-accordion-title">Custom colours</span>
-                  <span class="customise-accordion-sub">Background, text &amp; image</span>
-                </span>
-              </span>
-              <span class="customise-accordion-arrow">›</span>
-            </button>
-            <div class="customise-accordion-body" id="accordion-colour">
-              <div class="colour-pickers-row">
-                <div class="colour-picker-item">
-                  <div class="colour-picker-label">Background</div>
-                  <input type="color" id="bg-colour-picker" class="colour-picker-btn">
-                </div>
-                <div class="colour-picker-item">
-                  <div class="colour-picker-label">Text colour</div>
-                  <input type="color" id="text-colour-picker" class="colour-picker-btn">
-                </div>
-              </div>
-              <div class="settings-row" style="margin-top:14px">
-                <div><div class="settings-label">Background image</div><div class="settings-sub">Stored locally on your device</div></div>
-                <button class="settings-action-btn" id="bg-upload-btn">Upload</button>
-                <input type="file" id="bg-file-input" accept="image/*" style="display:none">
-              </div>
-              <div class="settings-row" id="bg-clear-row" style="display:none">
-                <div><div class="settings-label">Background image set</div></div>
-                <button class="settings-action-btn settings-danger-btn" id="bg-clear-btn">Remove</button>
-              </div>
-              <div class="settings-row" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)">
-                <div><div class="settings-label">Reset to defaults</div><div class="settings-sub">Restores the original theme</div></div>
-                <button class="settings-action-btn settings-danger-btn" id="reset-theme-btn">Reset</button>
-              </div>
-            </div>
+          <!-- Hidden elements kept for JS compatibility — not visible to the user -->
+          <div style="display:none">
+            <div class="accent-row" id="accent-row"></div>
+            <div class="font-options" id="font-options"></div>
+            <span id="active-font-label"></span>
+            <input type="color" id="bg-colour-picker">
+            <input type="color" id="text-colour-picker">
+            <button id="bg-upload-btn"></button>
+            <input type="file" id="bg-file-input" accept="image/*">
+            <div id="bg-clear-row"><button id="bg-clear-btn"></button></div>
+            <button id="reset-theme-btn"></button>
           </div>
 
         </div>
@@ -3639,8 +3593,8 @@ async function searchChannelsInline(q) {
 
 function renderChannelSearchResults(container) {
   container.innerHTML = `
-    <div style="padding:12px 20px 8px;font-size:12px;color:var(--muted)">
-      Click the <strong style="color:var(--text)">YourSpace</strong> logo top-left to return to your feed anytime.
+    <div style="padding:12px 20px 8px">
+      <button class="back-btn" id="channel-search-back-btn">← Back</button>
     </div>
     <div id="channel-search-results-list" class="search-results" style="padding:0 20px 24px">
       ${searchResults.map((ch, i) => {
@@ -3658,6 +3612,8 @@ function renderChannelSearchResults(container) {
   container.querySelectorAll('.inline-ch-add-btn:not([disabled])').forEach(btn => {
     btn.addEventListener('click', e => { e.stopPropagation(); addChannelFromSearch(parseInt(btn.dataset.index), btn); });
   });
+  const backBtn = document.getElementById('channel-search-back-btn');
+  if (backBtn) backBtn.addEventListener('click', showHome);
 }
 
 async function addChannelFromSearch(i, btnEl) {
