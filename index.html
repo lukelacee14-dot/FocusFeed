@@ -8064,7 +8064,12 @@ function checkAllUnlocks() {
    [3,'prestige-icon-3','Prestige III','Prestige 3'],[4,'callsign-the-eternal-p','The Eternal (P)','Prestige 4'],
    [4,'icon-void-crown','Void Crown','Prestige 4'],[4,'prestige-icon-4','Prestige IV','Prestige 4'],
    [5,'callsign-the-ancient-one','The Ancient One','Prestige 5'],[5,'icon-dragon-sovereign','Dragon Sovereign','Prestige 5'],
-   [5,'prestige-icon-5','Prestige V','Prestige 5']
+   [5,'prestige-icon-5','Prestige V','Prestige 5'],
+   [6,'prestige-icon-6','Prestige VI','Prestige 6'],
+   [7,'prestige-icon-7','Prestige VII','Prestige 7'],
+   [8,'prestige-icon-8','Prestige VIII','Prestige 8'],
+   [9,'prestige-icon-9','Prestige IX','Prestige 9'],
+   [10,'prestige-icon-10','Prestige X','Prestige 10']
   ].forEach(([p,id,name,desc]) => { if(totP>=p) tryU(id,name,desc); });
 
   // Strength
@@ -8202,7 +8207,7 @@ const UNLOCK_KEYS = {
 const UNLOCK_DEFAULTS = {
   callsign:     'callsign-wanderer.png',
   emblem:       'icon-default.png',
-  prestige_icon:'prestige-star.png',
+  prestige_icon:'prestige-icon-1.png',
 };
 
 // Unlock condition descriptions keyed by unlockKey — shown as tooltip on locked catalog items
@@ -8230,6 +8235,8 @@ const UNLOCK_DESCRIPTIONS = {
   'callsign-the-ascended-p':'Prestige 3','icon-celestial-gate':'Prestige 3','prestige-icon-3':'Prestige 3',
   'callsign-the-eternal-p':'Prestige 4','icon-void-crown':'Prestige 4','prestige-icon-4':'Prestige 4',
   'callsign-the-ancient-one':'Prestige 5','icon-dragon-sovereign':'Prestige 5','prestige-icon-5':'Prestige 5',
+  'prestige-icon-6':'Prestige 6','prestige-icon-7':'Prestige 7','prestige-icon-8':'Prestige 8',
+  'prestige-icon-9':'Prestige 9','prestige-icon-10':'Prestige 10',
   // Strength
   'callsign-the-regular':'10 gym sessions','callsign-the-dedicated':'50 gym sessions','icon-the-dedicated':'50 gym sessions',
   'callsign-the-ironclad':'100 gym sessions','icon-the-ironclad':'100 gym sessions',
@@ -8448,6 +8455,7 @@ const UNLOCK_CATALOG = (function() {
     {file:'callsign-the-eternal-p.png',     name:'The Eternal (P)',        unlockKey:'callsign-the-eternal-p'},
     {file:'callsign-the-ancient-one.png',   name:'The Ancient One',       unlockKey:'callsign-the-ancient-one'},
   ];
+  // Emblems — only items with committed image files are listed here
   const icons = [
     {file:'icon-default.png',              name:'Starting Crest',          unlockKey:'icon-starting-crest'},
     {file:'icon-forest-seal.png',          name:'Forest Seal',             unlockKey:'icon-forest-seal'},
@@ -8471,116 +8479,18 @@ const UNLOCK_CATALOG = (function() {
     {file:'icon-the-void-gate.png',        name:'The Void Gate',           unlockKey:'icon-the-void-gate'},
     {file:'icon-the-celestial-serpent.png',name:'The Celestial Serpent',   unlockKey:'icon-the-celestial-serpent'},
     {file:'icon-the-immortal-mark.png',    name:'The Immortal Mark',       unlockKey:'icon-the-immortal-mark'},
-    {file:'icon-the-dedicated.png',        name:'The Dedicated',           unlockKey:'icon-the-dedicated'},
-    {file:'icon-the-ironclad.png',         name:'The Ironclad',            unlockKey:'icon-the-ironclad'},
-    {file:'icon-the-eternal-grind.png',    name:'The Eternal Grind',       unlockKey:'icon-the-eternal-grind'},
-    {file:'icon-the-endurance.png',        name:'The Endurance',           unlockKey:'icon-the-endurance'},
-    {file:'icon-the-distance.png',         name:'The Distance',            unlockKey:'icon-the-distance'},
-    {file:'icon-the-homegrown.png',        name:'The Homegrown',           unlockKey:'icon-the-homegrown'},
-    {file:'icon-the-self-made.png',        name:'The Self-Made',           unlockKey:'icon-the-self-made'},
-    {file:'icon-the-competitor.png',       name:'The Competitor',          unlockKey:'icon-the-competitor'},
-    {file:'icon-the-sportsman.png',        name:'The Sportsman',           unlockKey:'icon-the-sportsman'},
-    {file:'icon-the-improving.png',        name:'The Improving',           unlockKey:'icon-the-improving'},
-    {file:'icon-the-unbeaten.png',         name:'The Unbeaten',            unlockKey:'icon-the-unbeaten'},
-    {file:'icon-the-scholar.png',          name:'The Scholar',             unlockKey:'icon-the-scholar'},
-    {file:'icon-the-practitioner.png',     name:'The Practitioner',        unlockKey:'icon-the-practitioner'},
-    {file:'icon-the-teacher.png',          name:'The Teacher',             unlockKey:'icon-the-teacher'},
-    {file:'icon-the-graduate.png',         name:'The Graduate',            unlockKey:'icon-the-graduate'},
-    {file:'icon-the-polyglot.png',         name:'The Polyglot',            unlockKey:'icon-the-polyglot'},
-    {file:'icon-the-liberated.png',        name:'The Liberated',           unlockKey:'icon-the-liberated'},
-    {file:'icon-the-free.png',             name:'The Free',                unlockKey:'icon-the-free'},
-    {file:'icon-the-sovereign.png',        name:'The Sovereign',           unlockKey:'icon-the-sovereign'},
-    {file:'icon-the-relentless.png',       name:'The Relentless',          unlockKey:'icon-the-relentless'},
-    {file:'icon-the-unstoppable.png',      name:'The Unstoppable',         unlockKey:'icon-the-unstoppable'},
-    {file:'icon-the-willful.png',          name:'The Willful',             unlockKey:'icon-the-willful'},
-    {file:'icon-the-disciplined.png',      name:'The Disciplined',         unlockKey:'icon-the-disciplined'},
-    {file:'icon-the-transformed.png',      name:'The Transformed',         unlockKey:'icon-the-transformed'},
-    {file:'icon-the-reclaimed.png',        name:'The Reclaimed',           unlockKey:'icon-the-reclaimed'},
-    {file:'icon-the-sober.png',            name:'The Sober',               unlockKey:'icon-the-sober'},
-    {file:'icon-the-lucid.png',            name:'The Lucid',               unlockKey:'icon-the-lucid'},
-    {file:'icon-the-clean.png',            name:'The Clean',               unlockKey:'icon-the-clean'},
-    {file:'icon-the-rested.png',           name:'The Rested',              unlockKey:'icon-the-rested'},
-    {file:'icon-the-restored.png',         name:'The Restored',            unlockKey:'icon-the-restored'},
-    {file:'icon-the-focused-mind.png',     name:'The Focused Mind',        unlockKey:'icon-the-focused-mind'},
-    {file:'icon-the-flow-state.png',       name:'The Flow State',          unlockKey:'icon-the-flow-state'},
-    {file:'icon-the-craftsman.png',        name:'The Craftsman',           unlockKey:'icon-the-craftsman'},
-    {file:'icon-the-present.png',          name:'The Present',             unlockKey:'icon-the-present'},
-    {file:'icon-the-sage.png',             name:'The Sage',                unlockKey:'icon-the-sage'},
-    {file:'icon-the-centred.png',          name:'The Centred',             unlockKey:'icon-the-centred'},
-    {file:'icon-the-carer.png',            name:'The Carer',               unlockKey:'icon-the-carer'},
-    {file:'icon-the-kin.png',              name:'The Kin',                 unlockKey:'icon-the-kin'},
-    {file:'icon-the-weaver.png',           name:'The Weaver',              unlockKey:'icon-the-weaver'},
-    {file:'icon-the-magnetic.png',         name:'The Magnetic',            unlockKey:'icon-the-magnetic'},
-    {file:'icon-the-social-architect.png', name:'The Social Architect',    unlockKey:'icon-the-social-architect'},
-    {file:'icon-the-human.png',            name:'The Human',               unlockKey:'icon-the-human'},
-    {file:'icon-the-present-friend.png',   name:'The Present Friend',      unlockKey:'icon-the-present-friend'},
-    {file:'icon-the-courageous.png',       name:'The Courageous',          unlockKey:'icon-the-courageous'},
-    {file:'icon-the-humble.png',           name:'The Humble',              unlockKey:'icon-the-humble'},
-    {file:'icon-the-sovereign-self.png',   name:'The Sovereign Self',      unlockKey:'icon-the-sovereign-self'},
-    {file:'icon-the-defender.png',         name:'The Defender',            unlockKey:'icon-the-defender'},
-    {file:'icon-the-generous.png',         name:'The Generous',            unlockKey:'icon-the-generous'},
-    {file:'icon-the-humble-strength.png',  name:'The Humble Strength',     unlockKey:'icon-the-humble-strength'},
-    {file:'icon-the-host.png',             name:'The Host',                unlockKey:'icon-the-host'},
-    {file:'icon-the-gatherer.png',         name:'The Gatherer',            unlockKey:'icon-the-gatherer'},
-    {file:'icon-the-anchor.png',           name:'The Anchor',              unlockKey:'icon-the-anchor'},
-    {file:'icon-the-intimate.png',         name:'The Intimate',            unlockKey:'icon-the-intimate'},
-    {file:'icon-the-romantic.png',         name:'The Romantic',            unlockKey:'icon-the-romantic'},
-    {file:'icon-the-loving.png',           name:'The Loving',              unlockKey:'icon-the-loving'},
-    {file:'icon-the-maker.png',            name:'The Maker',               unlockKey:'icon-the-maker'},
-    {file:'icon-the-dedicated-creator.png',name:'The Dedicated Creator',   unlockKey:'icon-the-dedicated-creator'},
-    {file:'icon-the-artisan.png',          name:'The Artisan',             unlockKey:'icon-the-artisan'},
-    {file:'icon-the-cook.png',             name:'The Cook',                unlockKey:'icon-the-cook'},
-    {file:'icon-the-chef.png',             name:'The Chef',                unlockKey:'icon-the-chef'},
-    {file:'icon-the-musician.png',         name:'The Musician',            unlockKey:'icon-the-musician'},
-    {file:'icon-the-virtuoso.png',         name:'The Virtuoso',            unlockKey:'icon-the-virtuoso'},
-    {file:'icon-the-performer.png',        name:'The Performer',           unlockKey:'icon-the-performer'},
-    {file:'icon-the-stage.png',            name:'The Stage',               unlockKey:'icon-the-stage'},
-    {file:'icon-the-speaker.png',          name:'The Speaker',             unlockKey:'icon-the-speaker'},
-    {file:'icon-the-orator.png',           name:'The Orator',              unlockKey:'icon-the-orator'},
-    {file:'icon-the-writer.png',           name:'The Writer',              unlockKey:'icon-the-writer'},
-    {file:'icon-the-storyteller.png',      name:'The Storyteller',         unlockKey:'icon-the-storyteller'},
-    {file:'icon-the-student.png',          name:'The Student',             unlockKey:'icon-the-student'},
-    {file:'icon-the-public-voice.png',     name:'The Public Voice',        unlockKey:'icon-the-public-voice'},
-    {file:'icon-the-contender.png',        name:'The Contender',           unlockKey:'icon-the-contender'},
-    {file:'icon-the-collaborator.png',     name:'The Collaborator',        unlockKey:'icon-the-collaborator'},
-    {file:'icon-ember-rising.png',         name:'Ember Rising',            unlockKey:'icon-ember-rising'},
-    {file:'icon-twin-flames.png',          name:'Twin Flames',             unlockKey:'icon-twin-flames'},
-    {file:'icon-celestial-gate.png',       name:'Celestial Gate',          unlockKey:'icon-celestial-gate'},
-    {file:'icon-void-crown.png',           name:'Void Crown',              unlockKey:'icon-void-crown'},
-    {file:'icon-dragon-sovereign.png',     name:'Dragon Sovereign',        unlockKey:'icon-dragon-sovereign'},
-    // Stat tier icons (placeholder — images not yet created)
-    {file:'icon-default.png', name:'Strength Tier 1',   unlockKey:'stat-icon-strength-1'},
-    {file:'icon-default.png', name:'Strength Tier 2',   unlockKey:'stat-icon-strength-2'},
-    {file:'icon-default.png', name:'Strength Tier 3',   unlockKey:'stat-icon-strength-3'},
-    {file:'icon-default.png', name:'Strength Tier 4',   unlockKey:'stat-icon-strength-4'},
-    {file:'icon-default.png', name:'Strength Tier 5',   unlockKey:'stat-icon-strength-5'},
-    {file:'icon-default.png', name:'Wisdom Tier 1',     unlockKey:'stat-icon-wisdom-1'},
-    {file:'icon-default.png', name:'Wisdom Tier 2',     unlockKey:'stat-icon-wisdom-2'},
-    {file:'icon-default.png', name:'Wisdom Tier 3',     unlockKey:'stat-icon-wisdom-3'},
-    {file:'icon-default.png', name:'Wisdom Tier 4',     unlockKey:'stat-icon-wisdom-4'},
-    {file:'icon-default.png', name:'Wisdom Tier 5',     unlockKey:'stat-icon-wisdom-5'},
-    {file:'icon-default.png', name:'Discipline Tier 1', unlockKey:'stat-icon-discipline-1'},
-    {file:'icon-default.png', name:'Discipline Tier 2', unlockKey:'stat-icon-discipline-2'},
-    {file:'icon-default.png', name:'Discipline Tier 3', unlockKey:'stat-icon-discipline-3'},
-    {file:'icon-default.png', name:'Discipline Tier 4', unlockKey:'stat-icon-discipline-4'},
-    {file:'icon-default.png', name:'Discipline Tier 5', unlockKey:'stat-icon-discipline-5'},
-    {file:'icon-default.png', name:'Charisma Tier 1',   unlockKey:'stat-icon-charisma-1'},
-    {file:'icon-default.png', name:'Charisma Tier 2',   unlockKey:'stat-icon-charisma-2'},
-    {file:'icon-default.png', name:'Charisma Tier 3',   unlockKey:'stat-icon-charisma-3'},
-    {file:'icon-default.png', name:'Charisma Tier 4',   unlockKey:'stat-icon-charisma-4'},
-    {file:'icon-default.png', name:'Charisma Tier 5',   unlockKey:'stat-icon-charisma-5'},
-    {file:'icon-default.png', name:'Creativity Tier 1', unlockKey:'stat-icon-creativity-1'},
-    {file:'icon-default.png', name:'Creativity Tier 2', unlockKey:'stat-icon-creativity-2'},
-    {file:'icon-default.png', name:'Creativity Tier 3', unlockKey:'stat-icon-creativity-3'},
-    {file:'icon-default.png', name:'Creativity Tier 4', unlockKey:'stat-icon-creativity-4'},
-    {file:'icon-default.png', name:'Creativity Tier 5', unlockKey:'stat-icon-creativity-5'},
   ];
   const prestige = [
-    {file:'prestige-star.png',   name:'Prestige Star',   unlockKey:'prestige-icon-1'},
-    {file:'prestige-icon-2.png', name:'Prestige II',     unlockKey:'prestige-icon-2'},
-    {file:'prestige-icon-3.png', name:'Prestige III',    unlockKey:'prestige-icon-3'},
-    {file:'prestige-icon-4.png', name:'Prestige IV',     unlockKey:'prestige-icon-4'},
-    {file:'prestige-icon-5.png', name:'Prestige V',      unlockKey:'prestige-icon-5'},
+    {file:'prestige-icon-1.png',  name:'Prestige I',      unlockKey:'prestige-icon-1'},
+    {file:'prestige-icon-2.png',  name:'Prestige II',     unlockKey:'prestige-icon-2'},
+    {file:'prestige-icon-3.png',  name:'Prestige III',    unlockKey:'prestige-icon-3'},
+    {file:'prestige-icon-4.png',  name:'Prestige IV',     unlockKey:'prestige-icon-4'},
+    {file:'prestige-icon-5.png',  name:'Prestige V',      unlockKey:'prestige-icon-5'},
+    {file:'prestige-icon-6.png',  name:'Prestige VI',     unlockKey:'prestige-icon-6'},
+    {file:'prestige-icon-7.png',  name:'Prestige VII',    unlockKey:'prestige-icon-7'},
+    {file:'prestige-icon-8.png',  name:'Prestige VIII',   unlockKey:'prestige-icon-8'},
+    {file:'prestige-icon-9.png',  name:'Prestige IX',     unlockKey:'prestige-icon-9'},
+    {file:'prestige-icon-10.png', name:'Prestige X',      unlockKey:'prestige-icon-10'},
   ];
   return { callsigns: cs, emblems: icons, prestige };
 })();
@@ -8668,14 +8578,13 @@ function renderUnlocksGrid(tab) {
   grid.innerHTML = items.map(item => {
     const unlocked  = isItemUnlocked(item);
     const isEquipped = equipped === item.file;
-    const lockText  = item.unlockPrestige
-      ? 'Unlocks after<br>first Prestige'
-      : `Unlocks at<br>Lvl ${item.unlockLv}`;
-    const tooltipText = !unlocked
-      ? (item.unlockKey
-          ? (UNLOCK_DESCRIPTIONS[item.unlockKey] || item.name)
-          : item.unlockPrestige ? 'Requires first Prestige' : `Level ${item.unlockLv || '?'}`)
-      : '';
+    const condText = item.unlockPrestige
+      ? 'Unlocks after first Prestige'
+      : item.unlockKey && UNLOCK_DESCRIPTIONS[item.unlockKey]
+        ? UNLOCK_DESCRIPTIONS[item.unlockKey]
+        : item.unlockLv ? `Unlocks at Level ${item.unlockLv}` : 'Log activities to unlock';
+    const lockText  = condText.replace(/\n/g, '<br>');
+    const tooltipText = !unlocked ? condText : '';
     return `<div class="cv-unlock-card${isEquipped ? ' equipped' : ''}${!unlocked ? ' locked' : ''}"
                  data-file="${item.file}" data-cat="${cat}"${tooltipText ? ` data-tooltip="${tooltipText}"` : ''}>
       ${isEquipped ? '<span class="cv-unlock-tick">✓</span>' : ''}
