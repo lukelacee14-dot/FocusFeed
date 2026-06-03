@@ -2470,14 +2470,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   }
 
   /* ── Canvas frame wrapper ── */
-  #char-canvas-frame-wrapper {
-    border: 20px solid #5a3e1b;
-    border-radius: 16px;
-    display: inline-flex;
-    flex-shrink: 0;
-    pointer-events: auto;
-  }
-
   /* ── Canvas ── */
   #char-canvas {
     width: 960px; height: 560px;
@@ -2490,9 +2482,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     position: relative;
     box-shadow: 0 24px 80px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.04);
     pointer-events: auto;
-    /* Dashed gold outline — canvas frame placeholder, doesn't affect layout */
-    outline: 20px dashed rgba(201,168,76,0.45);
-    outline-offset: 6px;
   }
 
   /* ── Left panel — 240px ── */
@@ -3650,17 +3639,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;
   }
 
-  /* ── Canvas frame overlay ── */
-  #cv-canvas-frame-img {
-    position: absolute; width: 1040px; height: 640px;
-    top: -40px; left: -40px;
-    pointer-events: none; z-index: 0;
-    background-image: url('frame-forest-default.png');
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    display: none;
-  }
-
   /* ── Placeholder buttons (Rules etc.) ── */
   .cv-ph-btn {
     width: 100%; height: 40px; border-radius: 10px;
@@ -4379,12 +4357,8 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   <!-- Back button — top-left of viewport -->
   <button class="back-btn" id="char-back-btn">← Back</button>
 
-  <!-- Canvas 960×560 wrapped in frame border -->
-  <div id="char-canvas-frame-wrapper" style="display:none">
-  <div id="char-canvas">
-
-    <!-- Canvas frame — child of canvas so it positions relative to canvas edges -->
-    <div id="cv-canvas-frame-img"></div>
+  <!-- Canvas 960×560 -->
+  <div id="char-canvas" style="display:none">
 
     <!-- LEFT PANEL 240px -->
     <div class="cv-left">
@@ -4453,7 +4427,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       <div class="cv-stats-panel" id="char-stats-panel"></div>
     </div>
   </div>
-  </div><!-- /#char-canvas-frame-wrapper -->
 
   <!-- Edit Unlocks overlay -->
   <div id="cv-unlocks-overlay">
@@ -4467,7 +4440,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
         <button class="cv-unlocks-tab" data-tab="emblems">Emblems</button>
         <button class="cv-unlocks-tab" data-tab="frames">Portrait Frames</button>
         <button class="cv-unlocks-tab" data-tab="prestige">Prestige Icons</button>
-        <button class="cv-unlocks-tab" data-tab="canvas">Canvas Frames</button>
       </div>
       <div class="cv-unlocks-grid" id="cv-unlocks-grid"></div>
     </div>
@@ -7320,8 +7292,8 @@ function flashStatRow(statKey, color) {
 function showCharacter() {
   showScreen('character-screen');
   const hasKey = !!localStorage.getItem(ANTHRO_KEY);
-  document.getElementById('char-gate').style.display                = hasKey ? 'none'         : 'flex';
-  document.getElementById('char-canvas-frame-wrapper').style.display = hasKey ? 'inline-flex'  : 'none';
+  document.getElementById('char-gate').style.display   = hasKey ? 'none' : 'flex';
+  document.getElementById('char-canvas').style.display = hasKey ? 'flex' : 'none';
   const sw = document.getElementById('cv-side-wrap');
   if (sw) sw.style.display = hasKey ? 'block' : 'none';
   if (hasKey) { renderCharSheet(); scaleCharacterScreen(); }
@@ -7417,12 +7389,12 @@ function doPrestige(s) {
 
 // ── Canvas scaling ──
 function scaleCharacterScreen() {
-  const wrapper = document.getElementById('char-canvas-frame-wrapper');
-  if (!wrapper || wrapper.style.display === 'none') return;
+  const canvas = document.getElementById('char-canvas');
+  if (!canvas || canvas.style.display === 'none') return;
   const scaleX = window.innerWidth / 960;
   const scaleY = window.innerHeight / 560;
   const scale  = Math.min(scaleX, scaleY, 1);
-  wrapper.style.transform = `scale(${scale})`;
+  canvas.style.transform = `scale(${scale})`;
   const sw = document.getElementById('cv-side-wrap');
   if (sw) sw.style.transform = `scale(${scale})`;
 }
@@ -7548,14 +7520,12 @@ const UNLOCK_KEYS = {
   emblem:         'ff_char_emblem',
   portrait_frame: 'ff_char_portrait_frame',
   prestige_icon:  'ff_char_prestige_icon',
-  canvas_frame:   'ff_char_canvas_frame',
 };
 const UNLOCK_DEFAULTS = {
   callsign:       'callsign-wanderer.png',
   emblem:         'emblem-default.png',
   portrait_frame: 'xp-portrait-frame.png',
   prestige_icon:  'prestige-star.png',
-  canvas_frame:   'frame-forest-default.png',
 };
 const UNLOCK_CATALOG = {
   callsigns: [
@@ -7570,16 +7540,12 @@ const UNLOCK_CATALOG = {
   prestige: [
     { file:'prestige-star.png', name:'Prestige Star', unlockPrestige:true },
   ],
-  canvas: [
-    { file:'frame-forest-default.png', name:'Forest', unlockLv:1 },
-  ],
 };
 const UNLOCK_TAB_CATS = {
   callsigns: 'callsign',
   emblems:   'emblem',
   frames:    'portrait_frame',
   prestige:  'prestige_icon',
-  canvas:    'canvas_frame',
 };
 
 function getEquipped(cat) {
@@ -7626,12 +7592,6 @@ function renderCharAssets() {
     }
   }
 
-  // Canvas frame overlay (div with CSS background-image for proper PNG transparency)
-  const cfImg = document.getElementById('cv-canvas-frame-img');
-  if (cfImg) {
-    cfImg.style.backgroundImage = `url('${getEquipped('canvas_frame')}')`;
-    cfImg.style.display = 'block';
-  }
 }
 
 // ── Unlocks overlay ──
@@ -7728,8 +7688,8 @@ document.getElementById('char-anthro-save').addEventListener('click', () => {
   err.textContent = '';
   localStorage.setItem(ANTHRO_KEY, val);
   initClaudeModel(); // fetch best available haiku model now that we have a key
-  document.getElementById('char-gate').style.display                = 'none';
-  document.getElementById('char-canvas-frame-wrapper').style.display = 'inline-flex';
+  document.getElementById('char-gate').style.display   = 'none';
+  document.getElementById('char-canvas').style.display = 'flex';
   const _sw = document.getElementById('cv-side-wrap');
   if (_sw) _sw.style.display = 'block';
   renderCharSheet(); scaleCharacterScreen();
