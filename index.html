@@ -3471,8 +3471,16 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   #cv-edit-unlocks-btn, #cv-rules-btn {
     background: rgba(90, 62, 27, 0.7); color: #e8d5b0;
     box-shadow: 0 2px 10px rgba(201,168,76,0.2);
+    position: relative; overflow: hidden;
   }
   #cv-edit-unlocks-btn:hover, #cv-rules-btn:hover { background: rgba(120, 85, 35, 0.85); color: #e8d5b0; }
+  #cv-edit-unlocks-btn::after, #cv-rules-btn::after {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 40%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  #cv-edit-unlocks-btn:hover::after, #cv-rules-btn:hover::after { animation: cvShimmer 0.65s ease forwards; }
 
   /* ── Codex Overlay ── */
   #cv-codex-overlay {
@@ -4374,8 +4382,8 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       </div>
 
       <!-- 5. Three buttons -->
-      <button class="cv-ph-btn" id="cv-edit-unlocks-btn">The Vault</button>
-      <button class="cv-ph-btn" id="cv-rules-btn">The Codex</button>
+      <button class="cv-ph-btn" id="cv-edit-unlocks-btn">🗝️ The Vault</button>
+      <button class="cv-ph-btn" id="cv-rules-btn">📜 The Codex</button>
       <button class="cv-log-btn" id="char-log-btn">⚔ Log Activity</button>
 
     </div>
