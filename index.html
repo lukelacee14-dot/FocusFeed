@@ -2443,26 +2443,31 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     justify-content: center !important;
     z-index: 9999 !important;
     background: transparent !important;
-    overflow: hidden !important;
+    overflow: visible !important;
+    pointer-events: none !important;
   }
 
-  /* Back button sits outside the canvas, always in top-left of viewport */
+  /* Back button — fixed top-left, always above the overlay, always clickable */
   #char-back-btn {
     position: fixed;
     top: 16px; left: 16px;
-    z-index: 600;
+    z-index: 10001;
     color: rgba(232,213,176,0.7);
     font-size: 13px;
+    pointer-events: auto;
+    background: none; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-weight: 300;
+    padding: 4px 8px;
   }
   #char-back-btn:hover { color: #e8d5b0; }
 
-  /* ── Gate (API key entry) ── */
+  /* ── Gate (API key entry) — covers full viewport when visible ── */
   #char-gate {
     position: fixed; inset: 0;
     display: flex; align-items: center; justify-content: center;
-    padding: 20px; z-index: 501;
+    padding: 20px; z-index: 10000;
+    pointer-events: auto;
   }
-  /* rest of the old gate style stays untouched — gate inner etc. already defined below */
 
   /* ── Canvas ── */
   #char-canvas {
@@ -2474,6 +2479,10 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     display: flex;
     overflow: hidden;
     box-shadow: 0 24px 80px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.04);
+    pointer-events: auto;
+    /* Dashed gold outline — canvas frame placeholder, doesn't affect layout */
+    outline: 20px dashed rgba(201,168,76,0.45);
+    outline-offset: 6px;
   }
 
   /* ── Left panel — 240px ── */
@@ -2581,7 +2590,7 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     width: 100%; height: 40px; border-radius: 10px; border: 2px solid #c9a84c;
     background: rgba(90,62,27,0.7); color: #e8d5b0;
     font-family: 'Fredoka One', cursive; font-size: 16px; font-weight: 400;
-    cursor: pointer; letter-spacing: 0.5px; margin-top: auto;
+    cursor: pointer; letter-spacing: 0.5px;
     transition: background 0.2s, transform 0.1s;
     box-shadow: 0 2px 10px rgba(201,168,76,0.2);
     position: relative; overflow: hidden;
@@ -2705,21 +2714,7 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   }
   .cv-prestige-btn:hover { background: rgba(201,168,76,0.1); }
 
-  /* ── Gate (API key entry) ── */
-  #char-gate {
-    content: '';
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-    background-size: 160px 160px;
-    opacity: 0.04;
-  }
-  #character-screen > * { position: relative; z-index: 1; }
-
-  /* ── Gate ── */
-  #char-gate {
-    flex: 1; display: flex; align-items: center; justify-content: center;
-    padding: 32px 20px; min-height: 100%;
-  }
+  /* ── Gate inner layout ── */
   .char-gate-inner {
     max-width: 460px; width: 100%;
     background: #141414; border: 1px solid #2a2a2a;
@@ -3607,6 +3602,52 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   .cv-milestone.unlocked .cv-milestone-lv { color: #c9a84c; }
   .cv-milestone-icon { font-size: 11px; }
 
+  /* ── Left panel placeholder elements ── */
+
+  /* Callsign placeholder — same size/style as Log Activity button */
+  .cv-callsign-ph {
+    width: 100%; height: 40px; border-radius: 10px;
+    border: 2px solid #c9a84c;
+    background: rgba(20, 14, 8, 0.8);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif; font-size: 10px;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: #4a3a28; flex-shrink: 0; cursor: default;
+  }
+
+  /* Emblem placeholder — overlays portrait inner area */
+  .cv-emblem-ph {
+    position: absolute; inset: 0;
+    background: rgba(10, 8, 5, 0.65);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif; font-size: 9px;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: #3a2a16; z-index: 3; pointer-events: none;
+  }
+
+  /* LVL + prestige row */
+  .cv-level-row {
+    display: flex; align-items: center; gap: 8px;
+    justify-content: center; width: 100%;
+  }
+  .cv-prestige-ph {
+    width: 30px; height: 30px; border-radius: 6px;
+    border: 1px dashed #3a2a16;
+    background: rgba(10, 8, 5, 0.6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #3a2a16; flex-shrink: 0;
+  }
+
+  /* Placeholder buttons — same look as Log Activity */
+  .cv-ph-btn {
+    width: 100%; height: 40px; border-radius: 10px;
+    border: 2px solid #c9a84c;
+    background: rgba(20, 14, 8, 0.6); color: #4a3a28;
+    font-family: 'Fredoka One', cursive; font-size: 14px; font-weight: 400;
+    cursor: default; letter-spacing: 0.5px; flex-shrink: 0;
+  }
+
 </style>
 </head>
 <body>
@@ -4239,20 +4280,27 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     <!-- LEFT PANEL 240px -->
     <div class="cv-left">
 
-      <!-- Emblem + Name -->
-      <div class="cv-name-row">
+      <!-- Hidden elements kept for JS compatibility -->
+      <div class="cv-name-row" style="display:none">
         <div class="cv-emblem cv-emblem-1" id="cv-emblem"></div>
         <span class="cv-name" id="char-name-display">Hero</span>
         <button class="cv-name-edit" id="char-name-edit-btn" title="Edit name">✏</button>
       </div>
       <input type="text" id="char-name-input" class="cv-name-input" style="display:none" maxlength="24" placeholder="Your character name…">
+      <div class="cv-char-title" id="cv-char-title" style="display:none">Wanderer</div>
+      <div class="cv-prestige-row" id="char-prestige-row" style="display:none"></div>
+      <div class="cv-api-cost" id="cv-api-cost" style="display:none">
+        Est. API cost today: $<span id="cv-api-cost-val">0.000</span>
+        <span class="cv-api-info" data-tip="Image verification +$0.02, quiz generation +$0.003, written reflection +$0.001. Resets at midnight. Honour-system logs don't count.">ⓘ</span>
+      </div>
 
-      <!-- Title -->
-      <div class="cv-char-title" id="cv-char-title">Wanderer</div>
+      <!-- 1. Callsign placeholder -->
+      <div class="cv-callsign-ph">CALLSIGN</div>
 
-      <!-- Portrait 180×180 -->
+      <!-- 2. Portrait frame — exactly as before, emblem placeholder inside -->
       <div class="cv-portrait">
         <div class="cv-portrait-inner" id="cv-portrait-inner">
+          <div class="cv-emblem-ph">EMBLEM</div>
           <div class="cv-sil">
             <div class="cv-sil-glow" id="cv-sil-glow"></div>
             <div class="cv-sil-head" id="cv-sil-head"></div>
@@ -4262,10 +4310,13 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
         <div class="cv-portrait-frame"></div>
       </div>
 
-      <!-- Overall level -->
-      <div class="cv-level" id="char-overall-level">LVL 1</div>
+      <!-- 3. LVL number + prestige placeholder -->
+      <div class="cv-level-row">
+        <div class="cv-level" id="char-overall-level">LVL 1</div>
+        <div class="cv-prestige-ph">★</div>
+      </div>
 
-      <!-- Overall XP bar -->
+      <!-- 4. XP bar -->
       <div class="cv-overall-bar-wrap">
         <div class="cv-overall-bar-labels">
           <span>Overall XP</span>
@@ -4277,17 +4328,11 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
         </div>
       </div>
 
-      <!-- Prestige badges -->
-      <div class="cv-prestige-row" id="char-prestige-row"></div>
-
-      <!-- Log Activity -->
+      <!-- 5. Three buttons -->
+      <button class="cv-ph-btn">Edit Unlocks</button>
+      <button class="cv-ph-btn">Rules</button>
       <button class="cv-log-btn" id="char-log-btn">⚔ Log Activity</button>
 
-      <!-- API cost estimate -->
-      <div class="cv-api-cost" id="cv-api-cost">
-        Est. API cost today: $<span id="cv-api-cost-val">0.000</span>
-        <span class="cv-api-info" data-tip="Image verification +$0.02, quiz generation +$0.003, written reflection +$0.001. Resets at midnight. Honour-system logs don't count.">ⓘ</span>
-      </div>
     </div>
 
     <!-- RIGHT PANEL 720px -->
