@@ -2427,12 +2427,16 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     body.rpg-tavern-theme .mobile-header { display: flex !important; }
   }
 
-  /* ── ECLIPSE THEME ── */
+  /* ── MODE 1: ECLIPSE (default app mode) ── */
   body.eclipse-theme {
+    --bg: #04040e; --surface: rgba(6,8,20,0.88); --surface2: rgba(10,12,28,0.82);
+    --border: rgba(107,127,255,0.18); --text: #e8e8f8; --muted: #6878b0;
+    --accent: #6b7fff; --accent2: #4a5ecc;
     background-image: url('theme-eclipse.jpg.png') !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
+    color: #e8e8f8 !important;
   }
   body.eclipse-theme #app {
     flex-direction: row !important;
@@ -2440,27 +2444,46 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     overflow: hidden !important;
   }
   body.eclipse-theme #sidebar {
-    background: rgba(4, 4, 10, 0.92) !important;
-    border-right: 1px solid #252535 !important;
-    backdrop-filter: blur(6px) !important;
+    background: rgba(3,4,14,0.93) !important;
+    border-right: 1px solid rgba(107,127,255,0.2) !important;
+    backdrop-filter: blur(10px) !important;
   }
   body.eclipse-theme #main {
     background: transparent !important;
     height: 100vh !important;
     overflow-y: auto !important;
   }
-  body.eclipse-theme #main::-webkit-scrollbar { width: 6px; }
-  body.eclipse-theme #main::-webkit-scrollbar-track { background: rgba(10,10,20,0.3); }
-  body.eclipse-theme #main::-webkit-scrollbar-thumb { background: #303050; border-radius: 999px; }
+  body.eclipse-theme #main::-webkit-scrollbar { width: 5px; }
+  body.eclipse-theme #main::-webkit-scrollbar-track { background: rgba(6,8,20,0.2); }
+  body.eclipse-theme #main::-webkit-scrollbar-thumb { background: rgba(107,127,255,0.35); border-radius: 999px; }
   body.eclipse-theme .screen.active { background: transparent !important; border: 0 !important; margin: 0 !important; outline: 0 !important; }
   body.eclipse-theme .sidebar-header,
   body.eclipse-theme .sidebar-timer,
+  body.eclipse-theme #sidebar > div[style*="padding:8px 12px"],
   body.eclipse-theme .sidebar-section,
   body.eclipse-theme .sidebar-channel-scroll,
   body.eclipse-theme .sidebar-bottom {
     background: transparent !important;
-    border-color: #252535 !important;
+    border-color: rgba(107,127,255,0.15) !important;
   }
+  body.eclipse-theme .sidebar-channel.active { background: rgba(107,127,255,0.12) !important; }
+  body.eclipse-theme .sidebar-channel:hover:not(.active) { background: rgba(107,127,255,0.07) !important; }
+  body.eclipse-theme .sidebar-ch-name { color: #c8ccf4 !important; }
+  body.eclipse-theme .timer-label { color: #6878b0 !important; }
+  body.eclipse-theme .timer-value { color: #8090e0 !important; }
+  body.eclipse-theme .section-label { color: #6878b0 !important; letter-spacing: 0.06em !important; }
+  body.eclipse-theme .header-sub { color: #5060a0 !important; }
+  body.eclipse-theme .wordmark img { filter: brightness(1.05); }
+  body.eclipse-theme .icon-btn { color: #6878b0 !important; }
+  body.eclipse-theme .icon-btn:hover { color: #8090e0 !important; background: rgba(107,127,255,0.1) !important; }
+  body.eclipse-theme .sidebar-add-btn { border-color: rgba(107,127,255,0.2) !important; color: #6b7fff !important; }
+  body.eclipse-theme .sidebar-add-btn:hover { border-color: rgba(107,127,255,0.5) !important; background: rgba(107,127,255,0.08) !important; }
+  body.eclipse-theme .channel-card { background: rgba(6,8,22,0.7) !important; border-color: rgba(107,127,255,0.15) !important; }
+  body.eclipse-theme .channel-card:hover { border-color: rgba(107,127,255,0.4) !important; box-shadow: 0 4px 20px rgba(107,127,255,0.12) !important; }
+  body.eclipse-theme .video-card { background: rgba(6,8,22,0.7) !important; border-color: rgba(107,127,255,0.12) !important; }
+  body.eclipse-theme .video-card:hover { border-color: rgba(107,127,255,0.35) !important; }
+  body.eclipse-theme .search-btn, body.eclipse-theme .api-save-btn { background: #6b7fff !important; }
+  body.eclipse-theme .add-btn, body.eclipse-theme .done-back-btn, body.eclipse-theme .load-more-btn { border-color: rgba(107,127,255,0.4) !important; color: #6b7fff !important; }
   @media (max-width: 767px) {
     body.eclipse-theme { overflow: auto !important; background-attachment: scroll !important; }
     body.eclipse-theme #app { flex-direction: column !important; height: auto !important; }
@@ -3920,21 +3943,12 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
         <!-- CUSTOMISE TAB -->
         <div class="settings-tab-content active" id="tab-customise">
 
-          <!-- Themes accordion -->
-          <div class="customise-accordion">
-            <button class="customise-accordion-header" data-accordion="themes">
-              <span class="customise-accordion-label">
-                <span class="customise-accordion-icon">🎨</span>
-                <span>
-                  <span class="customise-accordion-title">Theme</span>
-                  <span class="customise-accordion-sub" id="active-theme-label">YourSpace</span>
-                </span>
-              </span>
-              <span class="customise-accordion-arrow">›</span>
-            </button>
-            <div class="customise-accordion-body" id="accordion-themes">
-              <div class="theme-grid" id="theme-grid"></div>
-            </div>
+          <!-- Theme selector removed — two-mode system handles themes automatically -->
+          <div style="display:none" id="accordion-themes">
+            <div class="theme-grid" id="theme-grid"></div>
+          </div>
+          <div style="display:none">
+            <span id="active-theme-label"></span>
           </div>
 
           <!-- Hidden elements kept for JS compatibility — not visible to the user -->
@@ -4629,6 +4643,9 @@ function showScreen(id) {
 }
 
 function showHome() {
+  // Mode 1: restore eclipse space aesthetic
+  document.body.classList.remove('rpg-tavern-theme');
+  document.body.classList.add('eclipse-theme');
   if (currentVideoId) stopPlayer();
   playXboxSound('back');
   showScreen('home-screen');
@@ -4655,6 +4672,8 @@ function showSetup() {
 }
 
 function showSettings() {
+  document.body.classList.remove('rpg-tavern-theme');
+  document.body.classList.add('eclipse-theme');
   document.getElementById('settings-api-input').value = '';
   document.getElementById('settings-api-error').classList.remove('visible');
   renderThemePanel();
@@ -5573,15 +5592,10 @@ document.getElementById('reset-theme-btn').addEventListener('click', () => {
   renderThemePanel();
 });
 
-// Apply saved theme on load — fall back if a disabled overlay theme is stored
+// Always start in Mode 1 (eclipse) — two-mode system, no user theme selection
 (function applyThemeOnLoad() {
-  const DISABLED_THEMES = ['Lofi Cafe', 'Xbox 360', 'Cyberpunk Bedroom'];
-  let t = loadTheme();
-  if (DISABLED_THEMES.includes(t.presetName)) {
-    t = { ...PRESETS[0], presetName: PRESETS[0].name };
-    saveTheme(t);
-  }
-  applyTheme(t);
+  document.body.classList.add('eclipse-theme');
+  document.body.classList.remove('rpg-tavern-theme');
 })();
 
 // ── QUOTA TRACKER ──
@@ -7759,6 +7773,9 @@ function flashStatRow(statKey, color) {
 
 // ── showCharacter ──
 function showCharacter() {
+  // Mode 2: switch to RPG tavern aesthetic
+  document.body.classList.remove('eclipse-theme');
+  document.body.classList.add('rpg-tavern-theme');
   showScreen('character-screen');
   const hasKey = !!localStorage.getItem(ANTHRO_KEY);
   document.getElementById('char-gate').style.display   = hasKey ? 'none' : 'flex';
