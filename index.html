@@ -2958,10 +2958,11 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
 
   /* ── Activity / Skill overlays ── */
   .char-overlay {
-    position: fixed; inset: 0; z-index: 9500;
+    position: fixed; inset: 0; z-index: 20000;
     background: rgba(0,0,0,0.82);
     display: flex; align-items: center; justify-content: center;
     padding: 20px; backdrop-filter: blur(6px);
+    pointer-events: auto;
   }
   .char-modal-box {
     background: #141414; border: 1px solid #2a2a2a;
@@ -3474,7 +3475,7 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
 
   /* ── Edit Unlocks Overlay ── */
   #cv-unlocks-overlay {
-    display: none; position: fixed; inset: 0; z-index: 10010;
+    display: none; position: fixed; inset: 0; z-index: 20000;
     align-items: center; justify-content: center;
     background: rgba(0,0,0,0.65); pointer-events: auto;
   }
@@ -4178,27 +4179,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       </div>
     </div>
 
-    <!-- ACTIVITY MODAL -->
-    <div id="char-activity-modal" class="char-overlay" style="display:none">
-      <div class="char-modal-box">
-        <button class="char-modal-close" id="char-modal-close">✕</button>
-        <div id="char-modal-body"></div>
-      </div>
-    </div>
-
-    <!-- SKILL TREE OVERLAY -->
-    <div id="char-skill-overlay" class="char-overlay" style="display:none">
-      <div class="char-skill-box">
-        <div class="char-skill-header">
-          <div class="char-skill-title-row">
-            <span id="char-skill-icon" class="char-skill-icon"></span>
-            <span id="char-skill-title" class="char-skill-title"></span>
-          </div>
-          <button class="char-modal-close" id="char-skill-close">✕</button>
-        </div>
-        <div class="char-skill-grid" id="char-skill-grid"></div>
-      </div>
-    </div>
 
     <!-- UNLOCK NOTIFICATION TOAST -->
     <div id="char-unlock-notif">
@@ -4286,7 +4266,7 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
 
       <!-- 2. Portrait icon — single combined image -->
       <div class="cv-portrait">
-        <img id="cv-portrait-icon" class="cv-portrait-icon" src="./icon-default.png" alt="" onerror="console.error('Portrait icon failed to load:', this.src)">
+        <img id="cv-portrait-icon" class="cv-portrait-icon" src="./icon-default.png" alt="" onerror="console.error('[Character] Portrait icon failed (HTML src):', this.currentSrc || this.src)">
       </div>
 
       <!-- 3. LVL number + prestige icon -->
@@ -4321,24 +4301,44 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     </div>
   </div>
 
-  <!-- Edit Unlocks overlay -->
-  <div id="cv-unlocks-overlay">
-    <div class="cv-unlocks-box">
-      <div class="cv-unlocks-header">
-        <div class="cv-unlocks-title">YOUR UNLOCKS</div>
-        <button class="cv-unlocks-close" id="cv-unlocks-close">✕</button>
-      </div>
-      <div class="cv-unlocks-tabs">
-        <button class="cv-unlocks-tab active" data-tab="callsigns">Callsigns</button>
-        <button class="cv-unlocks-tab" data-tab="emblems">Emblems</button>
-        <button class="cv-unlocks-tab" data-tab="prestige">Prestige Icons</button>
-      </div>
-      <div class="cv-unlocks-grid" id="cv-unlocks-grid"></div>
-    </div>
-  </div>
-
   <!-- Side panel (rules + skill tree) -->
 
+</div>
+
+<!-- CHARACTER SCREEN OVERLAYS — body-level so they sit above the canvas stacking context -->
+<div id="char-activity-modal" class="char-overlay" style="display:none">
+  <div class="char-modal-box">
+    <button class="char-modal-close" id="char-modal-close">✕</button>
+    <div id="char-modal-body"></div>
+  </div>
+</div>
+
+<div id="char-skill-overlay" class="char-overlay" style="display:none">
+  <div class="char-skill-box">
+    <div class="char-skill-header">
+      <div class="char-skill-title-row">
+        <span id="char-skill-icon" class="char-skill-icon"></span>
+        <span id="char-skill-title" class="char-skill-title"></span>
+      </div>
+      <button class="char-modal-close" id="char-skill-close">✕</button>
+    </div>
+    <div class="char-skill-grid" id="char-skill-grid"></div>
+  </div>
+</div>
+
+<div id="cv-unlocks-overlay">
+  <div class="cv-unlocks-box">
+    <div class="cv-unlocks-header">
+      <div class="cv-unlocks-title">YOUR UNLOCKS</div>
+      <button class="cv-unlocks-close" id="cv-unlocks-close">✕</button>
+    </div>
+    <div class="cv-unlocks-tabs">
+      <button class="cv-unlocks-tab active" data-tab="callsigns">Callsigns</button>
+      <button class="cv-unlocks-tab" data-tab="emblems">Emblems</button>
+      <button class="cv-unlocks-tab" data-tab="prestige">Prestige Icons</button>
+    </div>
+    <div class="cv-unlocks-grid" id="cv-unlocks-grid"></div>
+  </div>
 </div>
 
 <!-- ONBOARDING TOUR OVERLAY -->
@@ -8245,7 +8245,14 @@ function renderCharAssets() {
 
   // Portrait icon (single combined image)
   const pIcon = document.getElementById('cv-portrait-icon');
-  if (pIcon) pIcon.src = getEquipped('emblem');
+  if (pIcon) {
+    const iconFile = getEquipped('emblem');
+    console.log('[Character] Loading portrait icon:', iconFile);
+    pIcon.onerror = function() {
+      console.error('[Character] Portrait icon FAILED to load. File:', iconFile, '| Resolved URL:', pIcon.currentSrc);
+    };
+    pIcon.src = iconFile;
+  }
 
   // Prestige icon — only show if player has any prestige
   const piImg = document.getElementById('cv-prestige-icon-img');
