@@ -2477,7 +2477,8 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     border-radius: 16px;
     border: 2px solid #5a3e1b;
     display: flex;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
     box-shadow: 0 24px 80px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.04);
     pointer-events: auto;
     /* Dashed gold outline — canvas frame placeholder, doesn't affect layout */
@@ -3643,10 +3644,9 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   /* ── Canvas frame overlay ── */
   #cv-canvas-frame-img {
     position: absolute; width: 1012px; height: 612px;
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
-    pointer-events: none; z-index: 5; object-fit: fill;
+    top: -26px; left: -26px;
+    pointer-events: none; z-index: 1; object-fit: fill;
     display: none;
-    mix-blend-mode: multiply;
   }
 
   /* ── Placeholder buttons (Rules etc.) ── */
@@ -4370,6 +4370,9 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   <!-- Canvas 960×560 -->
   <div id="char-canvas" style="display:none">
 
+    <!-- Canvas frame — child of canvas so it positions relative to canvas edges -->
+    <img id="cv-canvas-frame-img" src="frame-forest-default.png" alt="">
+
     <!-- LEFT PANEL 240px -->
     <div class="cv-left">
 
@@ -4437,9 +4440,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       <div class="cv-stats-panel" id="char-stats-panel"></div>
     </div>
   </div>
-
-  <!-- Canvas frame overlay — sits over the canvas, pointer-events:none -->
-  <img id="cv-canvas-frame-img" src="frame-forest-default.png" alt="">
 
   <!-- Edit Unlocks overlay -->
   <div id="cv-unlocks-overlay">
@@ -7411,9 +7411,6 @@ function scaleCharacterScreen() {
   canvas.style.transform = `scale(${scale})`;
   const sw = document.getElementById('cv-side-wrap');
   if (sw) sw.style.transform = `scale(${scale})`;
-  // Canvas frame scales and stays centred with the canvas
-  const cf = document.getElementById('cv-canvas-frame-img');
-  if (cf) cf.style.transform = `translate(-50%, -50%) scale(${scale})`;
 }
 window.addEventListener('resize', scaleCharacterScreen);
 
@@ -7620,8 +7617,6 @@ function renderCharAssets() {
   if (cfImg) {
     cfImg.src = getEquipped('canvas_frame');
     cfImg.style.display = 'block';
-    // Re-apply scale in case it was reset
-    scaleCharacterScreen();
   }
 }
 
