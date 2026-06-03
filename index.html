@@ -2434,14 +2434,15 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   /* Screen takes full viewport as transparent overlay */
   #character-screen.active {
     position: fixed !important;
-    inset: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background: transparent !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    z-index: 500 !important;
+    z-index: 9999 !important;
+    background: transparent !important;
     overflow: hidden !important;
   }
 
@@ -2465,18 +2466,13 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
 
   /* ── Canvas ── */
   #char-canvas {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 100;
     width: 960px; height: 560px;
+    flex-shrink: 0;
     background: rgba(10, 8, 5, 0.92);
     border-radius: 16px;
     border: 2px solid #5a3e1b;
     display: flex;
     overflow: hidden;
-    flex-shrink: 0;
     box-shadow: 0 24px 80px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.04);
   }
 
@@ -4166,132 +4162,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       </div>
     </div>
 
-    <!-- ══════════════ CHARACTER SCREEN ══════════════ -->
-    <div id="character-screen" class="screen">
-
-      <!-- API Key Gate -->
-      <div id="char-gate">
-        <div class="char-gate-inner">
-          <div class="char-gate-lock">⚿</div>
-          <h2 class="char-gate-title">Activity Verification Required</h2>
-          <p class="char-gate-desc">Your Character uses Claude AI to verify your real-world activities before awarding XP. You need a free Anthropic API key to unlock this feature.</p>
-          <div class="char-gate-steps">
-            <div class="char-gate-step"><span class="char-gate-step-num">1</span>Go to <strong>console.anthropic.com</strong></div>
-            <div class="char-gate-step"><span class="char-gate-step-num">2</span>Sign up or log in</div>
-            <div class="char-gate-step"><span class="char-gate-step-num">3</span>Click <strong>API Keys</strong> in the left menu</div>
-            <div class="char-gate-step"><span class="char-gate-step-num">4</span>Click <strong>Create new key</strong></div>
-            <div class="char-gate-step"><span class="char-gate-step-num">5</span>Copy and paste it below</div>
-          </div>
-          <p class="char-gate-privacy">This app stores nothing on any server. All your data lives only in your browser's local storage. Images sent for verification go directly from your browser to Claude's API and are never stored anywhere.</p>
-          <div class="char-gate-input-row">
-            <input type="password" id="char-anthro-input" class="char-gate-input" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
-            <button id="char-anthro-save" class="char-gate-save-btn">Unlock</button>
-          </div>
-          <div id="char-anthro-error" class="char-gate-error"></div>
-          <button class="back-btn" id="char-gate-back" style="margin-top:18px">← Back</button>
-        </div>
-      </div>
-
-      <!-- Back button — outside canvas, always top-left -->
-      <button class="back-btn" id="char-back-btn">← Back</button>
-
-      <!-- Canvas 960×560 -->
-      <div id="char-canvas" style="display:none">
-
-        <!-- LEFT PANEL 240px -->
-        <div class="cv-left">
-
-          <!-- Emblem + Name -->
-          <div class="cv-name-row">
-            <div class="cv-emblem cv-emblem-1" id="cv-emblem"></div>
-            <span class="cv-name" id="char-name-display">Hero</span>
-            <button class="cv-name-edit" id="char-name-edit-btn" title="Edit name">✏</button>
-          </div>
-          <input type="text" id="char-name-input" class="cv-name-input" style="display:none" maxlength="24" placeholder="Your character name…">
-
-          <!-- Title -->
-          <div class="cv-char-title" id="cv-char-title">Wanderer</div>
-
-          <!-- Portrait 180×180 -->
-          <div class="cv-portrait">
-            <div class="cv-portrait-inner" id="cv-portrait-inner">
-              <div class="cv-sil">
-                <div class="cv-sil-glow" id="cv-sil-glow"></div>
-                <div class="cv-sil-head" id="cv-sil-head"></div>
-                <div class="cv-sil-body" id="cv-sil-body"></div>
-              </div>
-            </div>
-            <div class="cv-portrait-frame"></div>
-          </div>
-
-          <!-- Overall level -->
-          <div class="cv-level" id="char-overall-level">LVL 1</div>
-
-          <!-- Overall XP bar -->
-          <div class="cv-overall-bar-wrap">
-            <div class="cv-overall-bar-labels">
-              <span>Overall XP</span>
-              <span id="char-overall-xp-label">0 / 500</span>
-            </div>
-            <div class="cv-overall-bar">
-              <div class="cv-overall-bar-fill" id="char-overall-bar" style="width:0%"></div>
-              <div class="cv-bar-segments"></div>
-            </div>
-          </div>
-
-          <!-- Prestige badges -->
-          <div class="cv-prestige-row" id="char-prestige-row"></div>
-
-          <!-- Log Activity -->
-          <button class="cv-log-btn" id="char-log-btn">⚔ Log Activity</button>
-
-          <!-- API cost estimate -->
-          <div class="cv-api-cost" id="cv-api-cost">
-            Est. API cost today: $<span id="cv-api-cost-val">0.000</span>
-            <span class="cv-api-info" data-tip="Image verification +$0.02, quiz generation +$0.003, written reflection +$0.001. Resets at midnight. Honour-system logs don't count.">ⓘ</span>
-          </div>
-        </div>
-
-        <!-- RIGHT PANEL 720px -->
-        <div class="cv-right">
-          <div class="cv-stats-heading">YOUR STATS</div>
-          <div class="cv-stats-panel" id="char-stats-panel"></div>
-        </div>
-      </div>
-
-      <!-- Side panel (rules + skill tree) -->
-      <div id="cv-side-wrap" style="display:none">
-        <div id="cv-side-panel">
-          <button class="cv-panel-tab" id="cv-panel-tab">?</button>
-          <div class="cv-panel-inner">
-
-            <div class="cv-panel-section">
-              <div class="cv-panel-heading">Your Character</div>
-              <p class="cv-panel-text">Level up in real life. Log real activities and earn XP across 5 stats. Every activity requires proof so your progress means something.</p>
-            </div>
-
-            <div class="cv-panel-section">
-              <div class="cv-panel-heading">The Rules</div>
-              <ul class="cv-panel-rules">
-                <li>One log per activity per day</li>
-                <li>Written reflections must be 100+ words</li>
-                <li>Blur personal details on photo uploads</li>
-                <li>Data never leaves your device except for verification calls</li>
-                <li>Reach level 50 to prestige a stat</li>
-              </ul>
-            </div>
-
-            <div class="cv-panel-section">
-              <div class="cv-panel-heading">Skill Tree</div>
-              <div id="cv-skill-tree-accords"></div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-    </div>
-
     <!-- ACTIVITY MODAL -->
     <div id="char-activity-modal" class="char-overlay" style="display:none">
       <div class="char-modal-box">
@@ -4332,6 +4202,132 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     </nav>
 
   </div>
+</div>
+
+<!-- ══════════════ CHARACTER SCREEN — body-level overlay ══════════════ -->
+<div id="character-screen" class="screen">
+
+  <!-- API Key Gate -->
+  <div id="char-gate">
+    <div class="char-gate-inner">
+      <div class="char-gate-lock">⚿</div>
+      <h2 class="char-gate-title">Activity Verification Required</h2>
+      <p class="char-gate-desc">Your Character uses Claude AI to verify your real-world activities before awarding XP. You need a free Anthropic API key to unlock this feature.</p>
+      <div class="char-gate-steps">
+        <div class="char-gate-step"><span class="char-gate-step-num">1</span>Go to <strong>console.anthropic.com</strong></div>
+        <div class="char-gate-step"><span class="char-gate-step-num">2</span>Sign up or log in</div>
+        <div class="char-gate-step"><span class="char-gate-step-num">3</span>Click <strong>API Keys</strong> in the left menu</div>
+        <div class="char-gate-step"><span class="char-gate-step-num">4</span>Click <strong>Create new key</strong></div>
+        <div class="char-gate-step"><span class="char-gate-step-num">5</span>Copy and paste it below</div>
+      </div>
+      <p class="char-gate-privacy">This app stores nothing on any server. All your data lives only in your browser's local storage. Images sent for verification go directly from your browser to Claude's API and are never stored anywhere.</p>
+      <div class="char-gate-input-row">
+        <input type="password" id="char-anthro-input" class="char-gate-input" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
+        <button id="char-anthro-save" class="char-gate-save-btn">Unlock</button>
+      </div>
+      <div id="char-anthro-error" class="char-gate-error"></div>
+      <button class="back-btn" id="char-gate-back" style="margin-top:18px">← Back</button>
+    </div>
+  </div>
+
+  <!-- Back button — top-left of viewport -->
+  <button class="back-btn" id="char-back-btn">← Back</button>
+
+  <!-- Canvas 960×560 -->
+  <div id="char-canvas" style="display:none">
+
+    <!-- LEFT PANEL 240px -->
+    <div class="cv-left">
+
+      <!-- Emblem + Name -->
+      <div class="cv-name-row">
+        <div class="cv-emblem cv-emblem-1" id="cv-emblem"></div>
+        <span class="cv-name" id="char-name-display">Hero</span>
+        <button class="cv-name-edit" id="char-name-edit-btn" title="Edit name">✏</button>
+      </div>
+      <input type="text" id="char-name-input" class="cv-name-input" style="display:none" maxlength="24" placeholder="Your character name…">
+
+      <!-- Title -->
+      <div class="cv-char-title" id="cv-char-title">Wanderer</div>
+
+      <!-- Portrait 180×180 -->
+      <div class="cv-portrait">
+        <div class="cv-portrait-inner" id="cv-portrait-inner">
+          <div class="cv-sil">
+            <div class="cv-sil-glow" id="cv-sil-glow"></div>
+            <div class="cv-sil-head" id="cv-sil-head"></div>
+            <div class="cv-sil-body" id="cv-sil-body"></div>
+          </div>
+        </div>
+        <div class="cv-portrait-frame"></div>
+      </div>
+
+      <!-- Overall level -->
+      <div class="cv-level" id="char-overall-level">LVL 1</div>
+
+      <!-- Overall XP bar -->
+      <div class="cv-overall-bar-wrap">
+        <div class="cv-overall-bar-labels">
+          <span>Overall XP</span>
+          <span id="char-overall-xp-label">0 / 500</span>
+        </div>
+        <div class="cv-overall-bar">
+          <div class="cv-overall-bar-fill" id="char-overall-bar" style="width:0%"></div>
+          <div class="cv-bar-segments"></div>
+        </div>
+      </div>
+
+      <!-- Prestige badges -->
+      <div class="cv-prestige-row" id="char-prestige-row"></div>
+
+      <!-- Log Activity -->
+      <button class="cv-log-btn" id="char-log-btn">⚔ Log Activity</button>
+
+      <!-- API cost estimate -->
+      <div class="cv-api-cost" id="cv-api-cost">
+        Est. API cost today: $<span id="cv-api-cost-val">0.000</span>
+        <span class="cv-api-info" data-tip="Image verification +$0.02, quiz generation +$0.003, written reflection +$0.001. Resets at midnight. Honour-system logs don't count.">ⓘ</span>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL 720px -->
+    <div class="cv-right">
+      <div class="cv-stats-heading">YOUR STATS</div>
+      <div class="cv-stats-panel" id="char-stats-panel"></div>
+    </div>
+  </div>
+
+  <!-- Side panel (rules + skill tree) -->
+  <div id="cv-side-wrap" style="display:none">
+    <div id="cv-side-panel">
+      <button class="cv-panel-tab" id="cv-panel-tab">?</button>
+      <div class="cv-panel-inner">
+
+        <div class="cv-panel-section">
+          <div class="cv-panel-heading">Your Character</div>
+          <p class="cv-panel-text">Level up in real life. Log real activities and earn XP across 5 stats. Every activity requires proof so your progress means something.</p>
+        </div>
+
+        <div class="cv-panel-section">
+          <div class="cv-panel-heading">The Rules</div>
+          <ul class="cv-panel-rules">
+            <li>One log per activity per day</li>
+            <li>Written reflections must be 100+ words</li>
+            <li>Blur personal details on photo uploads</li>
+            <li>Data never leaves your device except for verification calls</li>
+            <li>Reach level 50 to prestige a stat</li>
+          </ul>
+        </div>
+
+        <div class="cv-panel-section">
+          <div class="cv-panel-heading">Skill Tree</div>
+          <div id="cv-skill-tree-accords"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ONBOARDING TOUR OVERLAY -->
@@ -7247,12 +7243,9 @@ function scaleCharacterScreen() {
   const scaleX = window.innerWidth / 960;
   const scaleY = window.innerHeight / 560;
   const scale  = Math.min(scaleX, scaleY, 1);
-  const tx = 'translate(-50%, -50%) scale(' + scale + ')';
-  canvas.style.transform = tx;
-  // Side-wrap: centred on the same point, but 1248px wide so the panel sits
-  // naturally to the right of the 960px canvas within the same scaled space.
+  canvas.style.transform = `scale(${scale})`;
   const sw = document.getElementById('cv-side-wrap');
-  if (sw) sw.style.transform = tx;
+  if (sw) sw.style.transform = `scale(${scale})`;
 }
 window.addEventListener('resize', scaleCharacterScreen);
 
