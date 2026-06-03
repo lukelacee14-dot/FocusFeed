@@ -3645,7 +3645,10 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   #cv-canvas-frame-img {
     position: absolute; width: 1040px; height: 640px;
     top: -40px; left: -40px;
-    pointer-events: none; z-index: 0; object-fit: fill;
+    pointer-events: none; z-index: 0;
+    background-image: url('frame-forest-default.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
     display: none;
   }
 
@@ -4371,7 +4374,7 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   <div id="char-canvas" style="display:none">
 
     <!-- Canvas frame — child of canvas so it positions relative to canvas edges -->
-    <img id="cv-canvas-frame-img" src="frame-forest-default.png" alt="">
+    <div id="cv-canvas-frame-img"></div>
 
     <!-- LEFT PANEL 240px -->
     <div class="cv-left">
@@ -7612,10 +7615,10 @@ function renderCharAssets() {
     }
   }
 
-  // Canvas frame overlay
+  // Canvas frame overlay (div with CSS background-image for proper PNG transparency)
   const cfImg = document.getElementById('cv-canvas-frame-img');
   if (cfImg) {
-    cfImg.src = getEquipped('canvas_frame');
+    cfImg.style.backgroundImage = `url('${getEquipped('canvas_frame')}')`;
     cfImg.style.display = 'block';
   }
 }
