@@ -2513,45 +2513,12 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   }
   /* Portrait 180×180 */
   .cv-portrait {
-    position: relative; width: 180px; height: 180px; flex-shrink: 0;
+    width: 180px; height: 180px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
   }
-  .cv-portrait-inner {
-    position: absolute; inset: 14px;
-    background: #111;
-    border-radius: 4px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: flex-end;
-    padding-bottom: 10px;
-    overflow: hidden;
-  }
-  /* CSS silhouette — head + body with glow */
-  .cv-sil { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .cv-sil-glow {
-    position: absolute; inset: -20px;
-    border-radius: 50%; pointer-events: none;
-    background: radial-gradient(circle at 50% 50%, var(--cv-stat-color, #6b7fff) 0%, transparent 70%);
-    opacity: 0.3;
-  }
-  .cv-sil-head {
-    width: 40px; height: 40px; border-radius: 50%;
-    background: var(--cv-stat-color, #6b7fff);
-    opacity: 0.75;
-    position: relative; z-index: 1;
-    box-shadow: 0 0 12px var(--cv-stat-color, #6b7fff);
-  }
-  .cv-sil-body {
-    width: 50px; height: 60px; border-radius: 10px 10px 6px 6px;
-    background: var(--cv-stat-color, #6b7fff);
-    opacity: 0.7;
-    position: relative; z-index: 1;
-    box-shadow: 0 0 10px var(--cv-stat-color, #6b7fff);
-  }
-  /* Frame overlay on top of portrait */
-  .cv-portrait-frame {
-    position: absolute; inset: 0;
-    background: url('xp-portrait-frame.png') no-repeat center / contain;
-    pointer-events: none; z-index: 2;
-    mix-blend-mode: multiply;
+  /* Single combined portrait/icon image */
+  .cv-portrait-icon {
+    width: 152px; height: 152px; object-fit: contain; flex-shrink: 0;
   }
   /* Overall level */
   .cv-level {
@@ -2803,64 +2770,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   }
 
   /* Portrait */
-  .char-portrait-outer {
-    position: relative; width: 200px; height: 200px; flex-shrink: 0;
-  }
-  .char-portrait-inner {
-    position: absolute; inset: 16px;
-    background: #0a0a0c;
-    border-radius: 4px;
-    display: flex; align-items: flex-end; justify-content: center;
-    overflow: hidden;
-  }
-  .char-portrait-frame-overlay {
-    position: absolute; inset: 0; z-index: 3;
-    background: url('xp-portrait-frame.png') no-repeat center / 100% 100%;
-    pointer-events: none;
-  }
-  /* CSS humanoid silhouette */
-  .char-sil-wrap {
-    position: relative; width: 90px; height: 155px;
-    display: flex; flex-direction: column; align-items: center;
-    margin-bottom: 4px;
-  }
-  .char-sil-glow {
-    position: absolute; inset: -20px; border-radius: 50%; z-index: 0;
-    background: radial-gradient(circle at 50% 50%, var(--char-highest-color, #6b7fff) 0%, transparent 70%);
-    opacity: 0.25; transition: opacity 0.4s;
-  }
-  .char-sil-head {
-    width: 34px; height: 34px; border-radius: 50%; position: relative; z-index: 1;
-    background: var(--char-highest-color, #6b7fff); opacity: 0.88;
-    margin-bottom: 2px;
-  }
-  .char-sil-neck {
-    width: 12px; height: 8px; position: relative; z-index: 1;
-    background: var(--char-highest-color, #6b7fff); opacity: 0.8;
-    border-radius: 2px; margin-bottom: 0;
-  }
-  .char-sil-body {
-    position: relative; z-index: 1;
-    width: 52px; height: 58px;
-    background: var(--char-highest-color, #6b7fff); opacity: 0.85;
-    border-radius: 10px 10px 6px 6px;
-    display: flex; align-items: flex-start; justify-content: space-between;
-  }
-  .char-sil-arm {
-    width: 13px; height: 46px; margin-top: 6px;
-    background: var(--char-highest-color, #6b7fff); opacity: 0.85;
-    border-radius: 6px; flex-shrink: 0;
-  }
-  .char-sil-arm-l { transform: rotate(6deg); transform-origin: top center; }
-  .char-sil-arm-r { transform: rotate(-6deg); transform-origin: top center; }
-  .char-sil-legs {
-    display: flex; gap: 6px; position: relative; z-index: 1; margin-top: 2px;
-  }
-  .char-sil-leg {
-    width: 18px; height: 50px;
-    background: var(--char-highest-color, #6b7fff); opacity: 0.82;
-    border-radius: 4px 4px 8px 8px;
-  }
 
   /* Overall level */
   .char-overall-level-block { text-align: center; line-height: 1; }
@@ -3241,7 +3150,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   @media (max-width: 767px) {
     .char-layout { flex-direction: column; padding: 12px; gap: 14px; }
     .char-left-panel { width: 100%; }
-    .char-portrait-outer { width: 170px; height: 170px; }
     .char-overall-level { font-size: 40px; }
     .char-stat-pick-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .char-skill-grid { grid-template-columns: repeat(2, 1fr); padding: 14px 16px; }
@@ -3621,13 +3529,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     text-shadow: 0 1px 6px rgba(0,0,0,0.9);
     pointer-events: none;
     background: linear-gradient(transparent, rgba(10,8,5,0.7));
-  }
-
-  /* ── Emblem image inside portrait ── */
-  .cv-emblem-img {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    object-fit: cover; border-radius: 4px; z-index: 1;
-    mix-blend-mode: multiply;
   }
 
   /* ── LVL + prestige row ── */
@@ -4383,17 +4284,9 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
         <div class="cv-callsign-label" id="cv-callsign-label">Wanderer</div>
       </div>
 
-      <!-- 2. Portrait frame with emblem image inside -->
+      <!-- 2. Portrait icon — single combined image -->
       <div class="cv-portrait">
-        <div class="cv-portrait-inner" id="cv-portrait-inner">
-          <img id="cv-emblem-img" class="cv-emblem-img" src="emblem-default.png" alt="">
-          <div class="cv-sil">
-            <div class="cv-sil-glow" id="cv-sil-glow"></div>
-            <div class="cv-sil-head" id="cv-sil-head"></div>
-            <div class="cv-sil-body" id="cv-sil-body"></div>
-          </div>
-        </div>
-        <div class="cv-portrait-frame" id="cv-portrait-frame-el"></div>
+        <img id="cv-portrait-icon" class="cv-portrait-icon" src="emblem-default.png" alt="">
       </div>
 
       <!-- 3. LVL number + prestige icon -->
@@ -4438,7 +4331,6 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       <div class="cv-unlocks-tabs">
         <button class="cv-unlocks-tab active" data-tab="callsigns">Callsigns</button>
         <button class="cv-unlocks-tab" data-tab="emblems">Emblems</button>
-        <button class="cv-unlocks-tab" data-tab="frames">Portrait Frames</button>
         <button class="cv-unlocks-tab" data-tab="prestige">Prestige Icons</button>
       </div>
       <div class="cv-unlocks-grid" id="cv-unlocks-grid"></div>
@@ -7279,13 +7171,6 @@ function flashStatRow(statKey, color) {
       txt.classList.add('show');
     }
   });
-  // Portrait glow pulse
-  const glow = document.getElementById('char-sil-glow');
-  if (glow) {
-    glow.style.opacity = '0.65';
-    glow.style.transition = 'opacity 0.3s';
-    setTimeout(() => { glow.style.opacity = '0.25'; }, 500);
-  }
 }
 
 // ── showCharacter ──
@@ -7302,16 +7187,6 @@ function showCharacter() {
 function renderCharSheet() {
   // Name
   document.getElementById('char-name-display').textContent = getCharName();
-
-  // Silhouette colour = highest stat (cv- elements)
-  const best = highestStat();
-  ['cv-sil-head','cv-sil-body','cv-sil-glow'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.background = id === 'cv-sil-glow'
-      ? `radial-gradient(circle at 50% 50%, ${best.color} 0%, transparent 70%)`
-      : best.color;
-  });
-  document.documentElement.style.setProperty('--cv-stat-color', best.color);
 
   // Overall level + title/emblem
   const ovl = overallCharLevel();
@@ -7516,16 +7391,14 @@ function renderApiCost() {
 // ── Unlocks catalog & equipped assets ──
 
 const UNLOCK_KEYS = {
-  callsign:       'ff_char_callsign',
-  emblem:         'ff_char_emblem',
-  portrait_frame: 'ff_char_portrait_frame',
-  prestige_icon:  'ff_char_prestige_icon',
+  callsign:     'ff_char_callsign',
+  emblem:       'ff_char_emblem',
+  prestige_icon:'ff_char_prestige_icon',
 };
 const UNLOCK_DEFAULTS = {
-  callsign:       'callsign-wanderer.png',
-  emblem:         'emblem-default.png',
-  portrait_frame: 'xp-portrait-frame.png',
-  prestige_icon:  'prestige-star.png',
+  callsign:     'callsign-wanderer.png',
+  emblem:       'emblem-default.png',
+  prestige_icon:'prestige-star.png',
 };
 const UNLOCK_CATALOG = {
   callsigns: [
@@ -7534,9 +7407,6 @@ const UNLOCK_CATALOG = {
   emblems: [
     { file:'emblem-default.png', name:'Starting Crest', unlockLv:1 },
   ],
-  frames: [
-    { file:'xp-portrait-frame.png', name:'Simple Stone', unlockLv:1 },
-  ],
   prestige: [
     { file:'prestige-star.png', name:'Prestige Star', unlockPrestige:true },
   ],
@@ -7544,7 +7414,6 @@ const UNLOCK_CATALOG = {
 const UNLOCK_TAB_CATS = {
   callsigns: 'callsign',
   emblems:   'emblem',
-  frames:    'portrait_frame',
   prestige:  'prestige_icon',
 };
 
@@ -7573,13 +7442,9 @@ function renderCharAssets() {
   if (csImg) csImg.src = getEquipped('callsign');
   if (csLbl) csLbl.textContent = tier.title;
 
-  // Emblem image
-  const emImg = document.getElementById('cv-emblem-img');
-  if (emImg) emImg.src = getEquipped('emblem');
-
-  // Portrait frame (CSS background)
-  const pfEl = document.getElementById('cv-portrait-frame-el');
-  if (pfEl) pfEl.style.backgroundImage = `url('${getEquipped('portrait_frame')}')`;
+  // Portrait icon (single combined image)
+  const pIcon = document.getElementById('cv-portrait-icon');
+  if (pIcon) pIcon.src = getEquipped('emblem');
 
   // Prestige icon — only show if player has any prestige
   const piImg = document.getElementById('cv-prestige-icon-img');
