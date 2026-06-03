@@ -3602,50 +3602,140 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   .cv-milestone.unlocked .cv-milestone-lv { color: #c9a84c; }
   .cv-milestone-icon { font-size: 11px; }
 
-  /* ── Left panel placeholder elements ── */
-
-  /* Callsign placeholder — same size/style as Log Activity button */
-  .cv-callsign-ph {
-    width: 100%; height: 40px; border-radius: 10px;
+  /* ── Callsign slot ── */
+  .cv-callsign {
+    width: 100%; height: 70px; border-radius: 10px;
     border: 2px solid #c9a84c;
     background: rgba(20, 14, 8, 0.8);
+    position: relative; overflow: hidden; flex-shrink: 0;
     display: flex; align-items: center; justify-content: center;
-    font-family: 'DM Sans', sans-serif; font-size: 10px;
-    letter-spacing: 3px; text-transform: uppercase;
-    color: #4a3a28; flex-shrink: 0; cursor: default;
+  }
+  .cv-callsign-img {
+    width: 100%; height: 100%; object-fit: cover; border-radius: 8px;
+  }
+  .cv-callsign-label {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    text-align: center;
+    font-family: 'Fredoka One', cursive; font-size: 14px;
+    color: #c9a84c; padding: 6px 4px;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+    pointer-events: none;
+    background: linear-gradient(transparent, rgba(10,8,5,0.7));
   }
 
-  /* Emblem placeholder — overlays portrait inner area */
-  .cv-emblem-ph {
-    position: absolute; inset: 0;
-    background: rgba(10, 8, 5, 0.65);
-    border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'DM Sans', sans-serif; font-size: 9px;
-    letter-spacing: 3px; text-transform: uppercase;
-    color: #3a2a16; z-index: 3; pointer-events: none;
+  /* ── Emblem image inside portrait ── */
+  .cv-emblem-img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; border-radius: 4px; z-index: 1;
   }
 
-  /* LVL + prestige row */
+  /* ── LVL + prestige row ── */
   .cv-level-row {
     display: flex; align-items: center; gap: 8px;
     justify-content: center; width: 100%;
   }
-  .cv-prestige-ph {
-    width: 30px; height: 30px; border-radius: 6px;
-    border: 1px dashed #3a2a16;
-    background: rgba(10, 8, 5, 0.6);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 11px; color: #3a2a16; flex-shrink: 0;
+  .cv-prestige-icon {
+    width: 30px; height: 30px; object-fit: contain; flex-shrink: 0;
   }
 
-  /* Placeholder buttons — same look as Log Activity */
+  /* ── Canvas frame overlay ── */
+  #cv-canvas-frame-img {
+    position: absolute; width: 1012px; height: 612px;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    pointer-events: none; z-index: 5; object-fit: fill;
+    display: none;
+  }
+
+  /* ── Placeholder buttons (Rules etc.) ── */
   .cv-ph-btn {
     width: 100%; height: 40px; border-radius: 10px;
     border: 2px solid #c9a84c;
-    background: rgba(20, 14, 8, 0.6); color: #4a3a28;
+    background: rgba(20, 14, 8, 0.6); color: #6b5a40;
     font-family: 'Fredoka One', cursive; font-size: 14px; font-weight: 400;
-    cursor: default; letter-spacing: 0.5px; flex-shrink: 0;
+    cursor: pointer; letter-spacing: 0.5px; flex-shrink: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+  .cv-ph-btn:hover { background: rgba(40, 28, 12, 0.8); color: #c9a84c; }
+
+  /* ── Edit Unlocks Overlay ── */
+  #cv-unlocks-overlay {
+    display: none; position: fixed; inset: 0; z-index: 10010;
+    align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.65); pointer-events: auto;
+  }
+  #cv-unlocks-overlay.open { display: flex; }
+  .cv-unlocks-box {
+    background: rgba(10,8,5,0.96);
+    border: 2px solid #5a3e1b; border-radius: 16px; padding: 24px;
+    width: min(860px, 90vw); max-height: 82vh;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .cv-unlocks-header {
+    display: flex; align-items: center; justify-content: center;
+    position: relative; flex-shrink: 0;
+  }
+  .cv-unlocks-title {
+    font-family: 'Fredoka One', cursive; font-size: 22px;
+    color: #c9a84c; letter-spacing: 2px; font-weight: 400;
+  }
+  .cv-unlocks-close {
+    position: absolute; right: 0; background: none; border: none;
+    color: #6b5a40; font-size: 22px; cursor: pointer; line-height: 1; padding: 4px 8px;
+  }
+  .cv-unlocks-close:hover { color: #e8d5b0; }
+  .cv-unlocks-tabs {
+    display: flex; gap: 2px; flex-shrink: 0;
+    border-bottom: 1px solid #3a2610;
+  }
+  .cv-unlocks-tab {
+    background: none; border: none; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; color: #6b5a40;
+    font-family: 'DM Sans', sans-serif; font-size: 13px;
+    padding: 8px 14px; cursor: pointer; transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .cv-unlocks-tab:hover { color: #a08050; }
+  .cv-unlocks-tab.active { color: #c9a84c; border-bottom-color: #c9a84c; }
+  .cv-unlocks-grid {
+    display: grid; grid-template-columns: repeat(3, 140px);
+    gap: 14px; overflow-y: auto; padding: 4px 2px;
+    justify-content: center;
+    scrollbar-width: thin; scrollbar-color: #3a2610 transparent;
+  }
+  .cv-unlocks-grid::-webkit-scrollbar { width: 4px; }
+  .cv-unlocks-grid::-webkit-scrollbar-thumb { background: #3a2610; border-radius: 4px; }
+  .cv-unlock-card {
+    width: 140px; height: 140px; background: #1a1208;
+    border-radius: 12px; border: 1px solid #5a3e1b;
+    position: relative; cursor: pointer; overflow: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 6px;
+    padding: 10px; transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .cv-unlock-card:hover:not(.locked) { border-color: #8a6030; }
+  .cv-unlock-card.equipped {
+    border: 2px solid #c9a84c; box-shadow: 0 0 12px rgba(201,168,76,0.25);
+  }
+  .cv-unlock-card.locked { cursor: default; }
+  .cv-unlock-card-img { max-width: 90px; max-height: 78px; object-fit: contain; }
+  .cv-unlock-card-name {
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    color: #7a6040; text-align: center; line-height: 1.3;
+  }
+  .cv-unlock-card.equipped .cv-unlock-card-name { color: #c9a84c; }
+  .cv-unlock-tick {
+    position: absolute; top: 6px; right: 8px;
+    color: #c9a84c; font-size: 13px; font-weight: 700; line-height: 1;
+  }
+  .cv-unlock-lock {
+    position: absolute; inset: 0; background: rgba(10,8,5,0.78);
+    border-radius: 11px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 4px;
+  }
+  .cv-unlock-lock-icon { font-size: 20px; }
+  .cv-unlock-lock-text {
+    font-family: 'DM Sans', sans-serif; font-size: 10px;
+    color: #6b5a40; text-align: center; line-height: 1.4; padding: 0 6px;
   }
 
 </style>
@@ -4294,26 +4384,29 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
         <span class="cv-api-info" data-tip="Image verification +$0.02, quiz generation +$0.003, written reflection +$0.001. Resets at midnight. Honour-system logs don't count.">ⓘ</span>
       </div>
 
-      <!-- 1. Callsign placeholder -->
-      <div class="cv-callsign-ph">CALLSIGN</div>
+      <!-- 1. Callsign slot -->
+      <div class="cv-callsign">
+        <img id="cv-callsign-img" class="cv-callsign-img" src="callsign-wanderer.png" alt="">
+        <div class="cv-callsign-label" id="cv-callsign-label">Wanderer</div>
+      </div>
 
-      <!-- 2. Portrait frame — exactly as before, emblem placeholder inside -->
+      <!-- 2. Portrait frame with emblem image inside -->
       <div class="cv-portrait">
         <div class="cv-portrait-inner" id="cv-portrait-inner">
-          <div class="cv-emblem-ph">EMBLEM</div>
+          <img id="cv-emblem-img" class="cv-emblem-img" src="emblem-default.png" alt="">
           <div class="cv-sil">
             <div class="cv-sil-glow" id="cv-sil-glow"></div>
             <div class="cv-sil-head" id="cv-sil-head"></div>
             <div class="cv-sil-body" id="cv-sil-body"></div>
           </div>
         </div>
-        <div class="cv-portrait-frame"></div>
+        <div class="cv-portrait-frame" id="cv-portrait-frame-el"></div>
       </div>
 
-      <!-- 3. LVL number + prestige placeholder -->
+      <!-- 3. LVL number + prestige icon -->
       <div class="cv-level-row">
         <div class="cv-level" id="char-overall-level">LVL 1</div>
-        <div class="cv-prestige-ph">★</div>
+        <img id="cv-prestige-icon-img" class="cv-prestige-icon" src="prestige-star.png" alt="" style="display:none">
       </div>
 
       <!-- 4. XP bar -->
@@ -4329,8 +4422,8 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       </div>
 
       <!-- 5. Three buttons -->
-      <button class="cv-ph-btn">Edit Unlocks</button>
-      <button class="cv-ph-btn">Rules</button>
+      <button class="cv-ph-btn" id="cv-edit-unlocks-btn">Edit Unlocks</button>
+      <button class="cv-ph-btn" id="cv-rules-btn">Rules</button>
       <button class="cv-log-btn" id="char-log-btn">⚔ Log Activity</button>
 
     </div>
@@ -4339,6 +4432,27 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     <div class="cv-right">
       <div class="cv-stats-heading">YOUR STATS</div>
       <div class="cv-stats-panel" id="char-stats-panel"></div>
+    </div>
+  </div>
+
+  <!-- Canvas frame overlay — sits over the canvas, pointer-events:none -->
+  <img id="cv-canvas-frame-img" src="frame-forest-default.png" alt="">
+
+  <!-- Edit Unlocks overlay -->
+  <div id="cv-unlocks-overlay">
+    <div class="cv-unlocks-box">
+      <div class="cv-unlocks-header">
+        <div class="cv-unlocks-title">YOUR UNLOCKS</div>
+        <button class="cv-unlocks-close" id="cv-unlocks-close">✕</button>
+      </div>
+      <div class="cv-unlocks-tabs">
+        <button class="cv-unlocks-tab active" data-tab="callsigns">Callsigns</button>
+        <button class="cv-unlocks-tab" data-tab="emblems">Emblems</button>
+        <button class="cv-unlocks-tab" data-tab="frames">Portrait Frames</button>
+        <button class="cv-unlocks-tab" data-tab="prestige">Prestige Icons</button>
+        <button class="cv-unlocks-tab" data-tab="canvas">Canvas Frames</button>
+      </div>
+      <div class="cv-unlocks-grid" id="cv-unlocks-grid"></div>
     </div>
   </div>
 
@@ -7273,6 +7387,9 @@ function renderCharSheet() {
 
   // API cost
   renderApiCost();
+
+  // Equipped assets
+  renderCharAssets();
 }
 
 function doPrestige(s) {
@@ -7291,6 +7408,9 @@ function scaleCharacterScreen() {
   canvas.style.transform = `scale(${scale})`;
   const sw = document.getElementById('cv-side-wrap');
   if (sw) sw.style.transform = `scale(${scale})`;
+  // Canvas frame scales and stays centred with the canvas
+  const cf = document.getElementById('cv-canvas-frame-img');
+  if (cf) cf.style.transform = `translate(-50%, -50%) scale(${scale})`;
 }
 window.addEventListener('resize', scaleCharacterScreen);
 
@@ -7406,6 +7526,160 @@ function renderApiCost() {
   const el = document.getElementById('cv-api-cost-val');
   if (el) el.textContent = getApiCost().toFixed(3);
 }
+
+// ── Unlocks catalog & equipped assets ──
+
+const UNLOCK_KEYS = {
+  callsign:       'ff_char_callsign',
+  emblem:         'ff_char_emblem',
+  portrait_frame: 'ff_char_portrait_frame',
+  prestige_icon:  'ff_char_prestige_icon',
+  canvas_frame:   'ff_char_canvas_frame',
+};
+const UNLOCK_DEFAULTS = {
+  callsign:       'callsign-wanderer.png',
+  emblem:         'emblem-default.png',
+  portrait_frame: 'xp-portrait-frame.png',
+  prestige_icon:  'prestige-star.png',
+  canvas_frame:   'frame-forest-default.png',
+};
+const UNLOCK_CATALOG = {
+  callsigns: [
+    { file:'callsign-wanderer.png', name:'The Wanderer', unlockLv:1 },
+  ],
+  emblems: [
+    { file:'emblem-default.png', name:'Starting Crest', unlockLv:1 },
+  ],
+  frames: [
+    { file:'xp-portrait-frame.png', name:'Simple Stone', unlockLv:1 },
+  ],
+  prestige: [
+    { file:'prestige-star.png', name:'Prestige Star', unlockPrestige:true },
+  ],
+  canvas: [
+    { file:'frame-forest-default.png', name:'Forest', unlockLv:1 },
+  ],
+};
+const UNLOCK_TAB_CATS = {
+  callsigns: 'callsign',
+  emblems:   'emblem',
+  frames:    'portrait_frame',
+  prestige:  'prestige_icon',
+  canvas:    'canvas_frame',
+};
+
+function getEquipped(cat) {
+  return localStorage.getItem(UNLOCK_KEYS[cat]) || UNLOCK_DEFAULTS[cat];
+}
+function setEquipped(cat, file) {
+  localStorage.setItem(UNLOCK_KEYS[cat], file);
+}
+function hasAnyPrestige() {
+  const data = getCharStats();
+  return STAT_KEYS.some(k => (data[k] && (data[k].prestige || 0) > 0));
+}
+function isItemUnlocked(item) {
+  if (item.unlockPrestige) return hasAnyPrestige();
+  return overallCharLevel() >= (item.unlockLv || 1);
+}
+
+function renderCharAssets() {
+  const ovl  = overallCharLevel();
+  const tier = getCharTier(ovl);
+
+  // Callsign image + title label
+  const csImg = document.getElementById('cv-callsign-img');
+  const csLbl = document.getElementById('cv-callsign-label');
+  if (csImg) csImg.src = getEquipped('callsign');
+  if (csLbl) csLbl.textContent = tier.title;
+
+  // Emblem image
+  const emImg = document.getElementById('cv-emblem-img');
+  if (emImg) emImg.src = getEquipped('emblem');
+
+  // Portrait frame (CSS background)
+  const pfEl = document.getElementById('cv-portrait-frame-el');
+  if (pfEl) pfEl.style.backgroundImage = `url('${getEquipped('portrait_frame')}')`;
+
+  // Prestige icon — only show if player has any prestige
+  const piImg = document.getElementById('cv-prestige-icon-img');
+  if (piImg) {
+    if (hasAnyPrestige()) {
+      piImg.src = getEquipped('prestige_icon');
+      piImg.style.display = 'block';
+    } else {
+      piImg.style.display = 'none';
+    }
+  }
+
+  // Canvas frame overlay
+  const cfImg = document.getElementById('cv-canvas-frame-img');
+  if (cfImg) {
+    cfImg.src = getEquipped('canvas_frame');
+    cfImg.style.display = 'block';
+    // Re-apply scale in case it was reset
+    scaleCharacterScreen();
+  }
+}
+
+// ── Unlocks overlay ──
+let _unlockTab = 'callsigns';
+
+function openUnlocksOverlay() {
+  const ov = document.getElementById('cv-unlocks-overlay');
+  if (!ov) return;
+  ov.classList.add('open');
+  renderUnlocksGrid(_unlockTab);
+}
+function closeUnlocksOverlay() {
+  const ov = document.getElementById('cv-unlocks-overlay');
+  if (ov) ov.classList.remove('open');
+}
+function renderUnlocksGrid(tab) {
+  _unlockTab = tab;
+  document.querySelectorAll('.cv-unlocks-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === tab));
+
+  const cat    = UNLOCK_TAB_CATS[tab];
+  const items  = UNLOCK_CATALOG[tab] || [];
+  const equipped = getEquipped(cat);
+  const grid   = document.getElementById('cv-unlocks-grid');
+  if (!grid) return;
+
+  grid.innerHTML = items.map(item => {
+    const unlocked  = isItemUnlocked(item);
+    const isEquipped = equipped === item.file;
+    const lockText  = item.unlockPrestige
+      ? 'Unlocks after<br>first Prestige'
+      : `Unlocks at<br>Lvl ${item.unlockLv}`;
+    return `<div class="cv-unlock-card${isEquipped ? ' equipped' : ''}${!unlocked ? ' locked' : ''}"
+                 data-file="${item.file}" data-cat="${cat}">
+      ${isEquipped ? '<span class="cv-unlock-tick">✓</span>' : ''}
+      <img class="cv-unlock-card-img" src="${item.file}" alt="${item.name}">
+      <div class="cv-unlock-card-name">${item.name}</div>
+      ${!unlocked ? `<div class="cv-unlock-lock">
+        <span class="cv-unlock-lock-icon">🔒</span>
+        <div class="cv-unlock-lock-text">${lockText}</div>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.cv-unlock-card:not(.locked)').forEach(card => {
+    card.addEventListener('click', () => {
+      setEquipped(card.dataset.cat, card.dataset.file);
+      renderCharAssets();
+      renderUnlocksGrid(tab);
+    });
+  });
+}
+
+document.getElementById('cv-edit-unlocks-btn').addEventListener('click', openUnlocksOverlay);
+document.getElementById('cv-unlocks-close').addEventListener('click', closeUnlocksOverlay);
+document.getElementById('cv-unlocks-overlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeUnlocksOverlay();
+});
+document.querySelectorAll('.cv-unlocks-tab').forEach(t =>
+  t.addEventListener('click', () => renderUnlocksGrid(t.dataset.tab)));
 
 // ── Name editing ──
 document.getElementById('char-name-edit-btn').addEventListener('click', () => {
