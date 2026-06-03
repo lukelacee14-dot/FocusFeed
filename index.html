@@ -2958,11 +2958,12 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
 
   /* ── Activity / Skill overlays ── */
   .char-overlay {
-    position: fixed; inset: 0; z-index: 20000;
+    position: fixed; inset: 0; z-index: 99990;
     background: rgba(0,0,0,0.82);
     display: flex; align-items: center; justify-content: center;
     padding: 20px; backdrop-filter: blur(6px);
     pointer-events: auto;
+    isolation: isolate;
   }
   .char-modal-box {
     background: #141414; border: 1px solid #2a2a2a;
@@ -3475,7 +3476,7 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
 
   /* ── Edit Unlocks Overlay ── */
   #cv-unlocks-overlay {
-    display: none; position: fixed; inset: 0; z-index: 20000;
+    display: none; position: fixed; inset: 0; z-index: 99990;
     align-items: center; justify-content: center;
     background: rgba(0,0,0,0.65); pointer-events: auto;
   }
@@ -3532,7 +3533,23 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   .cv-unlock-card.equipped {
     border: 2px solid #c9a84c; box-shadow: 0 0 12px rgba(201,168,76,0.25);
   }
-  .cv-unlock-card.locked { cursor: default; }
+  .cv-unlock-card.locked { cursor: default; overflow: visible; }
+  /* Tooltip on hover for locked items */
+  .cv-unlock-card.locked[data-tooltip]:hover::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%; transform: translateX(-50%);
+    background: #1a1208;
+    border: 1px solid #c9a84c;
+    color: #c9a84c;
+    font-family: 'Fredoka One', cursive; font-size: 12px; font-weight: 400;
+    padding: 8px 12px; border-radius: 8px;
+    max-width: 200px; min-width: 120px;
+    white-space: normal; text-align: center; line-height: 1.4;
+    pointer-events: none; z-index: 100000;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+  }
   .cv-unlock-card-img { max-width: 90px; max-height: 78px; object-fit: contain; }
   .cv-unlock-card-name {
     font-family: 'DM Sans', sans-serif; font-size: 12px;
@@ -7945,6 +7962,120 @@ const UNLOCK_DEFAULTS = {
   prestige_icon:'prestige-star.png',
 };
 
+// Unlock condition descriptions keyed by unlockKey — shown as tooltip on locked catalog items
+const UNLOCK_DESCRIPTIONS = {
+  // Level-based
+  'callsign-the-lost':'Starting callsign — Level 1','icon-starting-crest':'Starting Crest — Level 1',
+  'callsign-the-wanderer':'Level 3','icon-forest-seal':'Level 5','callsign-apprentice':'Level 5',
+  'callsign-the-seeker':'Level 7','icon-storm-sigil':'Level 9','callsign-adventurer':'Level 10',
+  'icon-dragon-eye':'Level 10','callsign-the-tested':'Level 11','icon-phoenix-rising':'Level 13',
+  'callsign-the-resolute':'Level 14','callsign-veteran':'Level 15','icon-celestial-compass':'Level 16',
+  'callsign-the-capable':'Level 17','icon-rune-circle':'Level 18','icon-gold-filigree':'Level 19',
+  'callsign-champion':'Level 20','icon-crown-of-thorns':'Level 20','callsign-the-proven':'Level 21',
+  'icon-solar-eclipse':'Level 23','icon-dragon-scale':'Level 24','callsign-legend':'Level 25',
+  'icon-wolf-head':'Level 25','callsign-the-relentless':'Level 26','icon-skull-and-stars':'Level 27',
+  'callsign-the-ascendant':'Level 29','callsign-mythic':'Level 30','icon-cosmic-eye':'Level 30',
+  'callsign-the-ancient':'Level 31','icon-ancient-deity':'Level 32','callsign-the-transcendent':'Level 34',
+  'callsign-ancient-2':'Level 35','icon-void-sigil':'Level 35','callsign-the-eternal':'Level 37',
+  'icon-astral-phoenix':'Level 38','callsign-ascended':'Level 40','icon-the-burning-throne':'Level 40',
+  'callsign-the-undying':'Level 41','icon-the-cosmic-crown':'Level 43','callsign-transcendent-2':'Level 45',
+  'icon-the-void-gate':'Level 45','callsign-the-limitless':'Level 46','icon-the-celestial-serpent':'Level 48',
+  'callsign-the-almost-immortal':'Level 49','callsign-immortal':'Level 50','icon-the-immortal-mark':'Level 50',
+  // Prestige
+  'callsign-the-reborn':'First prestige','icon-ember-rising':'First prestige','prestige-icon-1':'First prestige',
+  'callsign-the-renewed':'Prestige 2','icon-twin-flames':'Prestige 2','prestige-icon-2':'Prestige 2',
+  'callsign-the-ascended-p':'Prestige 3','icon-celestial-gate':'Prestige 3','prestige-icon-3':'Prestige 3',
+  'callsign-the-eternal-p':'Prestige 4','icon-void-crown':'Prestige 4','prestige-icon-4':'Prestige 4',
+  'callsign-the-ancient-one':'Prestige 5','icon-dragon-sovereign':'Prestige 5','prestige-icon-5':'Prestige 5',
+  // Strength
+  'callsign-the-regular':'10 gym sessions','callsign-the-dedicated':'50 gym sessions','icon-the-dedicated':'50 gym sessions',
+  'callsign-the-ironclad':'100 gym sessions','icon-the-ironclad':'100 gym sessions',
+  'callsign-the-eternal-grind':'365 gym sessions','icon-the-eternal-grind':'365 gym sessions',
+  'callsign-the-pavement-pounder':'10 run sessions','callsign-the-endurance':'50 runs','icon-the-endurance':'50 runs',
+  'callsign-the-distance':'100 runs','icon-the-distance':'100 runs',
+  'callsign-the-self-starter':'10 home workouts','callsign-the-homegrown':'50 home workouts','icon-the-homegrown':'50 home workouts',
+  'callsign-the-self-made':'100 home workouts','icon-the-self-made':'100 home workouts',
+  'callsign-the-athlete':'10 sport sessions','callsign-the-competitor':'50 sport sessions','icon-the-competitor':'50 sport sessions',
+  'callsign-the-sportsman':'100 sport sessions','icon-the-sportsman':'100 sport sessions',
+  'callsign-the-breakthrough':'First personal best','callsign-the-improving':'5 personal bests','icon-the-improving':'5 personal bests',
+  'callsign-the-unbeaten':'10 personal bests','icon-the-unbeaten':'10 personal bests',
+  // Wisdom
+  'callsign-the-reader':'10 books finished','callsign-the-scholar':'25 books finished','icon-the-scholar':'25 books finished',
+  'callsign-the-practitioner':'Applied learning 5×','icon-the-practitioner':'Applied learning 5×',
+  'callsign-the-open-mind':'Changed your mind 5×',
+  'callsign-the-teacher':'Taught someone 10×','icon-the-teacher':'Taught someone 10×',
+  'callsign-the-graduate':'Degree completed','icon-the-graduate':'Degree completed',
+  'callsign-the-linguist':'30 language sessions','callsign-the-polyglot':'100 language sessions','icon-the-polyglot':'100 language sessions',
+  // Discipline
+  'callsign-the-unplugged':'Deleted a social media app','callsign-the-liberated':'Deleted all social apps','icon-the-liberated':'Deleted all social apps',
+  'callsign-the-clear-mind':'30 days no social media','callsign-the-free':'100 days no social media','icon-the-free':'100 days no social media',
+  'callsign-the-sovereign':'365 days no social media','icon-the-sovereign':'365 days no social media',
+  'callsign-the-focused':'30-day watch time budget streak',
+  'callsign-the-relentless-goals':'30-day goals streak','icon-the-relentless':'30-day goals streak',
+  'callsign-the-unstoppable':'100-day goals streak','icon-the-unstoppable':'100-day goals streak',
+  'callsign-the-morning-guardian':'30-day no-phone morning streak',
+  'callsign-the-night-keeper':'30-day digital sunset streak',
+  'callsign-the-willful':'30 temptations resisted','icon-the-willful':'30 temptations resisted',
+  'callsign-the-disciplined':'100 temptations resisted','icon-the-disciplined':'100 temptations resisted',
+  'callsign-the-transformed':'90-day habit avoided streak','icon-the-transformed':'90-day habit avoided streak',
+  'callsign-the-reclaimed':'365-day habit avoided streak','icon-the-reclaimed':'365-day habit avoided streak',
+  'callsign-the-clear':'30 days no alcohol','callsign-the-sober':'90 days no alcohol','icon-the-sober':'90 days no alcohol',
+  'callsign-the-lucid':'365 days no alcohol','icon-the-lucid':'365 days no alcohol',
+  'callsign-the-nourished':'30 days no junk food','callsign-the-clean':'90 days no junk food','icon-the-clean':'90 days no junk food',
+  'callsign-the-rested':'30-day 8hr sleep streak','icon-the-rested':'30-day 8hr sleep streak',
+  'callsign-the-restored':'90-day 8hr sleep streak','icon-the-restored':'90-day 8hr sleep streak',
+  'callsign-the-focused-mind':'50 deep work sessions','icon-the-focused-mind':'50 deep work sessions',
+  'callsign-the-flow-state':'100 deep work sessions','icon-the-flow-state':'100 deep work sessions',
+  'callsign-the-craftsman':'200 deep work sessions','icon-the-craftsman':'200 deep work sessions',
+  'callsign-the-starter':'10 procrastinated tasks finished',
+  'callsign-the-still':'10 boredom sessions','callsign-the-present':'30 boredom sessions','icon-the-present':'30 boredom sessions',
+  'callsign-the-sage':'100 boredom sessions','icon-the-sage':'100 boredom sessions',
+  'callsign-the-mindful':'30 meditation sessions','callsign-the-centred':'100 meditation sessions','icon-the-centred':'100 meditation sessions',
+  'callsign-the-carer':'100 dog walks or housework','icon-the-carer':'100 dog walks or housework',
+  // Charisma
+  'callsign-the-kin':'50 family calls','icon-the-kin':'50 family calls',
+  'callsign-the-weaver':'25 reconnections','icon-the-weaver':'25 reconnections',
+  'callsign-the-magnetic':'10 new connections','icon-the-magnetic':'10 new connections',
+  'callsign-the-social-architect':'25 new connections','icon-the-social-architect':'25 new connections',
+  'callsign-the-human':'25 stranger conversations','icon-the-human':'25 stranger conversations',
+  'callsign-the-present-friend':'50 quality friend sessions','icon-the-present-friend':'50 quality friend sessions',
+  'callsign-the-courageous':'10 difficult conversations','icon-the-courageous':'10 difficult conversations',
+  'callsign-the-humble':'10 sincere apologies','icon-the-humble':'10 sincere apologies',
+  'callsign-the-sovereign-self':'Said no 25×','icon-the-sovereign-self':'Said no 25×',
+  'callsign-the-defender':'Stood up for yourself or others 10×','icon-the-defender':'Stood up 10×',
+  'callsign-the-expansive':'10 comfort zone events',
+  'callsign-the-generous':'10 courageous compliments','icon-the-generous':'10 courageous compliments',
+  'callsign-the-humble-strength':'Asked for help 10×','icon-the-humble-strength':'Asked for help 10×',
+  'callsign-the-host':'5 gatherings organised','icon-the-host':'5 gatherings organised',
+  'callsign-the-gatherer':'15 gatherings organised','icon-the-gatherer':'15 gatherings organised',
+  'callsign-the-anchor':'Mentored someone 10×','icon-the-anchor':'Mentored someone 10×',
+  'callsign-the-intimate':'5 vulnerable partner conversations','icon-the-intimate':'5 vulnerable partner conversations',
+  'callsign-the-romantic':'10 intentional dates','icon-the-romantic':'10 intentional dates',
+  'callsign-the-loving':'Expressed love 15×','icon-the-loving':'Expressed love 15×',
+  // Creativity
+  'callsign-the-maker':'50 creative sessions','icon-the-maker':'50 creative sessions',
+  'callsign-the-dedicated-creator':'100 creative sessions','icon-the-dedicated-creator':'100 creative sessions',
+  'callsign-the-finisher':'5 projects finished',
+  'callsign-the-artisan':'50 things made','icon-the-artisan':'50 things made',
+  'callsign-the-cook':'30 cooked from scratch','icon-the-cook':'30 cooked from scratch',
+  'callsign-the-chef':'100 cooked from scratch','icon-the-chef':'100 cooked from scratch',
+  'callsign-the-musician':'100 instrument sessions','icon-the-musician':'100 instrument sessions',
+  'callsign-the-virtuoso':'500 instrument sessions','icon-the-virtuoso':'500 instrument sessions',
+  'callsign-the-performer':'10 performances','icon-the-performer':'10 performances',
+  'callsign-the-stage':'50 performances','icon-the-stage':'50 performances',
+  'callsign-the-voice':'First public speech',
+  'callsign-the-speaker':'5 public speeches','icon-the-speaker':'5 public speeches',
+  'callsign-the-orator':'15 public speeches','icon-the-orator':'15 public speeches',
+  'callsign-the-writer':'50 creative writing sessions','icon-the-writer':'50 creative writing sessions',
+  'callsign-the-storyteller':'100 creative writing sessions','icon-the-storyteller':'100 creative writing sessions',
+  'callsign-the-student':'10 creative classes','icon-the-student':'10 creative classes',
+  'callsign-the-published':'First publication',
+  'callsign-the-public-voice':'15 publications','icon-the-public-voice':'15 publications',
+  'callsign-the-contender':'5 competitions entered','icon-the-contender':'5 competitions entered',
+  'callsign-the-persistent':'15 competitions entered',
+  'callsign-the-collaborator':'10 collaborations','icon-the-collaborator':'10 collaborations',
+};
+
 // Build catalog from unlock triggers so it stays in sync
 const UNLOCK_CATALOG = (function() {
   const cs = [
@@ -8297,8 +8428,13 @@ function renderUnlocksGrid(tab) {
     const lockText  = item.unlockPrestige
       ? 'Unlocks after<br>first Prestige'
       : `Unlocks at<br>Lvl ${item.unlockLv}`;
+    const tooltipText = !unlocked
+      ? (item.unlockKey
+          ? (UNLOCK_DESCRIPTIONS[item.unlockKey] || item.name)
+          : item.unlockPrestige ? 'Requires first Prestige' : `Level ${item.unlockLv || '?'}`)
+      : '';
     return `<div class="cv-unlock-card${isEquipped ? ' equipped' : ''}${!unlocked ? ' locked' : ''}"
-                 data-file="${item.file}" data-cat="${cat}">
+                 data-file="${item.file}" data-cat="${cat}"${tooltipText ? ` data-tooltip="${tooltipText}"` : ''}>
       ${isEquipped ? '<span class="cv-unlock-tick">✓</span>' : ''}
       <img class="cv-unlock-card-img" src="${item.file}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="cv-unlock-placeholder" style="display:none">${item.name}</div>
       <div class="cv-unlock-card-name">${item.name}</div>
