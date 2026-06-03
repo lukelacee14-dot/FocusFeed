@@ -2427,6 +2427,47 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     body.rpg-tavern-theme .mobile-header { display: flex !important; }
   }
 
+  /* ── ECLIPSE THEME ── */
+  body.eclipse-theme {
+    background-image: url('theme-eclipse.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+  }
+  body.eclipse-theme #app {
+    flex-direction: row !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+  }
+  body.eclipse-theme #sidebar {
+    background: rgba(4, 4, 10, 0.92) !important;
+    border-right: 1px solid #252535 !important;
+    backdrop-filter: blur(6px) !important;
+  }
+  body.eclipse-theme #main {
+    background: transparent !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+  }
+  body.eclipse-theme #main::-webkit-scrollbar { width: 6px; }
+  body.eclipse-theme #main::-webkit-scrollbar-track { background: rgba(10,10,20,0.3); }
+  body.eclipse-theme #main::-webkit-scrollbar-thumb { background: #303050; border-radius: 999px; }
+  body.eclipse-theme .screen.active { background: transparent !important; border: 0 !important; margin: 0 !important; outline: 0 !important; }
+  body.eclipse-theme .sidebar-header,
+  body.eclipse-theme .sidebar-timer,
+  body.eclipse-theme .sidebar-section,
+  body.eclipse-theme .sidebar-channel-scroll,
+  body.eclipse-theme .sidebar-bottom {
+    background: transparent !important;
+    border-color: #252535 !important;
+  }
+  @media (max-width: 767px) {
+    body.eclipse-theme { overflow: auto !important; background-attachment: scroll !important; }
+    body.eclipse-theme #app { flex-direction: column !important; height: auto !important; }
+    body.eclipse-theme #sidebar { display: none !important; }
+    body.eclipse-theme .mobile-header { display: flex !important; }
+  }
+
   /* ═══════════════════════════════════════════════════════
      CHARACTER SCREEN — fixed 960×560 game canvas
   ═══════════════════════════════════════════════════════ */
@@ -3726,7 +3767,7 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   <!-- SIDEBAR (desktop) -->
   <div id="sidebar">
     <div class="sidebar-header">
-      <div class="wordmark" id="wordmark-home-desktop">Your<em>Space</em></div>
+      <div class="wordmark" id="wordmark-home-desktop"><img src="logo-yourspace.png" alt="YourSpace" style="width:220px;height:auto;display:block"></div>
       <div class="header-sub">Only What You Choose</div>
     </div>
 
@@ -5286,6 +5327,15 @@ const PRESETS = [
     bgPattern: "url('theme-rpg.jpg')",
     bgPatternSize: 'cover'
   },
+  {
+    name: 'Eclipse',
+    bg: '#060608', surface: 'rgba(8,8,16,0.85)', surface2: 'rgba(12,12,24,0.78)',
+    border: '#252540', text: '#e8e8f4', muted: '#6068a0',
+    accent: '#e8c060', accent2: '#b09030',
+    font: 'DM Sans',
+    bgPattern: "url('theme-eclipse.jpg')",
+    bgPatternSize: 'cover'
+  },
 ];
 
 const ACCENTS = [
@@ -5341,6 +5391,7 @@ function applyTheme(t) {
   document.body.classList.toggle('lofi-cafe-theme', t.presetName === 'Lofi Cafe');
   document.body.classList.toggle('cyberpunk-bedroom-theme', t.presetName === 'Cyberpunk Bedroom');
   document.body.classList.toggle('rpg-tavern-theme', t.presetName === 'RPG Tavern');
+  document.body.classList.toggle('eclipse-theme', t.presetName === 'Eclipse');
   // Load Cinzel only when RPG Tavern is active (avoid unnecessary font download)
   if (t.presetName === 'RPG Tavern' && !document.getElementById('cinzel-font-link')) {
     const _cl = document.createElement('link');
