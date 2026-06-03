@@ -2469,6 +2469,15 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     pointer-events: auto;
   }
 
+  /* ── Canvas frame wrapper ── */
+  #char-canvas-frame-wrapper {
+    border: 20px solid #5a3e1b;
+    border-radius: 16px;
+    display: inline-flex;
+    flex-shrink: 0;
+    pointer-events: auto;
+  }
+
   /* ── Canvas ── */
   #char-canvas {
     width: 960px; height: 560px;
@@ -4370,8 +4379,9 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   <!-- Back button — top-left of viewport -->
   <button class="back-btn" id="char-back-btn">← Back</button>
 
-  <!-- Canvas 960×560 -->
-  <div id="char-canvas" style="display:none">
+  <!-- Canvas 960×560 wrapped in frame border -->
+  <div id="char-canvas-frame-wrapper" style="display:none">
+  <div id="char-canvas">
 
     <!-- Canvas frame — child of canvas so it positions relative to canvas edges -->
     <div id="cv-canvas-frame-img"></div>
@@ -4443,6 +4453,7 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       <div class="cv-stats-panel" id="char-stats-panel"></div>
     </div>
   </div>
+  </div><!-- /#char-canvas-frame-wrapper -->
 
   <!-- Edit Unlocks overlay -->
   <div id="cv-unlocks-overlay">
@@ -7309,8 +7320,8 @@ function flashStatRow(statKey, color) {
 function showCharacter() {
   showScreen('character-screen');
   const hasKey = !!localStorage.getItem(ANTHRO_KEY);
-  document.getElementById('char-gate').style.display    = hasKey ? 'none' : 'flex';
-  document.getElementById('char-canvas').style.display  = hasKey ? 'flex' : 'none';
+  document.getElementById('char-gate').style.display                = hasKey ? 'none'         : 'flex';
+  document.getElementById('char-canvas-frame-wrapper').style.display = hasKey ? 'inline-flex'  : 'none';
   const sw = document.getElementById('cv-side-wrap');
   if (sw) sw.style.display = hasKey ? 'block' : 'none';
   if (hasKey) { renderCharSheet(); scaleCharacterScreen(); }
@@ -7406,12 +7417,12 @@ function doPrestige(s) {
 
 // ── Canvas scaling ──
 function scaleCharacterScreen() {
-  const canvas = document.getElementById('char-canvas');
-  if (!canvas || canvas.style.display === 'none') return;
+  const wrapper = document.getElementById('char-canvas-frame-wrapper');
+  if (!wrapper || wrapper.style.display === 'none') return;
   const scaleX = window.innerWidth / 960;
   const scaleY = window.innerHeight / 560;
   const scale  = Math.min(scaleX, scaleY, 1);
-  canvas.style.transform = `scale(${scale})`;
+  wrapper.style.transform = `scale(${scale})`;
   const sw = document.getElementById('cv-side-wrap');
   if (sw) sw.style.transform = `scale(${scale})`;
 }
@@ -7717,8 +7728,8 @@ document.getElementById('char-anthro-save').addEventListener('click', () => {
   err.textContent = '';
   localStorage.setItem(ANTHRO_KEY, val);
   initClaudeModel(); // fetch best available haiku model now that we have a key
-  document.getElementById('char-gate').style.display   = 'none';
-  document.getElementById('char-canvas').style.display = 'flex';
+  document.getElementById('char-gate').style.display                = 'none';
+  document.getElementById('char-canvas-frame-wrapper').style.display = 'inline-flex';
   const _sw = document.getElementById('cv-side-wrap');
   if (_sw) _sw.style.display = 'block';
   renderCharSheet(); scaleCharacterScreen();
