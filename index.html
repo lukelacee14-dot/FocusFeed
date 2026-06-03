@@ -3969,19 +3969,34 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
         <!-- API KEY TAB -->
         <div class="settings-tab-content" id="tab-apikey">
           <div class="settings-section">
-            <div class="settings-section-title">Your API key</div>
+            <div class="settings-section-title">YouTube Data API Key</div>
             <div class="settings-row">
-              <div><div class="settings-label">YouTube Data API key</div><div class="settings-sub">Saved in this browser only — never shared or transmitted</div></div>
+              <div><div class="settings-label">For loading YouTube channels and videos</div><div class="settings-sub">Get a free key at <a href="https://console.cloud.google.com" target="_blank" style="color:var(--accent)">console.cloud.google.com</a> — enable YouTube Data API v3</div></div>
             </div>
             <div style="background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#c07060;line-height:1.6">
-              ⚠️ Your API key is personal — treat it like a password. Never share it or paste it into other apps.
+              ⚠️ Treat it like a password — never share it or paste it into other apps.
             </div>
             <div class="api-input-wrap" style="margin-bottom:8px">
-              <input class="api-input" id="settings-api-input" type="password" placeholder="Key saved — paste new one to replace" autocomplete="off" spellcheck="false">
+              <input class="api-input" id="settings-api-input" type="password" placeholder="Paste YouTube API key (starts with AIza…)" autocomplete="off" spellcheck="false">
               <button class="api-toggle" id="settings-api-toggle">👁</button>
             </div>
             <div class="api-error" id="settings-api-error">Key should start with "AIza" and be ~39 characters.</div>
-            <button class="api-save-btn" id="settings-api-save" style="margin-top:4px">Save key</button>
+            <button class="api-save-btn" id="settings-api-save" style="margin-top:4px">Save YouTube key</button>
+          </div>
+          <div class="settings-section">
+            <div class="settings-section-title">Claude API Key</div>
+            <div class="settings-row">
+              <div><div class="settings-label">For Your Character activity verification</div><div class="settings-sub">Get a free key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--accent)">console.anthropic.com</a> — needed to verify activities and earn unlocks</div></div>
+            </div>
+            <div style="background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#c07060;line-height:1.6">
+              ⚠️ Treat it like a password — never share it. Without a key XP is awarded in trial mode only.
+            </div>
+            <div class="api-input-wrap" style="margin-bottom:8px">
+              <input class="api-input" id="settings-claude-input" type="password" placeholder="Paste Claude API key (starts with sk-ant-…)" autocomplete="off" spellcheck="false">
+              <button class="api-toggle" id="settings-claude-toggle">👁</button>
+            </div>
+            <div class="api-error" id="settings-claude-error">Key should start with "sk-ant-" and be at least 40 characters.</div>
+            <button class="api-save-btn" id="settings-claude-save" style="margin-top:4px">Save Claude key</button>
           </div>
           <div class="settings-section">
             <div class="settings-section-title">Feed</div>
@@ -4551,6 +4566,29 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   </div>
 </div>
 
+<!-- YOUTUBE API KEY MODAL -->
+<div id="yt-key-modal" style="display:none;position:fixed;inset:0;z-index:99990;background:rgba(0,0,0,0.82);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);pointer-events:auto">
+  <div style="background:#141414;border:1px solid #2a2a2a;border-radius:22px;padding:28px;width:100%;max-width:480px;position:relative">
+    <button id="yt-key-modal-close" style="position:absolute;top:14px;right:14px;background:#1e1e1e;border:1px solid #2a2a2a;color:var(--muted);font-size:16px;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center">✕</button>
+    <div style="font-size:18px;font-family:'DM Serif Display',serif;color:var(--text);margin-bottom:8px">YouTube API Key Required</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">To search for and add YouTube channels YourSpace needs a free YouTube Data API key. It takes about 3 minutes to set up and you only do this once.</p>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:12px;color:var(--muted);line-height:1.8">
+      <div style="color:var(--accent);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">How to get your key</div>
+      <div>1. Go to <a href="https://console.cloud.google.com" target="_blank" style="color:var(--accent)">console.cloud.google.com</a></div>
+      <div>2. Create a project → Enable <strong style="color:var(--text)">YouTube Data API v3</strong></div>
+      <div>3. APIs &amp; Services → Credentials → Create API key</div>
+      <div>4. Copy and paste it below</div>
+    </div>
+    <div style="background:rgba(192,57,43,0.07);border:1px solid rgba(192,57,43,0.2);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#c07060">⚠️ Treat your key like a password — never share it. It is saved in your browser only.</div>
+    <div class="api-input-wrap" style="margin-bottom:8px">
+      <input class="api-input" id="yt-key-input" type="password" placeholder="Paste your YouTube API key here…" autocomplete="off" spellcheck="false">
+      <button class="api-toggle" id="yt-key-toggle">👁</button>
+    </div>
+    <div class="api-error" id="yt-key-error">Key should start with "AIza" and be about 39 characters.</div>
+    <button class="api-save-btn" id="yt-key-save">Save and continue →</button>
+  </div>
+</div>
+
 <!-- ONBOARDING TOUR OVERLAY -->
 <div id="tour-overlay" class="tour-overlay" aria-hidden="true">
   <div class="tour-spotlight" id="tour-spotlight"></div>
@@ -4676,7 +4714,11 @@ function showSettings() {
   document.body.classList.remove('rpg-tavern-theme');
   document.body.classList.add('eclipse-theme');
   document.getElementById('settings-api-input').value = '';
+  document.getElementById('settings-api-input').placeholder = getKey() ? 'Key saved — paste new one to replace' : 'Paste YouTube API key (starts with AIza…)';
   document.getElementById('settings-api-error').classList.remove('visible');
+  document.getElementById('settings-claude-input').value = '';
+  document.getElementById('settings-claude-input').placeholder = localStorage.getItem(ANTHRO_KEY) ? 'Key saved — paste new one to replace' : 'Paste Claude API key (starts with sk-ant-…)';
+  document.getElementById('settings-claude-error').classList.remove('visible');
   renderThemePanel();
   showScreen('settings-screen');
   document.querySelectorAll('.settings-tab').forEach(t=>t.classList.remove('active'));
@@ -5189,17 +5231,52 @@ async function addChannelFromSearch(i, btnEl) {
   })();
 }
 
-// Sidebar & mobile search wiring — both call searchChannelsInline
+// ── YouTube API key modal ──
+let _ytKeyModalPendingSearch = null;
+function showYtKeyModal(pendingQuery) {
+  _ytKeyModalPendingSearch = pendingQuery || null;
+  const m = document.getElementById('yt-key-modal');
+  m.style.display = 'flex';
+}
+function closeYtKeyModal() {
+  document.getElementById('yt-key-modal').style.display = 'none';
+  _ytKeyModalPendingSearch = null;
+}
+document.getElementById('yt-key-modal-close').addEventListener('click', closeYtKeyModal);
+document.getElementById('yt-key-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeYtKeyModal();
+});
+document.getElementById('yt-key-toggle').addEventListener('click', () => {
+  const inp = document.getElementById('yt-key-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+document.getElementById('yt-key-save').addEventListener('click', () => {
+  const val = document.getElementById('yt-key-input').value.trim();
+  const errEl = document.getElementById('yt-key-error');
+  if (!val.startsWith('AIza') || val.length < 30) { errEl.classList.add('visible'); return; }
+  errEl.classList.remove('visible');
+  saveKey(val);
+  closeYtKeyModal();
+  if (_ytKeyModalPendingSearch) { searchChannelsInline(_ytKeyModalPendingSearch); _ytKeyModalPendingSearch = null; }
+});
+document.getElementById('yt-key-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('yt-key-save').click();
+});
+
+// Sidebar & mobile search wiring — both call searchChannelsInline (prompt for key if missing)
+function trySearchChannels(q) {
+  if (!q) return;
+  if (!getKey()) { showYtKeyModal(q); return; }
+  searchChannelsInline(q);
+}
 document.getElementById('sidebar-channel-search-btn').addEventListener('click', () => {
-  const q = document.getElementById('sidebar-channel-search-input').value.trim();
-  if (q) searchChannelsInline(q);
+  trySearchChannels(document.getElementById('sidebar-channel-search-input').value.trim());
 });
 document.getElementById('sidebar-channel-search-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('sidebar-channel-search-btn').click();
 });
 document.getElementById('mobile-channel-search-btn').addEventListener('click', () => {
-  const q = document.getElementById('mobile-channel-search-input').value.trim();
-  if (q) searchChannelsInline(q);
+  trySearchChannels(document.getElementById('mobile-channel-search-input').value.trim());
 });
 document.getElementById('mobile-channel-search-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('mobile-channel-search-btn').click();
@@ -5545,7 +5622,29 @@ document.getElementById('settings-api-save').addEventListener('click', () => {
   if (!val.startsWith('AIza') || val.length < 30) { errEl.classList.add('visible'); return; }
   errEl.classList.remove('visible');
   saveKey(val);
-  showHome();
+  const btn = document.getElementById('settings-api-save');
+  btn.textContent = 'Saved ✓'; setTimeout(() => { btn.textContent = 'Save YouTube key'; }, 2000);
+});
+
+// Claude API key — settings
+document.getElementById('settings-claude-toggle').addEventListener('click', () => {
+  const inp = document.getElementById('settings-claude-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+document.getElementById('settings-claude-save').addEventListener('click', () => {
+  const val = document.getElementById('settings-claude-input').value.trim();
+  const errEl = document.getElementById('settings-claude-error');
+  if (val === '' && localStorage.getItem(ANTHRO_KEY)) {
+    const btn = document.getElementById('settings-claude-save');
+    btn.textContent = 'Cleared ✓'; localStorage.removeItem(ANTHRO_KEY);
+    setTimeout(() => { btn.textContent = 'Save Claude key'; }, 2000); return;
+  }
+  if (!val.startsWith('sk-ant-') || val.length < 40) { errEl.classList.add('visible'); return; }
+  errEl.classList.remove('visible');
+  localStorage.setItem(ANTHRO_KEY, val);
+  initClaudeModel();
+  const btn = document.getElementById('settings-claude-save');
+  btn.textContent = 'Saved ✓'; setTimeout(() => { btn.textContent = 'Save Claude key'; }, 2000);
 });
 
 document.getElementById('settings-back-btn').addEventListener('click', () => {
@@ -6593,8 +6692,7 @@ document.addEventListener('click',e=>{if(!document.body.classList.contains('win9
   const s=loadTheme();
   if(Object.keys(s).length===0)applyTheme(PRESETS[0]);else applyTheme(s);
   updateTimerDisplay();startTimer();updateQuotaDisplay();
-  if(!getKey()){showScreen('setup-screen');}
-  else{renderSidebar();showScreen('home-screen');renderFeed(false);}
+  renderSidebar();showScreen('home-screen');renderFeed(false);
 })();
 
 
@@ -7814,10 +7912,9 @@ function showCharacter() {
   document.body.classList.add('rpg-tavern-theme');
   playTavernAmbience();
   showScreen('character-screen');
-  const hasKey = !!localStorage.getItem(ANTHRO_KEY);
-  document.getElementById('char-gate').style.display   = hasKey ? 'none' : 'flex';
-  document.getElementById('char-canvas').style.display = hasKey ? 'flex' : 'none';
-  if (hasKey) { renderCharSheet(); scaleCharacterScreen(); }
+  document.getElementById('char-gate').style.display   = 'none';
+  document.getElementById('char-canvas').style.display = 'flex';
+  renderCharSheet(); scaleCharacterScreen();
 }
 
 function renderCharSheet() {
@@ -9061,6 +9158,7 @@ function awardXP(xp, label, answers, breakdown) {
         ${xpBarHTML(pct, 'award-bar', _actStat.color)}
       </div>
       ${unlockHTML}
+      ${!localStorage.getItem(ANTHRO_KEY) ? `<div style="margin-bottom:14px;padding:10px 14px;background:rgba(107,127,255,0.08);border:1px solid rgba(107,127,255,0.2);border-radius:10px;font-size:11px;color:#8898cc;line-height:1.6">⚡ XP awarded in trial mode — add your Claude API key in Settings to enable answer verification and earn unlocks properly.</div>` : ''}
       <button class="char-submit-btn" onclick="closeActivityModal();renderCharSheet()">Done ✓</button>
     </div>`;
   setTimeout(() => { document.getElementById('award-bar')?.classList.add('pulse'); }, 250);
