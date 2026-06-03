@@ -3474,6 +3474,75 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
   }
   #cv-edit-unlocks-btn:hover { background: rgba(120, 85, 35, 0.85); color: #e8d5b0; }
 
+  /* ── Codex Overlay ── */
+  #cv-codex-overlay {
+    display: none; position: fixed; inset: 0; z-index: 99990;
+    align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.75); pointer-events: auto;
+    backdrop-filter: blur(4px);
+  }
+  #cv-codex-overlay.open { display: flex; }
+  .cv-codex-box {
+    background: #0e0b06;
+    border: 2px solid #5a3e1b;
+    border-radius: 16px;
+    width: min(640px, 92vw);
+    max-height: 88vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 0 60px rgba(201,168,76,0.12), inset 0 1px 0 rgba(201,168,76,0.08);
+    scrollbar-width: thin;
+    scrollbar-color: #3a2610 transparent;
+  }
+  .cv-codex-box::-webkit-scrollbar { width: 4px; }
+  .cv-codex-box::-webkit-scrollbar-thumb { background: #3a2610; border-radius: 4px; }
+  .cv-codex-header {
+    position: sticky; top: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 26px 16px;
+    background: #0e0b06;
+    border-bottom: 1px solid #3a2610;
+    z-index: 2;
+  }
+  .cv-codex-title {
+    font-family: 'Fredoka One', cursive; font-size: 22px; font-weight: 400;
+    color: #c9a84c; letter-spacing: 3px; text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(201,168,76,0.35);
+  }
+  .cv-codex-close {
+    background: rgba(20,14,8,0.8); border: 1px solid #3a2610;
+    color: #c9a84c; font-size: 16px; cursor: pointer;
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .cv-codex-close:hover { background: rgba(90,62,27,0.5); border-color: #c9a84c; }
+  .cv-codex-body { padding: 24px 26px 28px; }
+  .cv-codex-section { margin-bottom: 8px; }
+  .cv-codex-section-title {
+    font-family: 'Fredoka One', cursive; font-size: 13px; font-weight: 400;
+    color: #c9a84c; letter-spacing: 2.5px; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .cv-codex-text {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300;
+    color: #d4c9b4; line-height: 1.75;
+  }
+  .cv-codex-divider {
+    border: none; border-top: 1px solid #2a1e0e;
+    margin: 20px 0;
+    position: relative;
+  }
+  .cv-codex-divider::after {
+    content: '✦';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #0e0b06;
+    color: #5a3e1b; font-size: 10px;
+    padding: 0 8px;
+  }
+
   /* ── Edit Unlocks Overlay ── */
   #cv-unlocks-overlay {
     display: none; position: fixed; inset: 0; z-index: 99990;
@@ -4305,8 +4374,8 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       </div>
 
       <!-- 5. Three buttons -->
-      <button class="cv-ph-btn" id="cv-edit-unlocks-btn">Edit Unlocks</button>
-      <button class="cv-ph-btn" id="cv-rules-btn">Rules</button>
+      <button class="cv-ph-btn" id="cv-edit-unlocks-btn">The Vault</button>
+      <button class="cv-ph-btn" id="cv-rules-btn">The Codex</button>
       <button class="cv-log-btn" id="char-log-btn">⚔ Log Activity</button>
 
     </div>
@@ -4355,6 +4424,67 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
       <button class="cv-unlocks-tab" data-tab="prestige">Prestige Icons</button>
     </div>
     <div class="cv-unlocks-grid" id="cv-unlocks-grid"></div>
+  </div>
+</div>
+
+<!-- CODEX OVERLAY -->
+<div id="cv-codex-overlay">
+  <div class="cv-codex-box">
+    <div class="cv-codex-header">
+      <div class="cv-codex-title">The Codex</div>
+      <button class="cv-codex-close" id="cv-codex-close">✕</button>
+    </div>
+    <div class="cv-codex-body">
+
+      <div class="cv-codex-section">
+        <div class="cv-codex-section-title">How XP Works</div>
+        <p class="cv-codex-text">Log real life activities to earn XP across your five stats — Strength, Wisdom, Discipline, Charisma and Creativity. Every activity requires you to answer questions proving you actually did it. Your answers are scored on depth and effort — the more honestly and thoroughly you reflect, the more XP you earn.</p>
+      </div>
+
+      <hr class="cv-codex-divider">
+
+      <div class="cv-codex-section">
+        <div class="cv-codex-section-title">XP Scoring</div>
+        <p class="cv-codex-text">Skipped question — 0% XP for that question.<br>
+        Answer under minimum words — 70% XP.<br>
+        Met minimum words — 100% XP.<br>
+        Answer 1.5× minimum — 115% XP.<br>
+        Answer 2× minimum — 130% XP.</p>
+      </div>
+
+      <hr class="cv-codex-divider">
+
+      <div class="cv-codex-section">
+        <div class="cv-codex-section-title">The Five Stats</div>
+        <p class="cv-codex-text"><strong style="color:#c9a84c">Strength</strong> — physical activity, exercise, sport and personal bests.<br>
+        <strong style="color:#c9a84c">Wisdom</strong> — reading, learning, studying and applying knowledge.<br>
+        <strong style="color:#c9a84c">Discipline</strong> — digital habits, focus, sleep, sobriety and daily routines.<br>
+        <strong style="color:#c9a84c">Charisma</strong> — connection, conversation, vulnerability and relationships.<br>
+        <strong style="color:#c9a84c">Creativity</strong> — making, performing, writing, cooking and sharing work.</p>
+      </div>
+
+      <hr class="cv-codex-divider">
+
+      <div class="cv-codex-section">
+        <div class="cv-codex-section-title">Levelling Up</div>
+        <p class="cv-codex-text">Your overall character level is the floor average of all five stats. Level up individual stats by logging activities in that domain. Reach Level 50 in your overall level to prestige and start again with a 1.25× XP multiplier.</p>
+      </div>
+
+      <hr class="cv-codex-divider">
+
+      <div class="cv-codex-section">
+        <div class="cv-codex-section-title">Unlocks</div>
+        <p class="cv-codex-text">Every level milestone, streak and special achievement unlocks cosmetic rewards — callsigns, icons and prestige badges. Visit The Vault to equip what you have earned. Hover over locked items to see what challenge unlocks them.</p>
+      </div>
+
+      <hr class="cv-codex-divider">
+
+      <div class="cv-codex-section">
+        <div class="cv-codex-section-title">The Honour Code</div>
+        <p class="cv-codex-text">One log per activity per day. Your answers must be genuine — this system only works if you are honest with yourself. The XP means nothing if the life behind it is not real. Every point you earn is a record of something you actually did.</p>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -8461,6 +8591,15 @@ document.getElementById('cv-unlocks-overlay').addEventListener('click', e => {
 });
 document.querySelectorAll('.cv-unlocks-tab').forEach(t =>
   t.addEventListener('click', () => renderUnlocksGrid(t.dataset.tab)));
+
+// ── Codex overlay ──
+function openCodexOverlay()  { const o = document.getElementById('cv-codex-overlay'); if(o) o.classList.add('open'); }
+function closeCodexOverlay() { const o = document.getElementById('cv-codex-overlay'); if(o) o.classList.remove('open'); }
+document.getElementById('cv-rules-btn').addEventListener('click', openCodexOverlay);
+document.getElementById('cv-codex-close').addEventListener('click', closeCodexOverlay);
+document.getElementById('cv-codex-overlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeCodexOverlay();
+});
 
 // ── Name editing ──
 document.getElementById('char-name-edit-btn').addEventListener('click', () => {
