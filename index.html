@@ -4646,6 +4646,7 @@ function showHome() {
   // Mode 1: restore eclipse space aesthetic
   document.body.classList.remove('rpg-tavern-theme');
   document.body.classList.add('eclipse-theme');
+  stopTavernAmbience();
   if (currentVideoId) stopPlayer();
   playXboxSound('back');
   showScreen('home-screen');
@@ -7771,11 +7772,47 @@ function flashStatRow(statKey, color) {
   });
 }
 
+// ── Tavern ambience audio — one play per session ──
+let _tavernAudio = null;
+let _tavernPlayed = false;
+let _tavernFadeTimer = null;
+
+function playTavernAmbience() {
+  if (_tavernPlayed) return;
+  _tavernPlayed = true;
+  _tavernAudio = new Audio('tavern-ambience.mp3');
+  _tavernAudio.volume = 0.4;
+  _tavernAudio.loop = false;
+  _tavernAudio.play().catch(() => {}); // swallow autoplay policy errors silently
+}
+
+function stopTavernAmbience() {
+  if (!_tavernAudio) return;
+  const audio = _tavernAudio;
+  if (audio.paused) return;
+  // Fade out over 1 second
+  const startVol = audio.volume;
+  const step = startVol / 20;
+  let ticks = 0;
+  if (_tavernFadeTimer) clearInterval(_tavernFadeTimer);
+  _tavernFadeTimer = setInterval(() => {
+    ticks++;
+    audio.volume = Math.max(0, startVol - step * ticks);
+    if (audio.volume <= 0 || ticks >= 20) {
+      clearInterval(_tavernFadeTimer);
+      _tavernFadeTimer = null;
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }, 50);
+}
+
 // ── showCharacter ──
 function showCharacter() {
   // Mode 2: switch to RPG tavern aesthetic
   document.body.classList.remove('eclipse-theme');
   document.body.classList.add('rpg-tavern-theme');
+  playTavernAmbience();
   showScreen('character-screen');
   const hasKey = !!localStorage.getItem(ANTHRO_KEY);
   document.getElementById('char-gate').style.display   = hasKey ? 'none' : 'flex';
