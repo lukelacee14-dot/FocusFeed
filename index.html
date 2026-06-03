@@ -3522,13 +3522,12 @@ body.crt-theme .settings-tab { font-family: 'IBM Plex Mono', monospace !importan
     width: 100%; height: 100%; object-fit: cover; border-radius: 8px;
   }
   .cv-callsign-label {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    text-align: center;
-    font-family: 'Fredoka One', cursive; font-size: 14px;
-    color: #c9a84c; padding: 6px 4px;
-    text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 100%; text-align: center;
+    font-family: 'Fredoka One', cursive; font-size: 16px;
+    color: #c9a84c;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px rgba(0,0,0,0.8);
     pointer-events: none;
-    background: linear-gradient(transparent, rgba(10,8,5,0.7));
   }
 
   /* ── LVL + prestige row ── */
